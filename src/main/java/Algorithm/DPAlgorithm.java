@@ -1,9 +1,13 @@
+package Algorithm;
+
 import Entity.Graph;
 import Entity.Path;
 import Entity.PathSet;
 
-public class Algorithm {
+public class DPAlgorithm {
+
     public Path execute(Graph graph, PathSet paths) {
-        return NULL;
+        //TODO: implement specific recovery algorithm
+        return null;
     }
 }

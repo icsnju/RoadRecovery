@@ -1,11 +1,9 @@
+import Algorithm.DPAlgorithm;
 import Entity.Graph;
-import Entity.Node;
 import Entity.Path;
 import Entity.PathSet;
 import Tool.ReadExcel;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public class Main {
 
@@ -20,7 +18,8 @@ public class Main {
         pathSet.readAllPath();
 
         //TODO: execute the algorithm
-        Algorithm algorithm = new Algorithm();
+        //@Fancy
+        DPAlgorithm algorithm = new DPAlgorithm();
         Path completePath = algorithm.execute(graph, pathSet);
 
         //TODO: print outputs
