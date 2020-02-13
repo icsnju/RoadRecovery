@@ -4,10 +4,10 @@ import Entity.Graph;
 import Entity.Path;
 import Entity.PathSet;
 
-public class DPAlgorithm implements Algorithm {
+public class NullAlgorithm implements Algorithm {
 
     public Path execute(Graph graph, PathSet paths) {
-        //TODO: implement specific recovery algorithm
-        return null;
+        //do nothing but return oracle path
+        return paths.oraclePath;
     }
 }

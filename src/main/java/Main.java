@@ -1,28 +1,33 @@
-import Algorithm.DPAlgorithm;
+import Algorithm.Algorithm;
+import Algorithm.NullAlgorithm;
 import Entity.Graph;
 import Entity.Path;
 import Entity.PathSet;
 import Tool.ReadExcel;
 
-
 public class Main {
 
     public static void main(String[] args) {
-        //TODO: get graph
-        Graph graph = new Graph();
+        //get graph
         ReadExcel readExcel = new ReadExcel();
-        readExcel.buildGraph();
+        Graph graph = readExcel.buildGraph();
 
-        //TODO: get a broken path(s)
-        PathSet pathSet = new PathSet();
-        pathSet.readAllPath();
+        /*
+         test for each case
+         */
+        for (int testIndex = 1; testIndex <= 5; testIndex++) {
+            //get a broken path(s)
+            PathSet pathSet = new PathSet();
+            pathSet.readAllPath(testIndex);
 
-        //TODO: execute the algorithm
-        //@Fancy
-        DPAlgorithm algorithm = new DPAlgorithm();
-        Path completePath = algorithm.execute(graph, pathSet);
+            //TODO: execute the algorithm
+            //@Fancy
+            Algorithm algorithm = new NullAlgorithm();
+            Path completePath = algorithm.execute(graph, pathSet);
 
-        //TODO: print outputs
-        completePath.print();
+            //TODO: print outputs
+            completePath.compareAndPrint(pathSet.oraclePath, testIndex);
+        }
+
     }
 }

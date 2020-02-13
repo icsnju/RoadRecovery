@@ -1,6 +1,6 @@
 package Entity;
 
 public class Edge {
-    Node inNode;
-    Node outNode;
+    public Node inNode;
+    public Node outNode;
 }

@@ -5,9 +5,9 @@ import java.util.HashSet;
 
 public class Graph {
     //TODO: attributes
-    Set nodeSet = new HashSet<Node>();
-    Set edgeSet = new HashSet<Edge>();
-    Set mutualSet = new HashSet<Edge>();
+    public Set<Node> nodeSet = new HashSet<Node>();
+    public Set<Edge> edgeSet = new HashSet<Edge>();
+    public Set<Edge> mutualSet = new HashSet<Edge>();
 
 
     //TODO: operations
