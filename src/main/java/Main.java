@@ -15,7 +15,7 @@ public class Main {
         /*
          test for each case
          */
-        for (int testIndex = 1; testIndex <= 5; testIndex++) {
+        for (int testIndex = 1; testIndex <= 1; testIndex++) {
             //get a broken path(s)
             PathSet pathSet = new PathSet();
             pathSet.readAllPath(testIndex);

@@ -14,7 +14,7 @@ import static Entity.NodeType.*;
 
 public class ReadExcel {
 
-    private String xlsFileName = "~/Desktop/RoadRecovery/" +
+    private String xlsFileName = "/Users/lind/Desktop/RoadRecovery/" +
             "src/main/resources/basic-data.xls";
     private int SHEETHEAD = 4;
     int EDGESHEET = 1;
@@ -55,6 +55,8 @@ public class ReadExcel {
             //add two nodes
             Node inNode = extractNodeFromRow(row, 1);
             Node outNode = extractNodeFromRow(row, 4);
+            // exist outNode is {0, wu, wu} | {index, wu, wu}
+            if (inNode == null || outNode == null) continue;
             if (!graph.nodeSet.contains(inNode)) graph.nodeSet.add(inNode);
             if (!graph.nodeSet.contains(outNode)) graph.nodeSet.add(outNode);
 
@@ -73,13 +75,19 @@ public class ReadExcel {
 
     private Node extractNodeFromRow(Row row, int base) {
         Node node = new Node();
+//        System.out.println(row.getRowNum()+1+","+base);
+        // null node
+        if (row.getCell(base+1).getStringCellValue().equals("无"))
+            return null;
+
         node.index = row.getCell(base).getStringCellValue();
         node.name = row.getCell(base+1).getStringCellValue();
-        switch (Integer.parseInt(row.getCell(base+2).getStringCellValue())) {
+        switch ((int) row.getCell(base+2).getNumericCellValue()) {
             case 0: node.type = NORMALPORTAL; break;
             case 1: node.type = PROVINCIALPORTAL; break;
             case 3: node.type = TOLLSTATION; break;
         }
+//        System.out.println(node.index+", "+node.name+", "+node.type);
         return node;
     }
 }

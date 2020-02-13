@@ -12,11 +12,12 @@ public class PathSet {
 
     public List<Path> paths = new ArrayList<Path>();
     public Path oraclePath = new Path();
-    String testFileName = "~/Desktop/RoadRecovery/" +
+    String testFileName = "/Users/lind/Desktop/RoadRecovery/" +
             "src/main/resources/test-data.xls";
     int SHEETHEAD = 4;
 
     public void readAllPath(int testIndex) {
+        System.out.println("testIndex=" + testIndex);
         try {
             /*
             get steam info and test oracle.
@@ -30,9 +31,12 @@ public class PathSet {
             while (rowIterator.hasNext()) {
                 Row row = rowIterator.next();
                 if (row.getRowNum() < SHEETHEAD) continue;
+                System.out.println(row.getRowNum()+1);
+                if (row.getCell(2) == null || row.getCell(3) == null) continue;
                 Node node = new Node();
                 node.index = row.getCell(2).getStringCellValue();
                 node.name = row.getCell(3).getStringCellValue();
+                System.out.println(node.index+", "+node.name);
                 //node.type can be completed with graph information
                 path.nodeList.add(node);
             }
@@ -44,6 +48,9 @@ public class PathSet {
             while (rowIterator.hasNext()) {
                 Row row = rowIterator.next();
                 if (row.getRowNum() < SHEETHEAD) continue;
+                System.out.println(row.getRowNum()+1);
+                if (row.getCell(2) == null ||
+                        row.getCell(3) == null || row.getCell(5) == null) continue;
                 Node node = new Node();
                 node.index = row.getCell(2).getStringCellValue();
                 node.name = row.getCell(3).getStringCellValue();

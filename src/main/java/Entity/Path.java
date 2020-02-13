@@ -1,7 +1,6 @@
 package Entity;
 
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -9,7 +8,7 @@ import java.util.List;
 public class Path {
 
     public List<Node> nodeList = new ArrayList<Node>();
-    String outDirectory = "~/Desktop/RoadRecovery/src/main/resources/outputs/";
+    String outDirectory = "/Users/lind/Desktop/RoadRecovery/src/main/resources/outputs/";
 
     public void compareAndPrint(Path oraclePath, int testIndex) {
         /*
@@ -45,8 +44,11 @@ public class Path {
 
         //TODO: save result
         try {
-            FileWriter fileWriter = new FileWriter(
-                    outDirectory + testIndex + ".csv");
+            String filename = outDirectory + testIndex + ".csv";
+            File file = new File(filename);
+            if (!file.exists()) file.createNewFile();
+            Writer fileWriter =  new OutputStreamWriter(
+                    new FileOutputStream(file), "utf-8");
             if (successful) fileWriter.write("successful\n");
             else fileWriter.write("failed\n");
 
