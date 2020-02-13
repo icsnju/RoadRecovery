@@ -15,7 +15,7 @@ public class Main {
         /*
          test for each case
          */
-        for (int testIndex = 1; testIndex <= 1; testIndex++) {
+        for (int testIndex = 1; testIndex <= 5; testIndex++) {
             //get a broken path(s)
             PathSet pathSet = new PathSet();
             pathSet.readAllPath(testIndex);
@@ -25,7 +25,7 @@ public class Main {
             Algorithm algorithm = new NullAlgorithm();
             Path completePath = algorithm.execute(graph, pathSet);
 
-            //TODO: print outputs
+            //print outputs
             completePath.compareAndPrint(pathSet.oraclePath, testIndex);
         }
 

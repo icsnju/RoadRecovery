@@ -17,7 +17,7 @@ public class Path {
 
          And print completed path for saving.
          */
-        //TODO: compare two paths
+        //compare two paths
         boolean successful = true;
         Iterator<Node> ourNodeIterator = nodeList.iterator();
         Iterator<Node> oracleIterator = oraclePath.nodeList.iterator();
@@ -42,7 +42,8 @@ public class Path {
             System.out.printf("Failed recovery!");
         }
 
-        //TODO: save result
+        //save result
+        //TODO: correctly output chinese characters
         try {
             String filename = outDirectory + testIndex + ".csv";
             File file = new File(filename);

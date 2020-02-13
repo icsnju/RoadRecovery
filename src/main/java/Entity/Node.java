@@ -13,5 +13,13 @@ public class Node {
     double longitude; //jing'du
     double latitude;  //wei'du
 
+    //operations
+    public Node getMutualNode() {
+        //TODO:
+        return null;
+    }
+
+
+
 }
 
