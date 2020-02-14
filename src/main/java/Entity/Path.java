@@ -8,7 +8,11 @@ import java.util.List;
 public class Path {
 
     public List<Node> nodeList = new ArrayList<Node>();
-    String outDirectory = "/Users/lind/Desktop/RoadRecovery/src/main/resources/outputs/";
+    String outDirectory = "src/main/resources/outputs/";
+
+    public int getLength() {
+        return nodeList.size();
+    }
 
     public void compareAndPrint(Path oraclePath, int testIndex) {
         /*

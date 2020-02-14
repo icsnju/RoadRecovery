@@ -26,7 +26,7 @@ hs_err_pid*
 *.DS_Store
 
 # IntelliJ IDEA files
-# .idea/
+.idea/
 # RoadRecovery.iml
 target/
 src/main/resources/outputs/

@@ -12,8 +12,8 @@ public class Graph {
 
     //operations
     //TODO:
-    public int shortestDistanceOfNodes(Node inNode, Node outNode) {
-        return 0;
+    public Path shortestDistanceOfNodes(Node inNode, Node outNode) {
+        return null;
     }
 
 

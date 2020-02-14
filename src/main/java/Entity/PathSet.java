@@ -12,8 +12,7 @@ public class PathSet {
 
     public List<Path> paths = new ArrayList<Path>();
     public Path oraclePath = new Path();
-    String testFileName = "/Users/lind/Desktop/RoadRecovery/" +
-            "src/main/resources/test-data.xls";
+    String testFileName = "src/main/resources/test-data.xls";
     int SHEETHEAD = 4;
 
     public void readAllPath(int testIndex) {

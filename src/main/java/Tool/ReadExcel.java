@@ -14,8 +14,7 @@ import static Entity.NodeType.*;
 
 public class ReadExcel {
 
-    private String xlsFileName = "/Users/lind/Desktop/RoadRecovery/" +
-            "src/main/resources/basic-data.xls";
+    private String xlsFileName = "src/main/resources/basic-data.xls";
     private int SHEETHEAD = 4;
     int EDGESHEET = 1;
     int MUTUALSHEET = 3;
