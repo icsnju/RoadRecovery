@@ -12,7 +12,9 @@ public class Graph {
 
     //operations
     //TODO:
-    public Path shortestDistanceOfNodes(Node inNode, Node outNode) {
+    //If inNode equals to outNode, then return only one node
+    //If can not find path, then return null
+    public Path getShortestPath(Node inNode, Node outNode) {
         return null;
     }
 
