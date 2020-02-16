@@ -16,6 +16,9 @@ public class Node {
     //operations
     public Node getMutualNode() {
         //TODO:
+        
+
+
         return null;
     }
 

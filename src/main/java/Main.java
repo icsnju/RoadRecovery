@@ -1,11 +1,12 @@
-import Algorithm.Algorithm;
-import Algorithm.NullAlgorithm;
+import Algorithm.*;
 import Entity.Graph;
 import Entity.Path;
 import Entity.PathSet;
 import Tool.ReadExcel;
 
 public class Main {
+
+    private static int TestCases = 5;
 
     public static void main(String[] args) {
         //get graph
@@ -15,14 +16,15 @@ public class Main {
         /*
          test for each case
          */
-        for (int testIndex = 1; testIndex <= 5; testIndex++) {
+        for (int testIndex = 1; testIndex <= TestCases; testIndex++) {
             //get a broken path(s)
             PathSet pathSet = new PathSet();
             pathSet.readAllPath(testIndex);
 
-            //TODO: execute the algorithm
+            //execute the algorithm
             //@Fancy
             Algorithm algorithm = new NullAlgorithm();
+//            Algorithm algorithm = new DPAlgorithm();
             Path completePath = algorithm.execute(graph, pathSet);
 
             //print outputs
