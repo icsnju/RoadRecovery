@@ -12,6 +12,7 @@ import java.util.List;
 
 public class Path {
 
+    public boolean connected = false;
     public List<Node> nodeList = new ArrayList<Node>();
     String outDirectory = "src/main/resources/outputs/";
 

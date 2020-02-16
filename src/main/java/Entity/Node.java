@@ -8,6 +8,7 @@ public class Node {
     public String name;
     public NodeType type;
     public IdentifyOrRecover identifyOrRecover; // for testing
+    public Node mutualNode = null;
 
     // unused attributes
     double longitude; //jing'du
@@ -15,11 +16,7 @@ public class Node {
 
     //operations
     public Node getMutualNode() {
-        //TODO:
-        
-
-
-        return null;
+        return mutualNode;
     }
 
 

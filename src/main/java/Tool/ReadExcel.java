@@ -35,6 +35,8 @@ public class ReadExcel {
                 }
             }
 
+            graph.buildAllShortestPath();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -58,6 +60,11 @@ public class ReadExcel {
             if (inNode == null || outNode == null) continue;
             if (!graph.nodeSet.contains(inNode)) graph.nodeSet.add(inNode);
             if (!graph.nodeSet.contains(outNode)) graph.nodeSet.add(outNode);
+            //FIXME: I assume each node has only one mutual node.
+            if (sheetIndex == MUTUALSHEET) {
+                inNode.mutualNode = outNode;
+                outNode.mutualNode = inNode;
+            }
 
             //add one edge into edgeSet or mutualSet
             Edge edge = new Edge();
@@ -66,9 +73,9 @@ public class ReadExcel {
             if (sheetIndex == EDGESHEET) {
                 if (!graph.edgeSet.contains(edge)) graph.edgeSet.add(edge);
             }
-            else if (sheetIndex == MUTUALSHEET) {
-                if (!graph.mutualSet.contains(edge)) graph.mutualSet.add(edge);
-            }
+//            else if (sheetIndex == MUTUALSHEET) {
+//                if (!graph.mutualSet.contains(edge)) graph.mutualSet.add(edge);
+//            }
         }
     }
 
