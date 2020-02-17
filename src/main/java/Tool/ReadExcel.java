@@ -3,7 +3,6 @@ package Tool;
 import Entity.Edge;
 import Entity.Graph;
 import Entity.Node;
-import Entity.NodeType;
 import org.apache.poi.ss.usermodel.*;
 
 import java.io.File;
@@ -58,8 +57,8 @@ public class ReadExcel {
             Node outNode = extractNodeFromRow(row, 4);
             // exist outNode is {0, wu, wu} | {index, wu, wu}
             if (inNode == null || outNode == null) continue;
-            if (!graph.nodeSet.contains(inNode)) graph.nodeSet.add(inNode);
-            if (!graph.nodeSet.contains(outNode)) graph.nodeSet.add(outNode);
+            if (!graph.nodes.contains(inNode)) graph.nodes.add(inNode);
+            if (!graph.nodes.contains(outNode)) graph.nodes.add(outNode);
             //FIXME: I assume each node has only one mutual node.
             if (sheetIndex == MUTUALSHEET) {
                 inNode.mutualNode = outNode;

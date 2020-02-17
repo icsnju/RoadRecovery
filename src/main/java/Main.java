@@ -6,7 +6,7 @@ import Tool.ReadExcel;
 
 public class Main {
 
-    private static int TestCases = 5;
+    private static int TestCases = 1;
 
     public static void main(String[] args) {
         //get graph
@@ -22,7 +22,6 @@ public class Main {
             pathSet.readAllPath(testIndex);
 
             //execute the algorithm
-            //@Fancy
             Algorithm algorithm = new NullAlgorithm();
 //            Algorithm algorithm = new DPAlgorithm();
             Path completePath = algorithm.execute(graph, pathSet);
