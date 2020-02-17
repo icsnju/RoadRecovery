@@ -22,8 +22,8 @@ public class Main {
             pathSet.readAllPath(testIndex);
 
             //execute the algorithm
-            Algorithm algorithm = new NullAlgorithm();
-//            Algorithm algorithm = new DPAlgorithm();
+//            Algorithm algorithm = new NullAlgorithm();
+            Algorithm algorithm = new DPAlgorithm();
             Path completePath = algorithm.execute(graph, pathSet);
 
             //print outputs

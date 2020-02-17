@@ -34,8 +34,8 @@ public class ReadExcel {
                 }
             }
 
-            graph.buildAllShortestPathByFloyd();
-            graph.buildAllShortestPathByDijstra();
+//            graph.buildAllShortestPathByFloyd();
+            graph.buildAllShortestPathByDijkstra();
 
         } catch (IOException e) {
             e.printStackTrace();

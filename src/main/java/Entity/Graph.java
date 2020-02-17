@@ -1,7 +1,11 @@
 package Entity;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.stream.Collectors;
@@ -12,13 +16,69 @@ public class Graph {
     public List<Node> nodes = new ArrayList<Node>();
     public Set<Edge> edgeSet = new HashSet<Edge>();
 //    public Set<Edge> mutualSet = new HashSet<Edge>();
-    public int[][] dist;
+    public int[][] dist; // for floyd
+    private ArrayList<ArrayList<Integer>> edges = new ArrayList<ArrayList<Integer>>(); // for Dijkstra
+
+    private static class NodeDijkstra {
+
+        private int dis;
+        private int index, pre_node;
+
+        NodeDijkstra(int index, int dis, int pre_node) {
+            this.index = index;
+            this.dis = dis;
+            this.pre_node = pre_node;
+        }
+    }
 
     //If inNode equals to outNode, then return only one node
     //If can not find path, then return null
     //TODO: recursively trace the complete shortest path
     public Path getShortestPath(Node inNode, Node outNode) {
-        int inIndex = nodes.indexOf(inNode);
+
+        //Dijkstra algorithm
+        int from = -1, to = -1;
+        for (int i = 0; i < nodes.size(); ++i) {
+            if (nodes.get(i).index.equals(inNode.index))
+                from = i;
+            if (nodes.get(i).index.equals(outNode.index))
+                to = i;
+        }
+        int[] dis = new int[nodes.size()];
+        int[] pre_node = new int[nodes.size()];
+        Arrays.fill(dis, Integer.MAX_VALUE / 2);
+        Arrays.fill(pre_node, -1);
+        PriorityQueue<NodeDijkstra> q = new PriorityQueue<>(Comparator.comparingInt(x -> x.dis));
+
+        q.add(new NodeDijkstra(from, 0, 0));
+        while (!q.isEmpty()) {
+            NodeDijkstra x = q.poll();
+            if (dis[x.index] >= x.dis) {
+                dis[x.index] = x.dis;
+                pre_node[x.index] = x.pre_node;
+                if (x.index == to) {
+                    break;
+                }
+                for (int y : edges.get(x.index)) {
+                    q.add(new NodeDijkstra(y, dis[y] = x.dis + 1, x.index));
+                }
+            }
+        }
+
+        if (dis[to] == Integer.MAX_VALUE / 2) {
+            return null;
+        }
+        Path path = new Path();
+        for (int x = to; x != from && x != -1; x = pre_node[x]) {
+            path.nodeList.add(nodes.get(x));
+        }
+        path.nodeList.add(nodes.get(from));
+        Collections.reverse(path.nodeList);
+        assert (path.getLength() == dis[to]);
+        return path;
+
+        // floyd
+        /*int inIndex = nodes.indexOf(inNode);
         int outIndex = nodes.indexOf(outNode);
         Path partialPath = new Path();
         //recursion terminal condition
@@ -44,7 +104,7 @@ public class Graph {
                 break;
             }
         }
-        return partialPath;
+        return partialPath;*/
     }
 
     //floyd algorithm
@@ -84,8 +144,13 @@ public class Graph {
         return Stream.concat(nodeList1.stream(), nodeList2.stream()).collect(Collectors.toList());
     }
 
-    public void buildAllShortestPathByDijstra() {
-
-
+    public void buildAllShortestPathByDijkstra() {
+        for (int i = 0; i < nodes.size(); ++i) {
+            System.out.println(nodes.get(i).index + nodes.get(i).name);
+            edges.add(new ArrayList<Integer>());
+        }
+        for (Edge edge : edgeSet) {
+            edges.get(nodes.indexOf(edge.inNode)).add(nodes.indexOf(edge.outNode));
+        }
     }
 }
