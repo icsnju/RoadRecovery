@@ -19,7 +19,7 @@ public class PathSet {
     FIXME: I don't where is test oracle.
     read two kinds of paths, combined into a path set.
      */
-    public void readAllPath(int testIndex) {
+    public void readAllPath(Graph graph, int testIndex) {
         System.out.println("testIndex=" + testIndex);
         try {
             /*
@@ -29,8 +29,8 @@ public class PathSet {
 
             //get steam info
             Sheet sheet = workbook.getSheetAt(testIndex*2-1);
-            extractOnePath(sheet, 0); // first path:  simplified path
-            extractOnePath(sheet, 2); // second path: complete path
+            extractOnePath(graph, sheet, 0); // first path:  simplified path
+            extractOnePath(graph, sheet, 2); // second path: complete path
 
             //get test oracle (a complete path)
             /*
@@ -66,7 +66,7 @@ public class PathSet {
 
     }
 
-    private void extractOnePath(Sheet sheet, int columnBase) {
+    private void extractOnePath(Graph graph, Sheet sheet, int columnBase) {
         Path path = new Path();
         Iterator<Row> rowIterator = sheet.rowIterator();
         while (rowIterator.hasNext()) {
@@ -81,7 +81,7 @@ public class PathSet {
             if (node.index.length() !=6 && node.index.length() != 14) continue;
 //            System.out.println(node.index+", "+node.name);
             //node.type can be completed with graph information
-            path.nodeList.add(node);
+            path.nodeList.add(graph.nodes.get(graph.nodes.indexOf(node))); // node's id can be different from the node in graph
         }
         paths.add(path); //testcase has only one path.
     }

@@ -60,8 +60,16 @@ public class ReadExcel {
             Node outNode = extractNodeFromRow(row, 4);
             // exist outNode is {0, wu, wu} | {index, wu, wu}
             if (inNode == null || outNode == null) continue;
-            if (!graph.nodes.contains(inNode)) graph.nodes.add(inNode);
-            if (!graph.nodes.contains(outNode)) graph.nodes.add(outNode);
+            if (!graph.nodes.contains(inNode)) {
+                graph.nodes.add(inNode);
+            } else {
+                inNode = graph.nodes.get(graph.nodes.indexOf(inNode));
+            }
+            if (!graph.nodes.contains(outNode)) {
+                graph.nodes.add(outNode);
+            } else {
+                outNode = graph.nodes.get(graph.nodes.indexOf(outNode));
+            }
             //FIXME: I assume each node has only one mutual node.
             if (sheetIndex == MUTUALSHEET) {
                 inNode.mutualNode = outNode;

@@ -1,5 +1,6 @@
 import Algorithm.*;
 import Entity.Graph;
+import Entity.Node;
 import Entity.Path;
 import Entity.PathSet;
 import Tool.ReadExcel;
@@ -19,12 +20,13 @@ public class Main {
         for (int testIndex = 1; testIndex <= TestCases; testIndex++) {
             //get a broken path(s)
             PathSet pathSet = new PathSet();
-            pathSet.readAllPath(testIndex);
+            pathSet.readAllPath(graph, testIndex);
 
             //execute the algorithm
 //            Algorithm algorithm = new NullAlgorithm();
             Algorithm algorithm = new DPAlgorithm();
             Path completePath = algorithm.execute(graph, pathSet);
+            completePath.print();
 
             //print outputs
             completePath.compareAndPrint(pathSet.oraclePath, testIndex);

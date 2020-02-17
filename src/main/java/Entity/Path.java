@@ -20,19 +20,20 @@ public class Path {
         return nodeList.size() - 1;
     }
 
-    public static Path add(Path path1, Path path2) {
-        Path result = path1;
-        if (path1.nodeList.isEmpty()) {
-            result.nodeList = path2.nodeList;
-        } else if (!path2.nodeList.isEmpty()) {
-            if (path1.nodeList.get(path1.nodeList.size() - 1).index
-                .equals(path2.nodeList.get(0).index)) {
-                result.nodeList.addAll(path2.nodeList.subList(1, path2.nodeList.size() - 1));
-            } else {
-                result.nodeList.addAll(path2.nodeList);
-            }
+    public void add(Path path2) {
+        if (!nodeList.isEmpty() && !path2.nodeList.isEmpty() && nodeList
+            .get(nodeList.size() - 1).index.equals(path2.nodeList.get(0).index)) {
+            nodeList.addAll(path2.nodeList.subList(1, path2.nodeList.size()));
+        } else {
+            nodeList.addAll(path2.nodeList);
         }
-        return result;
+    }
+
+    public void print() {
+        for (Node node : nodeList) {
+            System.out.println(node.index + " " + node.name);
+        }
+        System.out.println("---path end---");
     }
 
     public void compareAndPrint(Path oraclePath, int testIndex) {

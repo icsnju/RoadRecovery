@@ -1,5 +1,7 @@
 package Entity;
 
+import static Entity.NodeType.TOLLSTATION;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -36,20 +38,15 @@ public class Graph {
     public Path getShortestPath(Node inNode, Node outNode) {
 
         //Dijkstra algorithm
-        int from = -1, to = -1;
-        for (int i = 0; i < nodes.size(); ++i) {
-            if (nodes.get(i).index.equals(inNode.index))
-                from = i;
-            if (nodes.get(i).index.equals(outNode.index))
-                to = i;
-        }
+        int from = nodes.indexOf(inNode);
+        int to = nodes.indexOf(outNode);
         int[] dis = new int[nodes.size()];
         int[] pre_node = new int[nodes.size()];
         Arrays.fill(dis, Integer.MAX_VALUE / 2);
         Arrays.fill(pre_node, -1);
         PriorityQueue<NodeDijkstra> q = new PriorityQueue<>(Comparator.comparingInt(x -> x.dis));
 
-        q.add(new NodeDijkstra(from, 0, 0));
+        q.add(new NodeDijkstra(from, 0, -1));
         while (!q.isEmpty()) {
             NodeDijkstra x = q.poll();
             if (dis[x.index] >= x.dis) {
@@ -59,7 +56,9 @@ public class Graph {
                     break;
                 }
                 for (int y : edges.get(x.index)) {
-                    q.add(new NodeDijkstra(y, dis[y] = x.dis + 1, x.index));
+                    if (dis[y] > x.dis + 1 && nodes.get(y).type != TOLLSTATION) { // 不是收费站
+                        q.add(new NodeDijkstra(y, dis[y] = x.dis + 1, x.index));
+                    }
                 }
             }
         }
@@ -68,10 +67,9 @@ public class Graph {
             return null;
         }
         Path path = new Path();
-        for (int x = to; x != from && x != -1; x = pre_node[x]) {
+        for (int x = to; x != -1; x = pre_node[x]) {
             path.nodeList.add(nodes.get(x));
         }
-        path.nodeList.add(nodes.get(from));
         Collections.reverse(path.nodeList);
         assert (path.getLength() == dis[to]);
         return path;

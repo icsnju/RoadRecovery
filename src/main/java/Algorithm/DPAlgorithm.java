@@ -20,7 +20,7 @@ public class DPAlgorithm implements Algorithm {
         double delta = 1 / gamma;
         double inf = 1e9;
 
-        Path originalPath = paths.paths.get(0);
+        Path originalPath = paths.paths.get(0); // 只运行 paths[0]（左边一列）
         int originalPathLength = originalPath.getLength();
         double[][] dp = new double[originalPathLength + 1][2];
         Path[][] dpPath = new Path[originalPathLength + 1][2];
@@ -58,7 +58,7 @@ public class DPAlgorithm implements Algorithm {
                             + alpha * flagI
                             // transformation 2: delete same node i & j, cost beta
                             // TODO: 冗余结点一定去除吗？
-                            + beta * (nodeI.index.equals(nodeJ.index) ? 1 : 0)
+                            + beta * (nodeI.equals(nodeJ) ? 1 : 0)
                             // transformation 3: delete node j+1 to i-1, cost gamma
                             + gamma * (i - j - 1)
                             // transformation 4: complement path, cost delta * distance
@@ -66,7 +66,11 @@ public class DPAlgorithm implements Algorithm {
                         // update
                         if (result < dp[i][flagI]) {
                             dp[i][flagI] = result;
-                            dpPath[i][flagI] = Path.add(dpPath[j][flagJ], shortestPath);
+                            dpPath[i][flagI].nodeList.clear();
+                            dpPath[i][flagI].add(dpPath[j][flagJ]);
+                            dpPath[i][flagI].add(shortestPath);
+//                            System.out.println("dp" + i + flagI + ":");
+//                            dpPath[i][flagI].print();
                         }
                     }
                 }
