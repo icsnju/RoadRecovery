@@ -33,7 +33,6 @@ public class Graph {
 
     //If inNode equals to outNode, then return only one node
     //If can not find path, then return null
-    //TODO: recursively trace the complete shortest path
     public Path getShortestPath(Node inNode, Node outNode) {
 
         //Dijkstra algorithm
@@ -107,6 +106,7 @@ public class Graph {
         return partialPath;*/
     }
 
+    
     //floyd algorithm
     public void buildAllShortestPathByFloyd() {
         int num = nodes.size();

@@ -34,7 +34,7 @@ public class ReadExcel {
                 }
             }
             System.out.println("node size = " + graph.nodes.size());
-            System.out.println("node size = " + graph.edgeSet.size());
+            System.out.println("edge size = " + graph.edgeSet.size());
 
 //            graph.buildAllShortestPathByFloyd();
             graph.buildAllShortestPathByDijkstra();
