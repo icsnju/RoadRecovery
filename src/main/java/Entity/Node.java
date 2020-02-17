@@ -19,7 +19,12 @@ public class Node {
         return mutualNode;
     }
 
-
+    //override
+    public boolean equals(Object object) {
+        if (!(object instanceof Node)) return false;
+        Node node = (Node) object;
+        return this.index != null && node.index != null && this.index.equals(node.index);
+    }
 
 }
 

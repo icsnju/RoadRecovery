@@ -95,7 +95,9 @@ public class Path {
                 row.createCell(1).setCellValue(node.name);
                 if (node.identifyOrRecover == IdentifyOrRecover.IDENTIFY)
                     row.createCell(2).setCellValue("标记出的点");
-                else row.createCell(2).setCellValue("还原出的点");
+                else if (node.identifyOrRecover == IdentifyOrRecover.RECOVER)
+                    row.createCell(2).setCellValue("还原出的点");
+                else row.createCell(2).setCellValue("不明出处的点");
             }
 
             // Write the output to a file

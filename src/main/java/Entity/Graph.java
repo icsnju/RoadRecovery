@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 
 public class Graph {
     //attributes
-    public List<Node> nodes = new ArrayList<Node>();
+    public ArrayList<Node> nodes = new ArrayList<Node>();
     public Set<Edge> edgeSet = new HashSet<Edge>();
 //    public Set<Edge> mutualSet = new HashSet<Edge>();
     public int[][] dist; // for floyd
@@ -146,7 +146,7 @@ public class Graph {
 
     public void buildAllShortestPathByDijkstra() {
         for (int i = 0; i < nodes.size(); ++i) {
-            System.out.println(nodes.get(i).index + nodes.get(i).name);
+//            System.out.println(nodes.get(i).index + nodes.get(i).name);
             edges.add(new ArrayList<Integer>());
         }
         for (Edge edge : edgeSet) {

@@ -33,6 +33,8 @@ public class ReadExcel {
                     addEdgeFromSheet(sheet, MUTUALSHEET);
                 }
             }
+            System.out.println("node size = " + graph.nodes.size());
+            System.out.println("node size = " + graph.edgeSet.size());
 
 //            graph.buildAllShortestPathByFloyd();
             graph.buildAllShortestPathByDijkstra();

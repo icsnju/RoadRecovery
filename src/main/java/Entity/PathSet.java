@@ -77,6 +77,8 @@ public class PathSet {
             Node node = new Node();
             node.index = row.getCell(columnBase).getStringCellValue();
             node.name = row.getCell(columnBase+1).getStringCellValue();
+            //avoid to read empty cells
+            if (node.index.length() !=6 && node.index.length() != 14) continue;
 //            System.out.println(node.index+", "+node.name);
             //node.type can be completed with graph information
             path.nodeList.add(node);
