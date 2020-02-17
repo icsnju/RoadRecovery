@@ -46,7 +46,7 @@ public class Graph {
     }
 
     //floyd algorithm
-    public void buildAllShortestPath() {
+    public void buildAllShortestPathByFloyd() {
         int num = nodes.size();
         dist = new int[num+5][num+5];
 
@@ -80,5 +80,10 @@ public class Graph {
 
     private List<Node> listConcat(List<Node> nodeList1, List<Node> nodeList2) {
         return Stream.concat(nodeList1.stream(), nodeList2.stream()).collect(Collectors.toList());
+    }
+
+    public void buildAllShortestPathByDijstra() {
+        
+
     }
 }
