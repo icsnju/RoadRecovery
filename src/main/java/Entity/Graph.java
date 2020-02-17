@@ -30,7 +30,9 @@ public class Graph {
         //if two nodes are disconnected, return {connected = false, nodelist = empty}
         if (dist[inIndex][outIndex] >= nodes.size()) return partialPath;
         for (int i = 0; i < nodes.size(); i++) {
-            if (dist[inIndex][outIndex] == dist[inIndex][i] + dist[i][outIndex]) {
+            //fix a bug
+            if (inIndex != i && outIndex != i &&
+                    dist[inIndex][outIndex] == dist[inIndex][i] + dist[i][outIndex]) {
                 Path leftPath = getShortestPath(nodes.get(inIndex), nodes.get(i));
                 Path rightPath = getShortestPath(nodes.get(i), nodes.get(outIndex));
                 //NOTE: leftPath and rightPath will duplicate the middle node twice.
@@ -83,7 +85,7 @@ public class Graph {
     }
 
     public void buildAllShortestPathByDijstra() {
-        
+
 
     }
 }
