@@ -13,7 +13,7 @@ public class PathSet {
     public List<Path> paths = new ArrayList<Path>();
     public Path oraclePath = new Path();
     String testFileName = "src/main/resources/test-data.xls";
-    int SheetHead = 4;
+    int SheetHead = 3;
 
     /*
     FIXME: I don't where is test oracle.
