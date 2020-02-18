@@ -6,5 +6,5 @@ import Entity.PathSet;
 
 public interface Algorithm {
 
-    public Path execute(Graph graph, PathSet paths);
+    public Path execute(Graph graph, Path path);
 }

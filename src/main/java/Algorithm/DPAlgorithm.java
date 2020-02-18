@@ -10,17 +10,16 @@ public class DPAlgorithm implements Algorithm {
     /**
      * Road recovery DP algorithm
      * @param graph graph(G(V, E), T(V))
-     * @param paths input paths(P_1, P_2, ...)
+     * @param originalPath input path P
      * @return output path(P*), return null when failed
      */
-    public Path execute(Graph graph, PathSet paths) {
+    public Path execute(Graph graph, Path originalPath) {
         double alpha = 0.01;
         double beta = 0.01;
         double gamma = 1;
         double delta = 1 / gamma;
         double inf = 1e9;
 
-        Path originalPath = paths.paths.get(0); // 只运行 paths[0]（左边一列）
         int originalPathLength = originalPath.getLength();
         double[][] dp = new double[originalPathLength + 1][2];
         Path[][] dpPath = new Path[originalPathLength + 1][2];
@@ -56,9 +55,6 @@ public class DPAlgorithm implements Algorithm {
                         double result = dp[j][flagJ]
                             // transformation 1: mutual node, cost alpha
                             + alpha * flagI
-                            // transformation 2: delete same node i & j, cost beta
-                            // TODO: 冗余结点一定去除吗？
-                            + beta * (nodeI.equals(nodeJ) ? 1 : 0)
                             // transformation 3: delete node j+1 to i-1, cost gamma
                             + gamma * (i - j - 1)
                             // transformation 4: complement path, cost delta * distance

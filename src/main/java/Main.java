@@ -25,11 +25,14 @@ public class Main {
             //execute the algorithm
 //            Algorithm algorithm = new NullAlgorithm();
             Algorithm algorithm = new DPAlgorithm();
-            Path completePath = algorithm.execute(graph, pathSet);
-            completePath.print();
+            for (Path path : pathSet.paths) {
+                Path completePath = algorithm.execute(graph, path);
+                completePath.print();
+            }
 
             //print outputs
-            completePath.compareAndPrint(pathSet.oraclePath, testIndex);
+            // TODO: compare
+//            completePath.compareAndPrint(pathSet.oraclePath, testIndex);
         }
 
     }

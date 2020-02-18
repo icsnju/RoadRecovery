@@ -148,6 +148,10 @@ public class Graph {
             edges.add(new ArrayList<Integer>());
         }
         for (Edge edge : edgeSet) {
+//            if (edge.inNode.getMutualNode() != null && edge.inNode.getMutualNode() // 打印能调头的门架
+//                .equals(edge.outNode)) {
+//                System.out.println("+++" + edge.inNode.index + edge.inNode.name);
+//            }
             edges.get(nodes.indexOf(edge.inNode)).add(nodes.indexOf(edge.outNode));
         }
     }
