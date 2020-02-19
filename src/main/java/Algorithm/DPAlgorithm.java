@@ -1,9 +1,10 @@
 package Algorithm;
 
+import static Entity.NodeSource.*;
+
 import Entity.Graph;
 import Entity.Node;
 import Entity.Path;
-import Entity.PathSet;
 
 public class DPAlgorithm implements Algorithm {
 
@@ -35,7 +36,8 @@ public class DPAlgorithm implements Algorithm {
                 if (nodeI == null) {
                     continue;
                 }
-                dpPath[i][flagI].nodeList.add(nodeI);
+                dpPath[i][flagI].nodeList.add((Node) nodeI.clone());
+                dpPath[i][flagI].nodeList.get(0).source = IDENTIFY;
                 for (int flagJ = 0; flagJ <= 1; ++flagJ) {
                     for (int j = i - 1; j >= 0; --j) {
                         // nodeJ: v_j or T(v_j) controlled by flagJ
@@ -65,6 +67,10 @@ public class DPAlgorithm implements Algorithm {
                             dpPath[i][flagI].nodeList.clear();
                             dpPath[i][flagI].add(dpPath[j][flagJ]);
                             dpPath[i][flagI].add(shortestPath);
+                            if (flagI == 1) { // 反转结点
+                                dpPath[i][flagI].nodeList
+                                    .get(dpPath[i][flagI].nodeList.size() - 1).source = RECOVER;
+                            }
 //                            System.out.println("dp" + i + flagI + ":");
 //                            dpPath[i][flagI].print();
                         }

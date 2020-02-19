@@ -1,6 +1,6 @@
 package Entity;
 
-public enum IdentifyOrRecover {
+public enum NodeSource{
     IDENTIFY,
     RECOVER,
     TOLLSTATION

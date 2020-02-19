@@ -1,5 +1,6 @@
 package Entity;
 
+import static Entity.NodeSource.*;
 import static Entity.NodeType.TOLLSTATION;
 
 import java.util.ArrayList;
@@ -68,7 +69,9 @@ public class Graph {
         }
         Path path = new Path();
         for (int x = to; x != -1; x = pre_node[x]) {
-            path.nodeList.add(nodes.get(x));
+            Node node = (Node) (nodes.get(x)).clone();
+            node.source = (x == to || x == from) ? IDENTIFY : RECOVER;
+            path.nodeList.add(node);
         }
         Collections.reverse(path.nodeList);
         assert (path.getLength() == dis[to]);

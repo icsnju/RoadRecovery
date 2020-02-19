@@ -31,7 +31,7 @@ public class Path {
 
     public void print() {
         for (Node node : nodeList) {
-            System.out.println(node.index + " " + node.name);
+            System.out.println(node.index + " " + node.name + " " + node.source);
         }
         System.out.println("---path end---");
     }

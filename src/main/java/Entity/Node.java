@@ -1,13 +1,13 @@
 package Entity;
 
 
-public class Node {
+public class Node implements Cloneable {
     /* attributes, e.g., {3C0101, wu'bei-yun'shan'zhi'jia, 0}
      */
     public String index;
     public String name;
     public NodeType type;
-    public IdentifyOrRecover identifyOrRecover; // for testing
+    public NodeSource source; // for testing
     public Node mutualNode = null;
 
     // unused attributes
@@ -26,5 +26,15 @@ public class Node {
         return this.index != null && node.index != null && this.index.equals(node.index);
     }
 
+    @Override
+    public Object clone() {
+        Node stu = null;
+        try {
+            stu = (Node) super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return stu;
+    }
 }
 

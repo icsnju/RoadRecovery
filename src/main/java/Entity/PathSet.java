@@ -53,13 +53,13 @@ public class PathSet {
                 node.name = row.getCell(3).getStringCellValue();
                 String portalSource = row.getCell(5).getStringCellValue();
                 if (portalSource.equals("收费站")) {
-                    node.identifyOrRecover = IdentifyOrRecover.TOLLSTATION;
+                    node.source = NodeSource.TOLLSTATION;
                 }
                 else if (portalSource.equals("标识出的门架")) {
-                    node.identifyOrRecover = IdentifyOrRecover.IDENTIFY;
+                    node.source = NodeSource.IDENTIFY;
                 }
                 else if (portalSource.equals("还原出的门架")) {
-                    node.identifyOrRecover = IdentifyOrRecover.RECOVER;
+                    node.source = NodeSource.RECOVER;
                 }
                 //node.type can be completed with graph information
                 oraclePath.nodeList.add(node);
@@ -114,7 +114,7 @@ public class PathSet {
             Node oracleNode = oracleIterator.next();
             if (!completedNode.index.equals(oracleNode.index) ||
                 !completedNode.name.equals(oracleNode.name) ||
-                completedNode.identifyOrRecover!=oracleNode.identifyOrRecover) {
+                completedNode.source!=oracleNode.source) {
                 successful = false;
                 break;
             }
@@ -166,9 +166,9 @@ public class PathSet {
                 row = sheet.createRow(rowIndex++);
                 row.createCell(0).setCellValue(node.index);
                 row.createCell(1).setCellValue(node.name);
-                if (node.identifyOrRecover == IdentifyOrRecover.IDENTIFY)
+                if (node.source == NodeSource.IDENTIFY)
                     row.createCell(2).setCellValue("标记出的点");
-                else if (node.identifyOrRecover == IdentifyOrRecover.RECOVER)
+                else if (node.source == NodeSource.RECOVER)
                     row.createCell(2).setCellValue("还原出的点");
                 else row.createCell(2).setCellValue("不明出处的点");
             }
