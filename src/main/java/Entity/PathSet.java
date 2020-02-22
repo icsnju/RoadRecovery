@@ -3,14 +3,11 @@ package Entity;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-
-import static jdk.nashorn.api.scripting.ScriptObjectMirror.identical;
 
 public class PathSet {
 
@@ -18,6 +15,8 @@ public class PathSet {
     public Path finalPath;
     public Path oraclePath = new Path();
     String testFileName = "src/main/resources/test-data.xls";
+    String testFileName1 = "src/main/resources/test-data-10000-1.txt";
+    String testFileName2 = "src/main/resources/test-data-10000-2.txt";
     int SheetHead = 3;
     String outDirectory = "src/main/resources/outputs/";
 
@@ -37,34 +36,6 @@ public class PathSet {
             Sheet sheet = workbook.getSheetAt(testIndex*2-1);
             extractOnePath(graph, sheet, 0); // first path:  simplified path
             extractOnePath(graph, sheet, 2); // second path: complete path
-
-            //get test oracle (a complete path)
-            /*
-            sheet = workbook.getSheetAt(testIndex*2);
-            rowIterator = sheet.rowIterator();
-            while (rowIterator.hasNext()) {
-                Row row = rowIterator.next();
-                if (row.getRowNum() < SHEETHEAD) continue;
-                System.out.println(row.getRowNum()+1);
-                if (row.getCell(2) == null ||
-                        row.getCell(3) == null || row.getCell(5) == null) continue;
-                Node node = new Node();
-                node.index = row.getCell(2).getStringCellValue();
-                node.name = row.getCell(3).getStringCellValue();
-                String portalSource = row.getCell(5).getStringCellValue();
-                if (portalSource.equals("收费站")) {
-                    node.source = NodeSource.TOLLSTATION;
-                }
-                else if (portalSource.equals("标识出的门架")) {
-                    node.source = NodeSource.IDENTIFY;
-                }
-                else if (portalSource.equals("还原出的门架")) {
-                    node.source = NodeSource.RECOVER;
-                }
-                //node.type can be completed with graph information
-                oraclePath.nodeList.add(node);
-            }
-             */
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -94,35 +65,16 @@ public class PathSet {
 
     public void compareAndPrint(Graph graph, Path oraclePath, int testIndex) {
         /*
-         if equal, print "Successful recovery"
-         else, print "Failed recovery"
-
+         if equal, print "Successful recovery",
+         else, print "Failed recovery".
          And print complete path.
          */
         //compare two paths
         //FIXME: I don't know oracle. Refer to Pathset.java line 19.
         boolean successful = true;
-        /*
-        Iterator<Node> ourNodeIterator = nodeList.iterator();
-        Iterator<Node> oracleIterator = oraclePath.nodeList.iterator();
-        while (ourNodeIterator.hasNext()) {
-            Node completedNode = ourNodeIterator.next();
-            if (!oracleIterator.hasNext()) {
-                successful = false;
-                break;
-            }
-            Node oracleNode = oracleIterator.next();
-            if (!completedNode.index.equals(oracleNode.index) ||
-                !completedNode.name.equals(oracleNode.name) ||
-                completedNode.source!=oracleNode.source) {
-                successful = false;
-                break;
-            }
-        }
-         */
 
-        //TODO: if any two paths of paths are identical, final path = anyone;
-        //      else final path = shortest path of beginning and ending.
+        //if any two paths of paths are identical, final path = anyone;
+        //else final path = shortest path of beginning and ending.
         for (int i = 0; i < paths.size()-1; i++) {
             for (int j = i+1; j < paths.size(); j++) {
                 if (!identicalPath(paths.get(i), paths.get(j))) {
@@ -200,5 +152,39 @@ public class PathSet {
             if (!(node1.equals(node2))) return false;
         }
         return true;
+    }
+
+    public void readAll2Path(Graph graph, int testIndex) {
+        extractOnePath2(graph, testIndex, testFileName1);
+        extractOnePath2(graph, testIndex, testFileName2);
+    }
+
+    /*
+    testFile is a txt file.
+     */
+    private void extractOnePath2(Graph graph, int testIndex, String testFileName) {
+        try {
+            Path path = new Path();
+            FileInputStream fs = new FileInputStream(testFileName);
+            BufferedReader br = new BufferedReader(new InputStreamReader(fs));
+            for (int i = 0; i < testIndex; ++i)
+                br.readLine();
+            String allInfo = br.readLine();
+            List<String> commaSeparatedList = Arrays.asList(allInfo.split(","));
+            String[] indexList = commaSeparatedList.get(2).split("\\|");
+            for (String index : indexList) {
+                Node node = new Node();
+                node.index = index;
+                Node completeNode = graph.nodes.get(graph.nodes.indexOf(node));
+//                node.print();
+                completeNode.print();
+                path.nodeList.add(completeNode);
+            }
+
+            paths.add(path);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

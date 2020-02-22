@@ -7,7 +7,7 @@ import Tool.ReadExcel;
 
 public class Main {
 
-    private static int TestCases = 5;
+    private static int TestCases = 1;
 
     public static void main(String[] args) {
         //get graph
@@ -20,7 +20,8 @@ public class Main {
         for (int testIndex = 1; testIndex <= TestCases; testIndex++) {
             //get a broken path(s)
             PathSet pathSet = new PathSet();
-            pathSet.readAllPath(graph, testIndex);
+//            pathSet.readAllPath(graph, testIndex);
+            pathSet.readAll2Path(graph, testIndex);
 
             //execute the algorithm
 //            Algorithm algorithm = new NullAlgorithm();
@@ -28,6 +29,8 @@ public class Main {
             PathSet recoveredPathSet = new PathSet();
             for (Path path : pathSet.paths) {
                 Path recoveredPath = algorithm.execute(graph, path);
+                //FIXME: recoveredPath shouldn't be null.
+                assert(recoveredPath != null);
                 recoveredPath.print();
                 recoveredPathSet.paths.add(recoveredPath);
             }

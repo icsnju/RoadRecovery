@@ -1,6 +1,8 @@
 package Entity;
 
 
+import java.sql.Timestamp;
+
 public class Node implements Cloneable {
     /* attributes, e.g., {3C0101, wu'bei-yun'shan'zhi'jia, 0}
      */
@@ -13,6 +15,7 @@ public class Node implements Cloneable {
     // unused attributes
     double longitude; //jing'du
     double latitude;  //wei'du
+    Timestamp timestamp; //
 
     //operations
     public Node getMutualNode() {
@@ -35,6 +38,10 @@ public class Node implements Cloneable {
             e.printStackTrace();
         }
         return stu;
+    }
+
+    public void print() {
+        System.out.println(index + " " + name + " " + type);
     }
 }
 

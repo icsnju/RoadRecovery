@@ -51,7 +51,7 @@ public class DPAlgorithm implements Algorithm {
                         if (shortestPath == null) {
                             continue;
                         }
-                        // TODO: find suitable cost
+                        // FIXME: find suitable cost
                         double distance = shortestPath.getLength() - 1;
                         // calculate the new cost for nodeI
                         double result = dp[j][flagJ]
