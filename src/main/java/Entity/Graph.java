@@ -57,7 +57,7 @@ public class Graph {
                     break;
                 }
                 for (int y : edges.get(x.index)) {
-                    if (dis[y] > x.dis + 1 && nodes.get(y).type != TOLLSTATION) { // 不是收费站
+                    if (dis[y] > x.dis + 1 && (nodes.get(y).type != TOLLSTATION || y == to)) { // 不是收费站
                         q.add(new NodeDijkstra(y, dis[y] = x.dis + 1, x.index));
                     }
                 }
