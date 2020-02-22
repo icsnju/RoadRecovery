@@ -23,6 +23,7 @@ public class Main {
             //get a broken path(s)
             PathSet pathSet = new PathSet();
 //            pathSet.readAllPath(graph, testIndex);
+            boolean success = true;
             if (pathSet.readAll2Path(graph, testIndex)) {
                 //execute the algorithm
 //            Algorithm algorithm = new NullAlgorithm();
@@ -30,13 +31,23 @@ public class Main {
                 PathSet recoveredPathSet = new PathSet();
                 for (Path path : pathSet.paths) {
                     Path recoveredPath = algorithm.execute(graph, path);
-                    //FIXME: recoveredPath shouldn't be null.
-                    assert (recoveredPath != null);
-//                recoveredPath.print();
-                    recoveredPathSet.paths.add(recoveredPath);
+                    if (recoveredPath == null) {
+                        success = false;
+                    } else {
+//                        recoveredPath.print();
+                        recoveredPathSet.paths.add(recoveredPath);
+                    }
                 }
                 //print outputs
-                recoveredPathSet.compareAndPrint(graph, pathSet.oraclePath, testIndex);
+                if (success) {
+                    recoveredPathSet.compareAndPrint(graph, pathSet.oraclePath, testIndex);
+                } else {
+                    // example:
+                    // case 5186: 3C7906 与自己互为对向
+                    // case 5369, 5544: 出省
+                    System.out.println("Failure: Recover failed.");
+                    return;
+                }
             } else {
                 System.out.println("Failure: Node not found.");
             }

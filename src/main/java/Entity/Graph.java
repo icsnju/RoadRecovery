@@ -19,7 +19,8 @@ public class Graph {
     public ArrayList<Node> nodes = new ArrayList<Node>();
     public Set<Edge> edgeSet = new HashSet<Edge>();
 //    public Set<Edge> mutualSet = new HashSet<Edge>();
-    public int[][] dist; // for floyd
+    public int[][] dist;
+    public int[][] pre_node;
     private ArrayList<ArrayList<Integer>> edges = new ArrayList<ArrayList<Integer>>(); // for Dijkstra
 
     private static class NodeDijkstra {
@@ -41,7 +42,7 @@ public class Graph {
         //Dijkstra algorithm
         int from = nodes.indexOf(inNode);
         int to = nodes.indexOf(outNode);
-        int[] dis = new int[nodes.size()];
+        /*int[] dis = new int[nodes.size()];
         int[] pre_node = new int[nodes.size()];
         Arrays.fill(dis, Integer.MAX_VALUE / 2);
         Arrays.fill(pre_node, -1);
@@ -62,22 +63,20 @@ public class Graph {
                     }
                 }
             }
-        }
-
-        if (dis[to] == Integer.MAX_VALUE / 2) {
+        }*/
+        if (dist[from][to] == Integer.MAX_VALUE / 2) {
             return null;
         }
         Path path = new Path();
-        for (int x = to; x != -1; x = pre_node[x]) {
+        for (int x = to; x != -1; x = pre_node[from][x]) {
             Node node = (Node) (nodes.get(x)).clone();
             node.source = (x == to || x == from) ? IDENTIFY : RECOVER;
             path.nodeList.add(node);
         }
         Collections.reverse(path.nodeList);
-        assert (path.getLength() == dis[to]);
+        assert (path.getLength() == dist[from][to]);
         return path;
 
-        // floyd
         /*int inIndex = nodes.indexOf(inNode);
         int outIndex = nodes.indexOf(outNode);
         Path partialPath = new Path();
@@ -156,6 +155,32 @@ public class Graph {
 //                System.out.println("+++" + edge.inNode.index + edge.inNode.name);
 //            }
             edges.get(nodes.indexOf(edge.inNode)).add(nodes.indexOf(edge.outNode));
+        }
+
+        dist = new int[nodes.size()][nodes.size()];
+        pre_node = new int[nodes.size()][nodes.size()];
+        PriorityQueue<NodeDijkstra> q = new PriorityQueue<>(Comparator.comparingInt(x -> x.dis));
+        for (int from = 0; from < nodes.size(); ++from) {
+            Arrays.fill(dist[from], Integer.MAX_VALUE / 2);
+            Arrays.fill(pre_node[from], -1);
+            q.clear();
+            q.add(new NodeDijkstra(from, 0, -1));
+
+            while (!q.isEmpty()) {
+                NodeDijkstra x = q.poll();
+                if (dist[from][x.index] >= x.dis) {
+                    dist[from][x.index] = x.dis;
+                    pre_node[from][x.index] = x.pre_node;
+                    if (x.index != from && nodes.get(x.index).type == TOLLSTATION) { // 收费站不能再往下转移
+                        continue;
+                    }
+                    for (int y : edges.get(x.index)) {
+                        if (dist[from][y] > x.dis + 1) {
+                            q.add(new NodeDijkstra(y, dist[from][y] = x.dis + 1, x.index));
+                        }
+                    }
+                }
+            }
         }
     }
 }

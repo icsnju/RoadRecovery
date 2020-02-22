@@ -28,7 +28,7 @@ public class DPAlgorithm implements Algorithm {
         for (int i = 0; i <= originalPathLength; ++i) {
             for (int flagI = 0; flagI <= 1; ++flagI) {
                 // initial dp array
-                dp[i][flagI] = i == 0 ? 0 : inf;
+                dp[i][flagI] = (i == 0) ? (alpha * flagI) : inf;
                 dpPath[i][flagI] = new Path();
                 // nodeI: v_i or T(v_i) controlled by nodeI
                 Node nodeI = flagI == 0 ? originalPath.nodeList.get(i)
@@ -52,7 +52,7 @@ public class DPAlgorithm implements Algorithm {
                             continue;
                         }
                         // FIXME: find suitable cost
-                        double distance = shortestPath.getLength() - 1;
+                        double distance = shortestPath.getLength();
                         // calculate the new cost for nodeI
                         double result = dp[j][flagJ]
                             // transformation 1: mutual node, cost alpha
@@ -71,14 +71,14 @@ public class DPAlgorithm implements Algorithm {
                                 dpPath[i][flagI].nodeList
                                     .get(dpPath[i][flagI].nodeList.size() - 1).source = RECOVER;
                             }
-//                            System.out.println("dp" + i + flagI + ":");
+//                            System.out.println("dp[" + i + "][" + flagI + "]: " + dp[i][flagI]);
 //                            dpPath[i][flagI].print();
                         }
                     }
                 }
             }
         }
-        if (Double.min(dp[originalPathLength][0], dp[originalPathLength][1]) >= 1e9 - 1) { // failed
+        if (Double.min(dp[originalPathLength][0], dp[originalPathLength][1]) >= 9e8) { // failed
             return null;
         }
         if (dp[originalPathLength][0] < dp[originalPathLength][1]) {
