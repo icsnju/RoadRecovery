@@ -154,15 +154,15 @@ public class PathSet {
         return true;
     }
 
-    public void readAll2Path(Graph graph, int testIndex) {
-        extractOnePath2(graph, testIndex, testFileName1);
+    public boolean readAll2Path(Graph graph, int testIndex) {
+        return extractOnePath2(graph, testIndex, testFileName1) &&
         extractOnePath2(graph, testIndex, testFileName2);
     }
 
     /*
     testFile is a txt file.
      */
-    private void extractOnePath2(Graph graph, int testIndex, String testFileName) {
+    private boolean extractOnePath2(Graph graph, int testIndex, String testFileName) {
         try {
             Path path = new Path();
             FileInputStream fs = new FileInputStream(testFileName);
@@ -175,9 +175,10 @@ public class PathSet {
             for (String index : indexList) {
                 Node node = new Node();
                 node.index = index;
+                if (graph.nodes.indexOf(node) == -1) return false;
                 Node completeNode = graph.nodes.get(graph.nodes.indexOf(node));
 //                node.print();
-                completeNode.print();
+//                completeNode.print();
                 path.nodeList.add(completeNode);
             }
 
@@ -186,5 +187,6 @@ public class PathSet {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return true;
     }
 }
