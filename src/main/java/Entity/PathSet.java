@@ -188,8 +188,10 @@ public class PathSet {
                 row.createCell(1).setCellValue(node.name);
                 if (node.source == NodeSource.IDENTIFY)
                     row.createCell(2).setCellValue("标记出的点");
-                else if (node.source == NodeSource.RECOVER)
-                    row.createCell(2).setCellValue("还原出的点");
+                else if (node.source == NodeSource.ADD)
+                    row.createCell(2).setCellValue("增加出的点");
+                else if (node.source == NodeSource.MODIFY)
+                    row.createCell(2).setCellValue("修改出的点");
                 else if (node.source == NodeSource.DELETE)
                     row.createCell(2).setCellValue("删除的点");
                 else

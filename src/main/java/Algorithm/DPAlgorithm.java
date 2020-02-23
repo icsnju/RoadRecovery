@@ -69,7 +69,7 @@ public class DPAlgorithm implements Algorithm {
                             dpPath[i][flagI].add(shortestPath);
                             if (flagI == 1) { // 反转结点
                                 dpPath[i][flagI].nodeList
-                                    .get(dpPath[i][flagI].nodeList.size() - 1).source = RECOVER;
+                                    .get(dpPath[i][flagI].nodeList.size() - 1).source = MODIFY;
                             }
 //                            System.out.println("dp[" + i + "][" + flagI + "]: " + dp[i][flagI]);
 //                            dpPath[i][flagI].print();

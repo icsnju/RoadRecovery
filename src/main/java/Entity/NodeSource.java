@@ -2,8 +2,10 @@ package Entity;
 
 public enum NodeSource{
     IDENTIFY,
-    RECOVER,
+//    RECOVER,
     TOLLSTATION,
     //new attribute
     DELETE,
+    ADD,
+    MODIFY,
 }

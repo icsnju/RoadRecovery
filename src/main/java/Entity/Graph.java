@@ -70,7 +70,7 @@ public class Graph {
         Path path = new Path();
         for (int x = to; x != -1; x = pre_node[from][x]) {
             Node node = (Node) (nodes.get(x)).clone();
-            node.source = (x == to || x == from) ? IDENTIFY : RECOVER;
+            node.source = (x == to || x == from) ? IDENTIFY : ADD;
             path.nodeList.add(node);
         }
         Collections.reverse(path.nodeList);
