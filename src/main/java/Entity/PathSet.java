@@ -1,5 +1,6 @@
 package Entity;
 
+import org.apache.commons.math3.exception.OutOfRangeException;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -21,7 +22,7 @@ public class PathSet {
     String outDirectory = "src/main/resources/outputs/";
 
     /*
-    FIXME: I don't where is test oracle.
+    I don't where is test oracle.
     read two kinds of paths, combined into a path set.
      */
     public void readAllPath(Graph graph, int testIndex) {
@@ -63,6 +64,71 @@ public class PathSet {
         paths.add(path); //testcase has only one path.
     }
 
+    public boolean readAll2Path(Graph graph, int testIndex, PrintWriter writer) {
+        PathType flag1 = extractOnePath2(graph, testIndex, testFileName1);
+        PathType flag2 = extractOnePath2(graph, testIndex, testFileName2);
+        writer.print(testIndex + ", ");
+
+        if (flag1 == PathType.Normal) writer.print("0, ");
+        else if (flag1 == PathType.Missing) writer.print("1, ");
+        else if (flag1 == PathType.UnknownNode) writer.print("2, ");
+
+        if (flag2 == PathType.Normal) writer.print("0");
+        else if (flag2 == PathType.Missing) writer.print("1");
+        else if (flag2 == PathType.UnknownNode) writer.print("2");
+        writer.println();
+
+        return flag1 == PathType.Normal && flag2 == PathType.Normal;
+    }
+
+    /*
+    testFile is a txt file.
+     */
+    private PathType extractOnePath2(Graph graph, int testIndex, String testFileName) {
+        try {
+            Path path = new Path();
+            FileInputStream fs = new FileInputStream(testFileName);
+            BufferedReader br = new BufferedReader(new InputStreamReader(fs));
+            String allInfo;
+            List<String> commaSeparatedList = null;
+            br.readLine();
+            allInfo = br.readLine();
+            while (allInfo != null) {
+                commaSeparatedList = Arrays.asList(allInfo.split(","));
+                //find the index-th data.
+                if (Integer.parseInt(commaSeparatedList.get(0)) == testIndex) {
+                    System.out.println(testIndex);
+                    break;
+                }
+                allInfo = br.readLine();
+            }
+
+            if (allInfo == null) return PathType.Missing;
+
+            String[] indexList = commaSeparatedList.get(2).split("\\|");
+            for (String index : indexList) {
+                Node node = new Node();
+                node.index = index;
+                if (graph.nodes.indexOf(node) == -1) {
+                    System.out.println("[Error] Unknown nodes exist.");
+//                    System.exit(1);
+                    return PathType.UnknownNode;
+                }
+                Node completeNode = graph.nodes.get(graph.nodes.indexOf(node));
+//                node.print();
+                completeNode.print();
+                path.nodeList.add(completeNode);
+            }
+            System.out.println("Everything is normal.");
+            paths.add(path);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return PathType.Normal;
+    }
+
+    //TODO: update judging standard: one path is a subset of another.
     public void compareAndPrint(Graph graph, Path oraclePath, int testIndex) {
         /*
          if equal, print "Successful recovery",
@@ -70,7 +136,7 @@ public class PathSet {
          And print complete path.
          */
         //compare two paths
-        //FIXME: I don't know oracle. Refer to Pathset.java line 19.
+        //I don't know oracle. Refer to Pathset.java line 19.
         boolean successful = true;
 
         //if any two paths of paths are identical, final path = anyone;
@@ -92,7 +158,9 @@ public class PathSet {
             List<Node> nodeList = paths.get(0).nodeList;
             Node beginNode = nodeList.get(0);
             Node endNode = nodeList.get(nodeList.size()-1);
-            finalPath = graph.getShortestPath(beginNode, endNode);
+            //FIXME: how to get the shortest path from built graph.
+//            finalPath = graph.getShortestPath(beginNode, endNode);
+            finalPath = paths.get(0);
         }
 
         //save result
@@ -122,7 +190,10 @@ public class PathSet {
                     row.createCell(2).setCellValue("标记出的点");
                 else if (node.source == NodeSource.RECOVER)
                     row.createCell(2).setCellValue("还原出的点");
-                else row.createCell(2).setCellValue("不明出处的点");
+                else if (node.source == NodeSource.DELETE)
+                    row.createCell(2).setCellValue("删除的点");
+                else
+                    row.createCell(2).setCellValue("不明出处的点");
             }
 
             // Write the output to a file
@@ -153,40 +224,6 @@ public class PathSet {
         }
         return true;
     }
-
-    public boolean readAll2Path(Graph graph, int testIndex) {
-        return extractOnePath2(graph, testIndex, testFileName1) &&
-        extractOnePath2(graph, testIndex, testFileName2);
-    }
-
-    /*
-    testFile is a txt file.
-     */
-    private boolean extractOnePath2(Graph graph, int testIndex, String testFileName) {
-        try {
-            Path path = new Path();
-            FileInputStream fs = new FileInputStream(testFileName);
-            BufferedReader br = new BufferedReader(new InputStreamReader(fs));
-            for (int i = 0; i < testIndex; ++i)
-                br.readLine();
-            String allInfo = br.readLine();
-            List<String> commaSeparatedList = Arrays.asList(allInfo.split(","));
-            String[] indexList = commaSeparatedList.get(2).split("\\|");
-            for (String index : indexList) {
-                Node node = new Node();
-                node.index = index;
-                if (graph.nodes.indexOf(node) == -1) return false;
-                Node completeNode = graph.nodes.get(graph.nodes.indexOf(node));
-//                node.print();
-//                completeNode.print();
-                path.nodeList.add(completeNode);
-            }
-
-            paths.add(path);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return true;
-    }
 }
+
+

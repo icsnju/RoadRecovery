@@ -5,12 +5,16 @@ import Entity.Path;
 import Entity.PathSet;
 import Tool.ReadExcel;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+
 public class Main {
 
     private static int TestCasesBegin = 1;
-    private static int TestCasesCount = 100;
+    private static int TestCasesCount = 10000;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException, UnsupportedEncodingException {
         //get graph
         ReadExcel readExcel = new ReadExcel();
         Graph graph = readExcel.buildGraph();
@@ -18,16 +22,18 @@ public class Main {
         /*
          test for each case
          */
+        PrintWriter writer = new PrintWriter("src/main/resources/test-data-calculated-tmp.csv");
+        writer.println("index, path1, path2");
         for (int testIndex = TestCasesBegin; testIndex < TestCasesBegin + TestCasesCount; testIndex++) {
-            System.out.println("Case " + testIndex + ":");
+            System.out.println("\nCase " + testIndex + ":");
             //get a broken path(s)
             PathSet pathSet = new PathSet();
 //            pathSet.readAllPath(graph, testIndex);
             boolean success = true;
-            if (pathSet.readAll2Path(graph, testIndex)) {
+            if (pathSet.readAll2Path(graph, testIndex, writer)) {
                 //execute the algorithm
-//            Algorithm algorithm = new NullAlgorithm();
-                Algorithm algorithm = new DPAlgorithm();
+                Algorithm algorithm = new NullAlgorithm();
+//              Algorithm algorithm = new DPAlgorithm();
                 PathSet recoveredPathSet = new PathSet();
                 for (Path path : pathSet.paths) {
                     Path recoveredPath = algorithm.execute(graph, path);
@@ -52,6 +58,8 @@ public class Main {
                 System.out.println("Failure: Node not found.");
             }
         }
+
+        writer.close();
 
     }
 }

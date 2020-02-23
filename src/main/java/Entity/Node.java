@@ -22,7 +22,7 @@ public class Node implements Cloneable {
         return mutualNode;
     }
 
-    //override
+    @Override
     public boolean equals(Object object) {
         if (!(object instanceof Node)) return false;
         Node node = (Node) object;
@@ -41,7 +41,7 @@ public class Node implements Cloneable {
     }
 
     public void print() {
-        System.out.println(index + " " + name + " " + type);
+//        System.out.println(index + " " + name + " " + type);
     }
 }
 
