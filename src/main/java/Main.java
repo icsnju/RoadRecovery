@@ -23,7 +23,7 @@ public class Main {
          test for each case
          */
         PrintWriter writer = new PrintWriter("src/main/resources/test-data-calculated-tmp.csv");
-        writer.println("index, path1, path2");
+        writer.println("index, path1, path2, result");
         for (int testIndex = TestCasesBegin; testIndex < TestCasesBegin + TestCasesCount; testIndex++) {
             System.out.println("\nCase " + testIndex + ":");
             //get a broken path(s)
@@ -32,9 +32,10 @@ public class Main {
             boolean success = true;
             if (pathSet.readAll2Path(graph, testIndex, writer)) {
                 //execute the algorithm
-                Algorithm algorithm = new NullAlgorithm();
-//              Algorithm algorithm = new DPAlgorithm();
+//                Algorithm algorithm = new NullAlgorithm();
+                Algorithm algorithm = new DPAlgorithm();
                 PathSet recoveredPathSet = new PathSet();
+//                Path path = pathSet.paths.get(1);
                 for (Path path : pathSet.paths) {
                     Path recoveredPath = algorithm.execute(graph, path);
                     if (recoveredPath == null) {
@@ -46,17 +47,19 @@ public class Main {
                 }
                 //print outputs
                 if (success) {
-                    recoveredPathSet.compareAndPrint(graph, pathSet.oraclePath, testIndex);
+                    recoveredPathSet.compareAndPrint(graph, pathSet.oraclePath, testIndex, writer, pathSet);
                 } else {
                     // example:
-                    // case 5186: 3C7906 与自己互为对向
                     // case 5369, 5544: 出省
                     System.out.println("Failure: Recover failed.");
-                    return;
+                    writer.print("Failure: Recover failed.");
+//                    return;
                 }
             } else {
                 System.out.println("Failure: Node not found.");
+                writer.print("Failure: Node not found.");
             }
+            writer.println();
         }
 
         writer.close();

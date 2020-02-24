@@ -73,10 +73,10 @@ public class PathSet {
         else if (flag1 == PathType.Missing) writer.print("1, ");
         else if (flag1 == PathType.UnknownNode) writer.print("2, ");
 
-        if (flag2 == PathType.Normal) writer.print("0");
-        else if (flag2 == PathType.Missing) writer.print("1");
-        else if (flag2 == PathType.UnknownNode) writer.print("2");
-        writer.println();
+        if (flag2 == PathType.Normal) writer.print("0, ");
+        else if (flag2 == PathType.Missing) writer.print("1, ");
+        else if (flag2 == PathType.UnknownNode) writer.print("2, ");
+//        writer.println();
 
         return flag1 == PathType.Normal && flag2 == PathType.Normal;
     }
@@ -129,7 +129,7 @@ public class PathSet {
     }
 
     //TODO: update judging standard: one path is a subset of another.
-    public void compareAndPrint(Graph graph, Path oraclePath, int testIndex) {
+    public void compareAndPrint(Graph graph, Path oraclePath, int testIndex, PrintWriter writer, PathSet inputPathSet) {
         /*
          if equal, print "Successful recovery",
          else, print "Failed recovery".
@@ -151,16 +151,29 @@ public class PathSet {
 
         if (successful) {
             System.out.println("Success: All recovered paths are identical.");
+            writer.print("Success: All recovered paths are identical.");
             finalPath = paths.get(0);
         }
         else {
-            System.out.println("Failure: Recovered paths are different.");
+            String message = "Failure: Recovered paths are different";
+            int numNotIn = 0;
+            for (Node node : inputPathSet.paths.get(1).nodeList) {
+                if (inputPathSet.paths.get(0).nodeList.contains(node)) numNotIn++;
+            }
+            message = message.concat(" and " + numNotIn + "/" + inputPathSet.paths.get(1).nodeList.size() + " of path2 is not in path1.");
+            System.out.println(message);
+            writer.print(message);
             List<Node> nodeList = paths.get(0).nodeList;
             Node beginNode = nodeList.get(0);
             Node endNode = nodeList.get(nodeList.size()-1);
             //FIXME: how to get the shortest path from built graph.
 //            finalPath = graph.getShortestPath(beginNode, endNode);
+            // Print All path
             finalPath = paths.get(0);
+            for (int i = 1; i < paths.size(); ++i) {
+                finalPath.nodeList.add(new Node()); // empty line
+                finalPath.nodeList.addAll(paths.get(i).nodeList);
+            }
         }
 
         //save result
