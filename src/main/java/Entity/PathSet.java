@@ -7,7 +7,7 @@ import java.io.*;
 import java.util.*;
 
 public class PathSet {
-    public boolean debugging = true;
+    public boolean debugging = false;
 
     public List<Path> paths = new ArrayList<Path>();
     public Path finalPathInCard = null;
@@ -146,7 +146,7 @@ public class PathSet {
             }
         }
 
-        finalPathInCard = addDeletedNode(paths.get(0).nodeList, inputPathSet.paths.get(0).nodeList);
+
         if (successful) {
             System.out.println("Success: All recovered paths are identical.");
             writer.print("Success: All recovered paths are identical.");
@@ -165,9 +165,11 @@ public class PathSet {
             Node beginNode = nodeList.get(0);
             Node endNode = nodeList.get(nodeList.size()-1);
             //how to get the shortest path from built graph.
-            //TODO: add deleted node into two recovered paths, and print them all.
-            finalPathInFlow = addDeletedNode(paths.get(1).nodeList, inputPathSet.paths.get(1).nodeList);
         }
+
+        //TODO: add deleted node into two recovered paths, and print them all.
+        finalPathInCard = addDeletedNode(paths.get(0).nodeList, inputPathSet.paths.get(0).nodeList);
+        finalPathInFlow = addDeletedNode(paths.get(1).nodeList, inputPathSet.paths.get(1).nodeList);
 
         //save result
         //correctly output chinese characters
@@ -209,11 +211,15 @@ public class PathSet {
     }
 
     private void printRecoveredPath(Sheet sheet, Path path, int baseColumnIndex) {
-        if (path == null) return;
         int rowIndex = 3;
+
         for (Node node: path.nodeList
         ) {
-            Row row = sheet.createRow(rowIndex++);
+            //FIXME: if row exists, do not create.
+            Row row = sheet.getRow(rowIndex);
+            if (row == null)
+                row = sheet.createRow(rowIndex);
+            rowIndex++;
             row.createCell(baseColumnIndex).setCellValue(node.index);
             row.createCell(baseColumnIndex+1).setCellValue(node.name);
             //TODO (if needed): print node.type
@@ -256,7 +262,7 @@ public class PathSet {
                     Node deleteNode = new Node(oriNode.index, oriNode.name, oriNode.type, oriNode.mutualNode);
                     deleteNode.source = NodeSource.DELETE;
                     finalPath.nodeList.add(deleteNode);
-                    System.out.println("Delete a node");
+                    System.out.println("[Delete a node]: no more recovered node.");
                     if (debugging) System.exit(1);
                 }
             }
@@ -272,7 +278,7 @@ public class PathSet {
                     else {
                         if (oriNode.source == NodeSource.DELETE) {
                             finalPath.nodeList.add(oriNode);
-                            System.out.println("Delete a node");
+                            System.out.println("[Delete a node]: duplicated nodes.");
                             if (debugging) System.exit(1);
                             recoveredIndex--;
                         }
@@ -284,7 +290,7 @@ public class PathSet {
                             Node deleteNode = new Node(oriNode.index, oriNode.name, oriNode.type, oriNode.mutualNode);
                             deleteNode.source = NodeSource.DELETE;
                             finalPath.nodeList.add(deleteNode);
-                            System.out.println("Delete a node");
+                            System.out.println("[Delete a node]: DP deletes a node.");
                             if (debugging) System.exit(1);
                             recoveredIndex--;
                         }

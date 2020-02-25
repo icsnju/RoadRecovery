@@ -11,8 +11,8 @@ import java.io.UnsupportedEncodingException;
 
 public class Main {
 
-    private static int TestCasesBegin = 12;
-    private static int TestCasesCount = (int) 1e4;
+    private static int TestCasesBegin = 22;
+    private static int TestCasesCount = (int) 1;
 
     public static void main(String[] args) throws FileNotFoundException, UnsupportedEncodingException {
         //get graph
