@@ -1,20 +1,17 @@
 package Entity;
 
-import org.apache.commons.math3.exception.OutOfRangeException;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class PathSet {
+    public boolean debugging = true;
 
     public List<Path> paths = new ArrayList<Path>();
-    public Path finalPath;
-    public Path oraclePath = new Path();
+    public Path finalPathInCard = null;
+    public Path finalPathInFlow = null;
     String testFileName = "src/main/resources/test-data.xls";
     String testFileName1 = "src/main/resources/test-data-10000-1.txt";
     String testFileName2 = "src/main/resources/test-data-10000-2.txt";
@@ -129,7 +126,7 @@ public class PathSet {
     }
 
     //TODO: update judging standard: one path is a subset of another.
-    public void compareAndPrint(Graph graph, Path oraclePath, int testIndex, PrintWriter writer, PathSet inputPathSet) {
+    public void compareAndPrint(Graph graph, int testIndex, PrintWriter writer, PathSet inputPathSet) {
         /*
          if equal, print "Successful recovery",
          else, print "Failed recovery".
@@ -149,10 +146,10 @@ public class PathSet {
             }
         }
 
+        finalPathInCard = addDeletedNode(paths.get(0).nodeList, inputPathSet.paths.get(0).nodeList);
         if (successful) {
             System.out.println("Success: All recovered paths are identical.");
             writer.print("Success: All recovered paths are identical.");
-            finalPath = paths.get(0);
         }
         else {
             String message = "Failure: Recovered paths are different";
@@ -160,20 +157,16 @@ public class PathSet {
             for (Node node : inputPathSet.paths.get(1).nodeList) {
                 if (inputPathSet.paths.get(0).nodeList.contains(node)) numNotIn++;
             }
-            message = message.concat(" and " + numNotIn + "/" + inputPathSet.paths.get(1).nodeList.size() + " of path2 is not in path1.");
+            message = message.concat(" and " + numNotIn + "/" + inputPathSet.paths.get(1).nodeList.size() +
+                    " of path2 is not in path1.");
             System.out.println(message);
             writer.print(message);
             List<Node> nodeList = paths.get(0).nodeList;
             Node beginNode = nodeList.get(0);
             Node endNode = nodeList.get(nodeList.size()-1);
-            //FIXME: how to get the shortest path from built graph.
-//            finalPath = graph.getShortestPath(beginNode, endNode);
-            // Print All path
-            finalPath = paths.get(0);
-            for (int i = 1; i < paths.size(); ++i) {
-                finalPath.nodeList.add(new Node()); // empty line
-                finalPath.nodeList.addAll(paths.get(i).nodeList);
-            }
+            //how to get the shortest path from built graph.
+            //TODO: add deleted node into two recovered paths, and print them all.
+            finalPathInFlow = addDeletedNode(paths.get(1).nodeList, inputPathSet.paths.get(1).nodeList);
         }
 
         //save result
@@ -187,29 +180,15 @@ public class PathSet {
             if (successful) row.createCell(0).setCellValue("Success: All recovered paths are identical.");
             else row.createCell(0).setCellValue("Failure: Recovered paths are different.");
             row = sheet.createRow(1);
-            row.createCell(0).setCellValue("Recovered path");
-            row.createCell(3).setCellValue("Oracle path");
+            row.createCell(0).setCellValue("卡内恢复结果");
+            row.createCell(3).setCellValue("流水恢复结果(如果和卡内一致，则不输出)");
             row = sheet.createRow(2);
             for (int columnIndex = 0; columnIndex < 6; columnIndex++) {
                 row.createCell(columnIndex).setCellValue(columns[columnIndex%3]);
             }
-            int rowIndex = 3;
-            for (Node node: finalPath.nodeList
-            ) {
-                row = sheet.createRow(rowIndex++);
-                row.createCell(0).setCellValue(node.index);
-                row.createCell(1).setCellValue(node.name);
-                if (node.source == NodeSource.IDENTIFY)
-                    row.createCell(2).setCellValue("标记出的点");
-                else if (node.source == NodeSource.ADD)
-                    row.createCell(2).setCellValue("增加出的点");
-                else if (node.source == NodeSource.MODIFY)
-                    row.createCell(2).setCellValue("修改出的点");
-                else if (node.source == NodeSource.DELETE)
-                    row.createCell(2).setCellValue("删除的点");
-                else
-                    row.createCell(2).setCellValue("不明出处的点");
-            }
+
+            printRecoveredPath(sheet, finalPathInCard, 0);
+            printRecoveredPath(sheet, finalPathInFlow, 3);
 
             // Write the output to a file
             File outDir = new File(outDirectory);
@@ -227,6 +206,94 @@ public class PathSet {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void printRecoveredPath(Sheet sheet, Path path, int baseColumnIndex) {
+        if (path == null) return;
+        int rowIndex = 3;
+        for (Node node: path.nodeList
+        ) {
+            Row row = sheet.createRow(rowIndex++);
+            row.createCell(baseColumnIndex).setCellValue(node.index);
+            row.createCell(baseColumnIndex+1).setCellValue(node.name);
+            //TODO (if needed): print node.type
+            if (node.source == NodeSource.IDENTIFY)
+                row.createCell(baseColumnIndex+2).setCellValue("标记出的点");
+            else if (node.source == NodeSource.ADD)
+                row.createCell(baseColumnIndex+2).setCellValue("增加出的点");
+            else if (node.source == NodeSource.MODIFY)
+                row.createCell(baseColumnIndex+2).setCellValue("改为对向的点");
+            else if (node.source == NodeSource.DELETE)
+                row.createCell(baseColumnIndex+2).setCellValue("删除的点");
+            else
+                row.createCell(baseColumnIndex+2).setCellValue("不明出处的点");
+        }
+    }
+
+    private Path addDeletedNode(List<Node> recovered, List<Node> original) {
+        //TODO: mark tag {delete} in original path
+        //TODO: notice duplicated nodes in original path
+        HashSet<Node> dupSet = new HashSet<>();
+        for (Node node: original
+             ) {
+            if (!dupSet.contains(node)) dupSet.add(node);
+            else node.source = NodeSource.DELETE;
+        }
+
+        //TODO: iterate two paths in parallel
+        Path finalPath = new Path();
+        int recoveredIndex = 0, originalIndex = 0;
+        while (true) {
+            Node recNode = null;
+            Node oriNode = null;
+            if (recoveredIndex < recovered.size()) recNode = recovered.get(recoveredIndex++);
+            if (originalIndex < original.size()) oriNode = original.get(originalIndex++);
+            if (recNode == null) {
+                if (oriNode == null) {
+                    break;
+                }
+                else {
+                    Node deleteNode = new Node(oriNode.index, oriNode.name, oriNode.type, oriNode.mutualNode);
+                    deleteNode.source = NodeSource.DELETE;
+                    finalPath.nodeList.add(deleteNode);
+                    System.out.println("Delete a node");
+                    if (debugging) System.exit(1);
+                }
+            }
+            else {
+                if (oriNode == null) {
+                    finalPath.nodeList.add(recNode);
+                }
+                else {
+                    if (recNode.equals(oriNode) || recNode.equals(oriNode.mutualNode)) {
+                        finalPath.nodeList.add(recNode);
+                    }
+                    //TODO: if two nodes are different.
+                    else {
+                        if (oriNode.source == NodeSource.DELETE) {
+                            finalPath.nodeList.add(oriNode);
+                            System.out.println("Delete a node");
+                            if (debugging) System.exit(1);
+                            recoveredIndex--;
+                        }
+                        else if (recNode.source == NodeSource.ADD) {
+                            finalPath.nodeList.add(recNode);
+                            originalIndex--;
+                        }
+                        else {
+                            Node deleteNode = new Node(oriNode.index, oriNode.name, oriNode.type, oriNode.mutualNode);
+                            deleteNode.source = NodeSource.DELETE;
+                            finalPath.nodeList.add(deleteNode);
+                            System.out.println("Delete a node");
+                            if (debugging) System.exit(1);
+                            recoveredIndex--;
+                        }
+                    }
+                }
+            }
+        }
+
+        return finalPath;
     }
 
     private boolean identicalPath(Path path1, Path path2) {

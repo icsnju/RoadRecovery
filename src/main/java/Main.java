@@ -11,8 +11,8 @@ import java.io.UnsupportedEncodingException;
 
 public class Main {
 
-    private static int TestCasesBegin = 1;
-    private static int TestCasesCount = 10000;
+    private static int TestCasesBegin = 12;
+    private static int TestCasesCount = (int) 1e4;
 
     public static void main(String[] args) throws FileNotFoundException, UnsupportedEncodingException {
         //get graph
@@ -47,7 +47,9 @@ public class Main {
                 }
                 //print outputs
                 if (success) {
-                    recoveredPathSet.compareAndPrint(graph, pathSet.oraclePath, testIndex, writer, pathSet);
+                    recoveredPathSet.paths.get(0).print();
+                    recoveredPathSet.paths.get(1).print();
+                    recoveredPathSet.compareAndPrint(graph, testIndex, writer, pathSet);
                 } else {
                     // example:
                     // case 5369, 5544: 出省

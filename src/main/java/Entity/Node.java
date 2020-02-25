@@ -17,6 +17,17 @@ public class Node implements Cloneable {
     double latitude;  //wei'du
     Timestamp timestamp; //
 
+    public Node() {
+    }
+
+    //copy a node element except for NodeSource.
+    public Node(String index, String name, NodeType type, Node mutualNode) {
+        this.index = index;
+        this.name = name;
+        this.type = type;
+        this.mutualNode = mutualNode;
+    }
+
     //operations
     public Node getMutualNode() {
         return mutualNode;
