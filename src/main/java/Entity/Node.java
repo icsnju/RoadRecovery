@@ -11,11 +11,12 @@ public class Node implements Cloneable {
     public NodeType type;
     public NodeSource source; // for testing
     public Node mutualNode = null;
+    String timestamp;
 
     // unused attributes
     double longitude; //jing'du
     double latitude;  //wei'du
-    Timestamp timestamp; //
+
 
     public Node() {
     }

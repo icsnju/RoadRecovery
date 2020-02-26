@@ -70,7 +70,7 @@ public class ReadExcel {
             } else {
                 outNode = graph.nodes.get(graph.nodes.indexOf(outNode));
             }
-            //FIXME: I assume each node has only one mutual node.
+            //I assume each node has only one mutual node.
             //FIXED: exist two mutual relations are miss-typed, and I fixed it manually in excel file.
             if (sheetIndex == MUTUALSHEET) {
                 inNode.mutualNode = outNode;

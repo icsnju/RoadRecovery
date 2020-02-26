@@ -11,7 +11,7 @@ import java.io.UnsupportedEncodingException;
 
 public class Main {
 
-    private static int TestCasesBegin = 22;
+    private static int TestCasesBegin = 23;
     private static int TestCasesCount = (int) 1;
 
     public static void main(String[] args) throws FileNotFoundException, UnsupportedEncodingException {

@@ -125,7 +125,6 @@ public class PathSet {
         return PathType.Normal;
     }
 
-    //TODO: update judging standard: one path is a subset of another.
     public void compareAndPrint(Graph graph, int testIndex, PrintWriter writer, PathSet inputPathSet) {
         /*
          if equal, print "Successful recovery",
@@ -167,9 +166,9 @@ public class PathSet {
             //how to get the shortest path from built graph.
         }
 
-        //TODO: add deleted node into two recovered paths, and print them all.
-        finalPathInCard = addDeletedNode(paths.get(0).nodeList, inputPathSet.paths.get(0).nodeList);
-        finalPathInFlow = addDeletedNode(paths.get(1).nodeList, inputPathSet.paths.get(1).nodeList);
+        //add deleted node into two recovered paths, and print them all.
+        finalPathInCard = addDeleteAndModifyTag(paths.get(0).nodeList, inputPathSet.paths.get(0).nodeList);
+        finalPathInFlow = addDeleteAndModifyTag(paths.get(1).nodeList, inputPathSet.paths.get(1).nodeList);
 
         //save result
         //correctly output chinese characters
@@ -215,14 +214,14 @@ public class PathSet {
 
         for (Node node: path.nodeList
         ) {
-            //FIXME: if row exists, do not create.
+            //if row exists, do not create.
             Row row = sheet.getRow(rowIndex);
             if (row == null)
                 row = sheet.createRow(rowIndex);
             rowIndex++;
             row.createCell(baseColumnIndex).setCellValue(node.index);
             row.createCell(baseColumnIndex+1).setCellValue(node.name);
-            //TODO (if needed): print node.type
+            //(if needed): print node.type
             if (node.source == NodeSource.IDENTIFY)
                 row.createCell(baseColumnIndex+2).setCellValue("标记出的点");
             else if (node.source == NodeSource.ADD)
@@ -236,9 +235,10 @@ public class PathSet {
         }
     }
 
-    private Path addDeletedNode(List<Node> recovered, List<Node> original) {
-        //TODO: mark tag {delete} in original path
-        //TODO: notice duplicated nodes in original path
+    //the final path isn't needed any more, I use the method to update original node's source.
+    public Path addDeleteAndModifyTag(List<Node> recovered, List<Node> original) {
+        //mark tag {delete} in original path
+        //notice duplicated nodes in original path
         HashSet<Node> dupSet = new HashSet<>();
         for (Node node: original
              ) {
@@ -246,7 +246,7 @@ public class PathSet {
             else node.source = NodeSource.DELETE;
         }
 
-        //TODO: iterate two paths in parallel
+        //iterate two paths in parallel
         Path finalPath = new Path();
         int recoveredIndex = 0, originalIndex = 0;
         while (true) {
@@ -255,9 +255,11 @@ public class PathSet {
             if (recoveredIndex < recovered.size()) recNode = recovered.get(recoveredIndex++);
             if (originalIndex < original.size()) oriNode = original.get(originalIndex++);
             if (recNode == null) {
+                // recNode == null and oriNode == null
                 if (oriNode == null) {
                     break;
                 }
+                // recNode == null and oriNode != null
                 else {
                     Node deleteNode = new Node(oriNode.index, oriNode.name, oriNode.type, oriNode.mutualNode);
                     deleteNode.source = NodeSource.DELETE;
@@ -267,25 +269,34 @@ public class PathSet {
                 }
             }
             else {
+                // recNode != null and oriNode == null
                 if (oriNode == null) {
                     finalPath.nodeList.add(recNode);
                 }
+                // recNode != null and oriNode != null
                 else {
+                    // recNode == oriNode (unchanged) or mutual(recNode, oriNode)
                     if (recNode.equals(oriNode) || recNode.equals(oriNode.mutualNode)) {
                         finalPath.nodeList.add(recNode);
+                        if (recNode.equals(oriNode.mutualNode)) {
+                            oriNode.source = NodeSource.MODIFY;
+                        }
                     }
-                    //TODO: if two nodes are different.
+                    //if two nodes are different.
                     else {
+                        //oriNode is marked as "Delete" in pre-processing.
                         if (oriNode.source == NodeSource.DELETE) {
                             finalPath.nodeList.add(oriNode);
                             System.out.println("[Delete a node]: duplicated nodes.");
                             if (debugging) System.exit(1);
                             recoveredIndex--;
                         }
+                        //recNode is newly added.
                         else if (recNode.source == NodeSource.ADD) {
                             finalPath.nodeList.add(recNode);
                             originalIndex--;
                         }
+                        //oriNode is deleted from the path.
                         else {
                             Node deleteNode = new Node(oriNode.index, oriNode.name, oriNode.type, oriNode.mutualNode);
                             deleteNode.source = NodeSource.DELETE;
