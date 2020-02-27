@@ -4,6 +4,7 @@ import static Entity.NodeSource.*;
 
 import Entity.Graph;
 import Entity.Node;
+import Entity.NodeType;
 import Entity.Path;
 
 public class DPAlgorithm implements Algorithm {
@@ -16,7 +17,7 @@ public class DPAlgorithm implements Algorithm {
      */
     public Path execute(Graph graph, Path path) {
         double alpha = 0.01;
-        double beta = graph.nodes.size()+1; // delete side node
+        double beta = graph.nodes.size() + 1; // delete side node
         double gamma = 1; // delete mid node
         double delta = 1 / gamma;
         double inf = 1e9;
@@ -34,7 +35,11 @@ public class DPAlgorithm implements Algorithm {
         Path[][] dpPath = new Path[originalPathLength + 1][2];
 
         double answer = inf;
-        Path answerPath = null;
+        Path answerPath = new Path();
+
+        boolean not_delete_first = originalPath.nodeList.get(0).type == NodeType.TOLLSTATION;
+        boolean not_delete_last =
+            originalPath.nodeList.get(originalPathLength).type == NodeType.TOLLSTATION;
 
         for (int i = 0; i <= originalPathLength; ++i) {
             for (int flagI = 0; flagI <= 1; ++flagI) {
@@ -80,27 +85,37 @@ public class DPAlgorithm implements Algorithm {
                             dp[i][flagI] = result;
                             dpPath[i][flagI].nodeList.clear();
                             dpPath[i][flagI].add(dpPath[j][flagJ]);
+                            if (flagJ == 1 && nodeI.equals(nodeJ)) {
+                                dpPath[i][flagI].nodeList
+                                    .remove(dpPath[i][flagI].nodeList.size() - 1);
+                            }
                             dpPath[i][flagI].add(shortestPath);
-//                            System.out.println("dp[" + i + "][" + flagI + "]: " + dp[i][flagI]);
+//                            System.out.println(
+//                                "dp[" + i + "][" + flagI + "]: " + dp[i][flagI] + " (from dp[" + j
+//                                    + "][" + flagJ + "])");
 //                            dpPath[i][flagI].print();
                         }
                         // update method 2: delete node 0 to i-1, i+1 to j-1
-                        result = alpha * flagI + beta * j + gamma * (i - j - 1) + delta * distance;
-                        if (result <= dp[i][flagI]) {
-                            dp[i][flagI] = result;
-                            dpPath[i][flagI].nodeList.clear();
-                            dpPath[i][flagI].add(shortestPath);
+                        if (!not_delete_first) {
+                            result =
+                                alpha * flagI + beta * j + gamma * (i - j - 1) + delta * distance;
+                            if (result <= dp[i][flagI]) {
+                                dp[i][flagI] = result;
+                                dpPath[i][flagI].nodeList.clear();
+                                dpPath[i][flagI].add(shortestPath);
 //                            System.out.println("dp[" + i + "][" + flagI + "]: " + dp[i][flagI]);
 //                            dpPath[i][flagI].print();
+                            }
                         }
                     }
                 }
-                if (dp[i][flagI] + (originalPathLength - i) * beta < answer) {
+                if ((!not_delete_last || i == originalPathLength)
+                    && dp[i][flagI] + (originalPathLength - i) * beta < answer) {
                     answer = dp[i][flagI] + (originalPathLength - i) * beta; // 相当于后面都删掉
                     answerPath = dpPath[i][flagI];
                 }
             }
         }
-        return answerPath; // null when failed
+        return answerPath; // empty when failed
     }
 }
