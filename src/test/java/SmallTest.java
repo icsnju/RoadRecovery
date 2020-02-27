@@ -10,6 +10,8 @@ import java.io.PrintWriter;
 
 public class SmallTest {
 
+    private int testCount = 32;
+
     @Test
     public void test32Items() throws FileNotFoundException {
         ReadExcel readExcel = new ReadExcel();
@@ -17,7 +19,7 @@ public class SmallTest {
         PrintWriter writer = new PrintWriter("src/main/resources/test-data-calculated-tmp.csv");
         writer.println("index, path1, result");
 
-        for (int testIndex = 10001; testIndex <= 10010; testIndex++) {
+        for (int testIndex = 10001; testIndex < 10001 + testCount; testIndex++) {
             //read one path
             System.out.println("\nCase " + testIndex + ":");
             PathSet pathSet = new PathSet();
@@ -34,7 +36,7 @@ public class SmallTest {
             if (recoverPath != null) {
                 PathSet recoveredPathSet = new PathSet();
                 recoveredPathSet.paths.add(recoverPath);
-                recoveredPathSet.paths.get(0).print();
+//                recoveredPathSet.paths.get(0).print();
                 recoveredPathSet.compareAndPrint(graph, testIndex, writer, pathSet, false);
             }
             else {

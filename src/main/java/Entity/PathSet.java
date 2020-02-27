@@ -121,6 +121,7 @@ public class PathSet {
                 }
                 Node completeNode = graph.nodes.get(graph.nodes.indexOf(node));
 //                node.print();
+                completeNode.source = NodeSource.IDENTIFY;
                 completeNode.print();
                 path.nodeList.add(completeNode);
             }
@@ -320,6 +321,7 @@ public class PathSet {
             }
         }
 
+        finalPath.print();
         return finalPath;
     }
 

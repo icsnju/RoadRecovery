@@ -37,9 +37,15 @@ public class Path {
         System.out.println("---path begin---");
         System.out.println("---length = "+ nodeList.size() +" ---");
         for (Node node : nodeList) {
-            System.out.println(node.index + " " + node.name + " " + node.source);
+            System.out.println(fixedLengthString(node.index, 20) + " " +
+                    fixedLengthString(node.source.toString(), 20)+ " " +
+                    fixedLengthString(node.name, 20));
         }
         System.out.println("---path end---");
+    }
+
+    public static String fixedLengthString(String string, int length) {
+        return String.format("%1$"+length+ "s", string);
     }
 
 
