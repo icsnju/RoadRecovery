@@ -22,11 +22,11 @@ public class PathRestoration {
      * @param jsonData each element of an input path in JSON format
      * @return
      */
-    public String pathRestorationMethod(String jsonData)  {
+    public String pathRestorationMethod(String jsonData, String basicDataPath)  {
         //build the graph
         //TODO: specify the excel path
         ReadExcel readExcel = new ReadExcel();
-        Graph graph = readExcel.buildGraph();
+        Graph graph = readExcel.buildGraph(basicDataPath);
 
         //analyze JSON data
         JSONObject jsonObj = new JSONObject(jsonData);

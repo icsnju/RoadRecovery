@@ -12,12 +12,12 @@ public class PathSet {
     public List<Path> paths = new ArrayList<Path>();
     public Path finalPathInCard = null;
     public Path finalPathInFlow = null;
-    String testFileName = "src/main/resources/test-data.xls";
+    String testFileName = "src/test/resources/test-data.xls";
 //    String testFileName1 = "src/main/resources/test-data-10000-1.txt";
-    String testFileName1 = "src/main/resources/test-data-32.txt";
-    String testFileName2 = "src/main/resources/test-data-10000-2.txt";
+    String testFileName1 = "src/test/resources/test-data-32.txt";
+    String testFileName2 = "src/test/resources/test-data-10000-2.txt";
     int SheetHead = 3;
-    String outDirectory = "src/main/resources/outputs/";
+    String outDirectory = "src/test/resources/outputs/";
 
     /*
     I don't where is test oracle.

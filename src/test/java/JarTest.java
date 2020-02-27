@@ -21,9 +21,14 @@ public class JarTest {
                 this.getClass().getClassLoader()
         );
         Class classToLoad = Class.forName("PathRestoration", true, child);
-        Method method = classToLoad.getMethod("pathRestorationMethod", String.class);
+        Method method = classToLoad.getMethod("pathRestorationMethod", String.class, String.class);
         Object instance = classToLoad.newInstance();
-        String returnedString = (String) method.invoke(instance, PathRestorationTest.successJsonObject.toString());
+        String basic_data_file_path = "src/test/resources/basic-data.xls";
+        String returnedString = (String) method.invoke(
+                instance,
+                PathRestorationTest.successJsonObject.toString(),
+                basic_data_file_path
+        );
 
         System.out.println(returnedString);
     }

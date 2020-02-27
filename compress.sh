@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-cd src/main/resources/
+cd src/test/resources/
 zip -r outputs.zip  outputs/
 git status
 git add -f outputs.zip

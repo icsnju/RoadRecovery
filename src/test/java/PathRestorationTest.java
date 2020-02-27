@@ -12,14 +12,17 @@ public class PathRestorationTest {
 
     @Test
     public void testPathRestorationMethod() {
+        String basic_data_file_path = "src/test/resources/basic-data.xls";
 
         //TODO: execute the method under test
         PathRestoration pathRestoration = new PathRestoration();
+
+
         String returnString;
-//        returnString = pathRestoration.pathRestorationMethod(successJsonObject.toString());
+//        returnString = pathRestoration.pathRestorationMethod(successJsonObject.toString(), basic_data_file_path);
 //        System.out.println(returnString);
 
-        returnString = pathRestoration.pathRestorationMethod(failureJsonObject.toString());
+        returnString = pathRestoration.pathRestorationMethod(failureJsonObject.toString(), basic_data_file_path);
         System.out.println(returnString);
 
         //TODO: assert some properties

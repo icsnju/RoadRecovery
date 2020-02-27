@@ -29,7 +29,7 @@ hs_err_pid*
 .idea/
 # RoadRecovery.iml
 target/
-src/main/resources/outputs/
+src/test/resources/outputs/
 
 # temp log file
 test-data-calculated-tmp.csv

@@ -16,8 +16,8 @@ public class SmallTest {
     @Test
     public void test32Items() throws FileNotFoundException {
         ReadExcel readExcel = new ReadExcel();
-        Graph graph = readExcel.buildGraph();
-        PrintWriter writer = new PrintWriter("src/main/resources/test-data-calculated-tmp.csv");
+        Graph graph = readExcel.buildGraph(Main.xlsFileName);
+        PrintWriter writer = new PrintWriter("src/test/resources/test-data-calculated-tmp.csv");
         writer.println("index, path1, result");
 
         for (int testIndex = testBegin; testIndex < testBegin + testCount; testIndex++) {

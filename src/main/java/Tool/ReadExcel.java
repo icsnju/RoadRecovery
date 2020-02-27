@@ -13,16 +13,16 @@ import static Entity.NodeType.*;
 
 public class ReadExcel {
 
-    private String xlsFileName = "src/main/resources/basic-data.xls";
+
     private int SHEETHEAD = 4;
     int EDGESHEET = 1;
     int MUTUALSHEET = 3;
 
     private Graph graph = new Graph();
 
-    public Graph buildGraph() {
+    public Graph buildGraph(String filePath) {
         try {
-            Workbook workbook = WorkbookFactory.create(new File(xlsFileName));
+            Workbook workbook = WorkbookFactory.create(new File(filePath));
             Iterator<Sheet> sheetIterator = workbook.sheetIterator();
             while (sheetIterator.hasNext()) {
                 Sheet sheet = sheetIterator.next();

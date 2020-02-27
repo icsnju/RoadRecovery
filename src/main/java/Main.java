@@ -14,10 +14,12 @@ public class Main {
     private static int TestCasesBegin = 23;
     private static int TestCasesCount = (int) 1;
 
+    static String xlsFileName = "src/test/resources/basic-data.xls";
+
     public static void main(String[] args) throws FileNotFoundException, UnsupportedEncodingException {
         //get graph
         ReadExcel readExcel = new ReadExcel();
-        Graph graph = readExcel.buildGraph();
+        Graph graph = readExcel.buildGraph(xlsFileName);
 
         /*
          test for each case
