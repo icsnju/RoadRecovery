@@ -24,9 +24,6 @@ public class Path {
     public void add(Path path2) {
         if (!nodeList.isEmpty() && !path2.nodeList.isEmpty() && nodeList.get(nodeList.size() - 1)
             .equals(path2.nodeList.get(0))) {
-            if (path2.nodeList.get(0).source == IDENTIFY) {
-                nodeList.get(nodeList.size() - 1).source = IDENTIFY;
-            }
             nodeList.addAll(path2.nodeList.subList(1, path2.nodeList.size()));
         } else {
             nodeList.addAll(path2.nodeList);
