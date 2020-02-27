@@ -30,7 +30,7 @@ public class Main {
             PathSet pathSet = new PathSet();
 //            pathSet.readAllPath(graph, testIndex);
             boolean success = true;
-            if (pathSet.readAll2Path(graph, testIndex, writer)) {
+            if (pathSet.readAll2Path(graph, testIndex, writer, true)) {
                 //execute the algorithm
 //                Algorithm algorithm = new NullAlgorithm();
                 Algorithm algorithm = new DPAlgorithm();
@@ -49,7 +49,7 @@ public class Main {
                 if (success) {
                     recoveredPathSet.paths.get(0).print();
                     recoveredPathSet.paths.get(1).print();
-                    recoveredPathSet.compareAndPrint(graph, testIndex, writer, pathSet);
+                    recoveredPathSet.compareAndPrint(graph, testIndex, writer, pathSet, true);
                 } else {
                     // example:
                     // case 5369, 5544: 出省

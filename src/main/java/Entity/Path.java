@@ -34,6 +34,8 @@ public class Path {
     }
 
     public void print() {
+        System.out.println("---path begin---");
+        System.out.println("---length = "+ nodeList.size() +" ---");
         for (Node node : nodeList) {
             System.out.println(node.index + " " + node.name + " " + node.source);
         }

@@ -13,7 +13,8 @@ public class PathSet {
     public Path finalPathInCard = null;
     public Path finalPathInFlow = null;
     String testFileName = "src/main/resources/test-data.xls";
-    String testFileName1 = "src/main/resources/test-data-10000-1.txt";
+//    String testFileName1 = "src/main/resources/test-data-10000-1.txt";
+    String testFileName1 = "src/main/resources/test-data-32.txt";
     String testFileName2 = "src/main/resources/test-data-10000-2.txt";
     int SheetHead = 3;
     String outDirectory = "src/main/resources/outputs/";
@@ -61,27 +62,34 @@ public class PathSet {
         paths.add(path); //testcase has only one path.
     }
 
-    public boolean readAll2Path(Graph graph, int testIndex, PrintWriter writer) {
-        PathType flag1 = extractOnePath2(graph, testIndex, testFileName1);
-        PathType flag2 = extractOnePath2(graph, testIndex, testFileName2);
+    public boolean readAll2Path(Graph graph, int testIndex, PrintWriter writer, boolean hasSecond) {
+        PathType flag1 = extractOnePath2(graph, testIndex, testFileName1, hasSecond);
+
         writer.print(testIndex + ", ");
 
         if (flag1 == PathType.Normal) writer.print("0, ");
         else if (flag1 == PathType.Missing) writer.print("1, ");
         else if (flag1 == PathType.UnknownNode) writer.print("2, ");
 
-        if (flag2 == PathType.Normal) writer.print("0, ");
-        else if (flag2 == PathType.Missing) writer.print("1, ");
-        else if (flag2 == PathType.UnknownNode) writer.print("2, ");
+        PathType flag2 = null;
+        if (hasSecond) {
+            flag2 = extractOnePath2(graph, testIndex, testFileName2, hasSecond);
+            if (flag2 == PathType.Normal) writer.print("0, ");
+            else if (flag2 == PathType.Missing) writer.print("1, ");
+            else if (flag2 == PathType.UnknownNode) writer.print("2, ");
+        }
 //        writer.println();
 
-        return flag1 == PathType.Normal && flag2 == PathType.Normal;
+        if (hasSecond)
+            return flag1 == PathType.Normal && flag2 == PathType.Normal;
+        else
+            return flag1 == PathType.Normal;
     }
 
     /*
     testFile is a txt file.
      */
-    private PathType extractOnePath2(Graph graph, int testIndex, String testFileName) {
+    private PathType extractOnePath2(Graph graph, int testIndex, String testFileName, boolean hasSecond) {
         try {
             Path path = new Path();
             FileInputStream fs = new FileInputStream(testFileName);
@@ -125,7 +133,7 @@ public class PathSet {
         return PathType.Normal;
     }
 
-    public void compareAndPrint(Graph graph, int testIndex, PrintWriter writer, PathSet inputPathSet) {
+    public void compareAndPrint(Graph graph, int testIndex, PrintWriter writer, PathSet inputPathSet, boolean hasSecond) {
         /*
          if equal, print "Successful recovery",
          else, print "Failed recovery".
@@ -168,7 +176,8 @@ public class PathSet {
 
         //add deleted node into two recovered paths, and print them all.
         finalPathInCard = addDeleteAndModifyTag(paths.get(0).nodeList, inputPathSet.paths.get(0).nodeList);
-        finalPathInFlow = addDeleteAndModifyTag(paths.get(1).nodeList, inputPathSet.paths.get(1).nodeList);
+        if (hasSecond)
+            finalPathInFlow = addDeleteAndModifyTag(paths.get(1).nodeList, inputPathSet.paths.get(1).nodeList);
 
         //save result
         //correctly output chinese characters
@@ -189,7 +198,8 @@ public class PathSet {
             }
 
             printRecoveredPath(sheet, finalPathInCard, 0);
-            printRecoveredPath(sheet, finalPathInFlow, 3);
+            if (hasSecond)
+                printRecoveredPath(sheet, finalPathInFlow, 3);
 
             // Write the output to a file
             File outDir = new File(outDirectory);
