@@ -1,0 +1,31 @@
+import org.junit.Test;
+
+import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+
+public class JarTest {
+
+    @Test
+    public void jarTest() throws IllegalAccessException, InstantiationException, ClassNotFoundException,
+            NoSuchMethodException, InvocationTargetException, MalformedURLException {
+
+        //Java Reflection
+        File myJar = new File("target/RoadRecovery-1.2-SNAPSHOT.jar");
+
+        URLClassLoader child = new URLClassLoader(
+                new URL[] {myJar.toURI().toURL()},
+                this.getClass().getClassLoader()
+        );
+        Class classToLoad = Class.forName("PathRestoration", true, child);
+        Method method = classToLoad.getMethod("pathRestorationMethod", String.class);
+        Object instance = classToLoad.newInstance();
+        String returnedString = (String) method.invoke(instance, PathRestorationTest.successJsonObject.toString());
+
+        System.out.println(returnedString);
+    }
+
+}

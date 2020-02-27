@@ -22,7 +22,7 @@ public class PathRestoration {
      * @param jsonData each element of an input path in JSON format
      * @return
      */
-    public String pathRestorationMethod(String jsonData) {
+    public String pathRestorationMethod(String jsonData)  {
         //build the graph
         //TODO: specify the excel path
         ReadExcel readExcel = new ReadExcel();
@@ -44,24 +44,48 @@ public class PathRestoration {
         //FIXME: time information isn't used right now.
         String[] timeList = timeGroup.split("\\|");
 
+
         //add the start and end node into original path
         Path originalPath = new Path();
-        Node startNode = getNode(graph, enStationId);
-        originalPath.nodeList.add(startNode);
 
-        //FIXME: I need a runtime node, {node, timestamp}
-        for (String gantry : gantryList) {
-            Node completeNode = getNode(graph, gantry);
-            originalPath.nodeList.add(completeNode);
+        try {
+            try {
+                Node startNode = getNode(graph, enStationId);
+                startNode.source = NodeSource.IDENTIFY;
+                originalPath.nodeList.add(startNode);
+            } catch (NodeUnknownException e) {
+                //do nothing
+            }
+
+            //FIXME: I need a runtime node, {node, timestamp}
+            for (String gantry : gantryList) {
+                Node completeNode = getNode(graph, gantry);
+                completeNode.source = NodeSource.IDENTIFY;
+                originalPath.nodeList.add(completeNode);
+            }
+
+            try {
+                Node endNode = getNode(graph, exStationId);
+                endNode.source = NodeSource.IDENTIFY;
+                originalPath.nodeList.add(endNode);
+            } catch (NodeUnknownException e) {
+                //do nothing
+            }
+
+        }  catch (NodeUnknownException e) {
+            return getReturnedJsonObject(originalPath, null, "存在未知门架").toString();
         }
-
-        Node endNode = getNode(graph, exStationId);
-        originalPath.nodeList.add(endNode);
 
         Algorithm algorithm = new DPAlgorithm();
         Path recoveredPath = algorithm.execute(graph, originalPath);
 
         //generate JSON data for return
+        JSONObject returnJsonObj = getReturnedJsonObject(originalPath, recoveredPath, "奇怪的错误");
+
+        return returnJsonObj.toString();
+    }
+
+    private JSONObject getReturnedJsonObject(Path originalPath, Path recoveredPath, String description) {
         JSONObject returnJsonObj = new JSONObject();
         if (recoveredPath != null) {
             returnJsonObj.put("code", "1");
@@ -100,7 +124,9 @@ public class PathRestoration {
 
             //mark the original node as one of {1:identify, 2:modify, 3:delete}
             PathSet pathSet = new PathSet();
+            originalPath.print();
             pathSet.addDeleteAndModifyTag(recoveredPath.nodeList, originalPath.nodeList);
+            originalPath.print();
 
             StringBuilder useType = new StringBuilder();
             StringBuilder updateGantry = new StringBuilder();
@@ -127,14 +153,12 @@ public class PathRestoration {
             }
 
             returnJsonObj.put("gantryGroup", gantryGroup);
-            returnJsonObj.put("useType", "");
-            //there is a typo: updateGrantry -> updateGantry
-            returnJsonObj.put("updateGantry", "");
+            returnJsonObj.put("useType", useType.toString());
+            returnJsonObj.put("updateGantry", updateGantry.toString());
         } else {
-            handleFailure(returnJsonObj, "起点到终点不可达");
+            handleFailure(returnJsonObj, description);
         }
-
-        return returnJsonObj.toString();
+        return returnJsonObj;
     }
 
     private void handleFailure(JSONObject returnJsonObj, String description) {
@@ -151,13 +175,17 @@ public class PathRestoration {
         returnJsonObj.put("updateGantry", "0");
     }
 
-    private Node getNode(Graph graph, String gantry) {
+    private Node getNode(Graph graph, String gantry) throws NodeUnknownException {
         Node node = new Node();
         node.index = gantry;
         if (graph.nodes.indexOf(node) == -1) {
-            System.err.println("[Error] An unknown gantry " + gantry + " exists.");
-            System.exit(1);
+            System.err.println("[Error] 未知门架/收费站 " + gantry + " 存在.");
+            throw new NodeUnknownException();
         }
         return graph.nodes.get(graph.nodes.indexOf(node));
+    }
+
+    private class NodeUnknownException extends Throwable {
+
     }
 }

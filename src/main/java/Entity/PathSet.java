@@ -321,7 +321,8 @@ public class PathSet {
                             Node deleteNode = new Node(oriNode.index, oriNode.name, oriNode.type, oriNode.mutualNode);
                             deleteNode.source = NodeSource.DELETE;
                             finalPath.nodeList.add(deleteNode);
-                            System.out.println("[Delete a node]: DP deletes a node.");
+                            oriNode.source = NodeSource.DELETE;
+                            System.out.println("[Delete a node]: DP deletes a node " + deleteNode.index);
                             if (debugging) System.exit(1);
                             recoveredIndex--;
                         }
@@ -330,7 +331,7 @@ public class PathSet {
             }
         }
 
-        finalPath.print();
+        //finalPath.print();
         return finalPath;
     }
 
