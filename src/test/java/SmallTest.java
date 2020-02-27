@@ -10,6 +10,7 @@ import java.io.PrintWriter;
 
 public class SmallTest {
 
+    private int testBegin = 10001;
     private int testCount = 32;
 
     @Test
@@ -19,7 +20,7 @@ public class SmallTest {
         PrintWriter writer = new PrintWriter("src/main/resources/test-data-calculated-tmp.csv");
         writer.println("index, path1, result");
 
-        for (int testIndex = 10001; testIndex < 10001 + testCount; testIndex++) {
+        for (int testIndex = testBegin; testIndex < testBegin + testCount; testIndex++) {
             //read one path
             System.out.println("\nCase " + testIndex + ":");
             PathSet pathSet = new PathSet();
@@ -36,7 +37,7 @@ public class SmallTest {
             if (recoverPath != null) {
                 PathSet recoveredPathSet = new PathSet();
                 recoveredPathSet.paths.add(recoverPath);
-//                recoveredPathSet.paths.get(0).print();
+                recoveredPathSet.paths.get(0).print();
                 recoveredPathSet.compareAndPrint(graph, testIndex, writer, pathSet, false);
             }
             else {

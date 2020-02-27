@@ -154,7 +154,6 @@ public class PathSet {
             }
         }
 
-
         if (successful) {
             System.out.println("Success: All recovered paths are identical.");
             writer.print("Success: All recovered paths are identical.");
@@ -261,10 +260,19 @@ public class PathSet {
         Path finalPath = new Path();
         int recoveredIndex = 0, originalIndex = 0;
         while (true) {
+
             Node recNode = null;
             Node oriNode = null;
-            if (recoveredIndex < recovered.size()) recNode = recovered.get(recoveredIndex++);
-            if (originalIndex < original.size()) oriNode = original.get(originalIndex++);
+            Node oriNextNode = null;
+
+            if (recoveredIndex < recovered.size())
+                recNode = recovered.get(recoveredIndex++);
+            if (originalIndex < original.size()) {
+                oriNode = original.get(originalIndex++);
+                if (originalIndex < original.size())
+                    oriNextNode = original.get(originalIndex);
+            }
+
             if (recNode == null) {
                 // recNode == null and oriNode == null
                 if (oriNode == null) {
@@ -287,10 +295,11 @@ public class PathSet {
                 // recNode != null and oriNode != null
                 else {
                     // recNode == oriNode (unchanged) or mutual(recNode, oriNode)
-                    if (recNode.equals(oriNode) || recNode.equals(oriNode.mutualNode)) {
+                    if (recNode.equals(oriNode) || recNode.equals(oriNode.mutualNode) && (!recNode.equals(oriNextNode))) {
                         finalPath.nodeList.add(recNode);
                         if (recNode.equals(oriNode.mutualNode)) {
                             oriNode.source = NodeSource.MODIFY;
+                            recNode.source = NodeSource.MODIFY;
                         }
                     }
                     //if two nodes are different.
