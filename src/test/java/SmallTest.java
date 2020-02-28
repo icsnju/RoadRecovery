@@ -10,15 +10,25 @@ import java.io.PrintWriter;
 
 public class SmallTest {
 
-    private int testBegin = 10018;
-    private int testCount = 1;
+    private int testBegin = 10001;
+    private int testCount = 32;
+
+    private static PrintWriter writer = null;
+    private static final Graph graph;
+
+    static {
+        ReadExcel readExcel = new ReadExcel();
+        graph = readExcel.buildGraph(Main.xlsFileName);
+        try {
+            writer = new PrintWriter("src/test/resources/test-data-calculated-tmp.csv");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        writer.println("index, path1, result");
+    }
 
     @Test
-    public void test32Items() throws FileNotFoundException {
-        ReadExcel readExcel = new ReadExcel();
-        Graph graph = readExcel.buildGraph(Main.xlsFileName);
-        PrintWriter writer = new PrintWriter("src/test/resources/test-data-calculated-tmp.csv");
-        writer.println("index, path1, result");
+    public void test32Items() {
 
         for (int testIndex = testBegin; testIndex < testBegin + testCount; testIndex++) {
             //read one path

@@ -11,7 +11,7 @@ public class PathRestoration {
     static String enTime, exTime;
     static String gantryGroup, typeGroup, timeGroup;
 
-    /** TODO:
+    /**
      * output key
      */
 
@@ -24,7 +24,7 @@ public class PathRestoration {
      */
     public static String pathRestorationMethod(String jsonData, String basicDataPath)  {
         //build the graph
-        //TODO: specify the excel path
+        //specify the excel path
         ReadExcel readExcel = new ReadExcel();
         Graph graph = readExcel.buildGraph(basicDataPath);
 
@@ -163,9 +163,9 @@ public class PathRestoration {
     }
 
     private static void handleFailure(JSONObject returnJsonObj, String description) {
-        //TODO: exception handling
+        // exception handling
         returnJsonObj.put("code", "2");
-        //FIXME: @fancy: describe why restoration fails.
+        //@fancy: describe why restoration fails.
         returnJsonObj.put("description", "还原失败的原因："+description);
         returnJsonObj.put("pathInfo", "0");
         returnJsonObj.put("typeGroup", "0");

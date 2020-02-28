@@ -24,7 +24,7 @@ public class Main {
         /*
          test for each case
          */
-        PrintWriter writer = new PrintWriter("src/main/resources/test-data-calculated-tmp.csv");
+        PrintWriter writer = new PrintWriter("src/test/resources/test-data-calculated-tmp.csv");
         writer.println("index, path1, path2, result");
         for (int testIndex = TestCasesBegin; testIndex < TestCasesBegin + TestCasesCount; testIndex++) {
             System.out.println("\nCase " + testIndex + ":");

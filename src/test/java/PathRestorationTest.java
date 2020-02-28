@@ -14,7 +14,7 @@ public class PathRestorationTest {
     public void testPathRestorationMethod() {
         String basic_data_file_path = "src/test/resources/basic-data.xls";
 
-        //TODO: execute the method under test
+        //execute the method under test
         PathRestoration pathRestoration = new PathRestoration();
 
 
@@ -25,11 +25,11 @@ public class PathRestorationTest {
 //        returnString = pathRestoration.pathRestorationMethod(failureJsonObject.toString(), basic_data_file_path);
 //        System.out.println(returnString);
 
-        //TODO: assert some properties
+        //assert some properties
     }
 
     private static void getInput() {
-        //TODO: manually curate a successful JSON data
+        //manually curate a successful JSON data
         //case 10026
         successJsonObject.put("enStationId", "S0033370020050");
         successJsonObject.put("exStationId", "S0033370010030");
@@ -41,7 +41,7 @@ public class PathRestorationTest {
 
         System.out.println(successJsonObject.toString());
 
-        //TODO: manually curate a failure JSON data
+        //manually curate a failure JSON data
 //        failureJsonObject.put("enStationId", "S0033370020050");
         failureJsonObject.put("enStationId", "");
         failureJsonObject.put("exStationId", "S0033370010030");

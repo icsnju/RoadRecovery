@@ -295,7 +295,10 @@ public class PathSet {
                 // recNode != null and oriNode != null
                 else {
                     // recNode == oriNode (unchanged) or mutual(recNode, oriNode)
-                    if (recNode.equals(oriNode) || recNode.equals(oriNode.mutualNode) && (!recNode.equals(oriNextNode))) {
+                    //FIXME: hacky code: (!recNode.equals(oriNextNode))
+                    if (recNode.equals(oriNode) ||
+                            recNode.equals(oriNode.mutualNode) && (!recNode.equals(oriNextNode)))
+                    {
                         finalPath.nodeList.add(recNode);
                         if (recNode.equals(oriNode.mutualNode)) {
                             oriNode.source = NodeSource.MODIFY;
@@ -331,7 +334,29 @@ public class PathSet {
             }
         }
 
-        //finalPath.print();
+        int count = 0;
+        int size = finalPath.nodeList.size();
+        while (count < size) {
+            //find the add nodes and delete nodes after it
+            Node node = finalPath.nodeList.get(count);
+            if (node.source == NodeSource.ADD) {
+                int addBegin = count;
+                while (count < size && finalPath.nodeList.get(count).source == NodeSource.ADD) count++;
+                int addEnd = count-1;
+                int deleteBegin = count;
+                while (count < size && finalPath.nodeList.get(count).source == NodeSource.DELETE) count++;
+                int deleteEnd = count-1;
+                if (addBegin <= addEnd && deleteBegin <= deleteEnd) {
+                    //[..., (ab, ae), (db, de), ...] -> [..., (db, de), (ab, ae), ...]
+                    Collections.rotate(
+                            finalPath.nodeList.subList(addBegin, deleteEnd+1),
+                            deleteEnd - deleteBegin + 1
+                    );
+                }
+            }
+            else count++;
+        }
+
         return finalPath;
     }
 
