@@ -20,7 +20,7 @@ public class JarTest {
                 new URL[] {myJar.toURI().toURL()},
                 this.getClass().getClassLoader()
         );
-        Class classToLoad = Class.forName("PathRestoration", true, child);
+        Class classToLoad = Class.forName("nju.ics.Main.PathRestoration", true, child);
         Method method = classToLoad.getMethod("pathRestorationMethod", String.class, String.class);
         Object instance = classToLoad.newInstance();
         String basic_data_file_path = "src/test/resources/basic-data.xls";
@@ -31,6 +31,13 @@ public class JarTest {
         );
 
         System.out.println(returnedString);
+    }
+
+
+    @Test
+    public void jarTest2() {
+
+
     }
 
 }

@@ -1,7 +1,5 @@
-package Entity;
+package nju.ics.Entity;
 
-
-import java.sql.Timestamp;
 
 public class Node implements Cloneable {
     /* attributes, e.g., {3C0101, wu'bei-yun'shan'zhi'jia, 0}

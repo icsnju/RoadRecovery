@@ -1,7 +1,7 @@
-package Entity;
+package nju.ics.Entity;
 
-import static Entity.NodeSource.*;
-import static Entity.NodeType.TOLLSTATION;
+import static nju.ics.Entity.NodeSource.*;
+import static nju.ics.Entity.NodeType.TOLLSTATION;
 
 import java.util.ArrayList;
 import java.util.Arrays;

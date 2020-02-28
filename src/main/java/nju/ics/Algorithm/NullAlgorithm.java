@@ -1,8 +1,7 @@
-package Algorithm;
+package nju.ics.Algorithm;
 
-import Entity.Graph;
-import Entity.Path;
-import Entity.PathSet;
+import nju.ics.Entity.Graph;
+import nju.ics.Entity.Path;
 
 public class NullAlgorithm implements Algorithm {
     public static int cnt = 0;

@@ -1,9 +1,12 @@
-import Algorithm.*;
-import Entity.Graph;
-import Entity.Node;
-import Entity.Path;
-import Entity.PathSet;
-import Tool.ReadExcel;
+package nju.ics.Main;
+
+
+import nju.ics.Entity.Graph;
+import nju.ics.Entity.Path;
+import nju.ics.Entity.PathSet;
+import nju.ics.Tool.ReadExcel;
+import nju.ics.Algorithm.Algorithm;
+import nju.ics.Algorithm.DPAlgorithm;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -14,7 +17,7 @@ public class Main {
     private static int TestCasesBegin = 1;
     private static int TestCasesCount = (int) 10;
 
-    static String xlsFileName = "src/test/resources/basic-data.xls";
+    public static String xlsFileName = "src/test/resources/basic-data.xls";
 
     public static void main(String[] args) throws FileNotFoundException, UnsupportedEncodingException {
         //get graph

@@ -1,15 +1,15 @@
-package Tool;
+package nju.ics.Tool;
 
-import Entity.Edge;
-import Entity.Graph;
-import Entity.Node;
+import nju.ics.Entity.Edge;
+import nju.ics.Entity.Graph;
+import nju.ics.Entity.Node;
 import org.apache.poi.ss.usermodel.*;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
 
-import static Entity.NodeType.*;
+import static nju.ics.Entity.NodeType.*;
 
 public class ReadExcel {
 

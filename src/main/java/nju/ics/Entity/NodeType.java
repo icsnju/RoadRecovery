@@ -1,4 +1,4 @@
-package Entity;
+package nju.ics.Entity;
 
 public enum NodeType {
     NORMALPORTAL, //pu'tong'men'jia 0

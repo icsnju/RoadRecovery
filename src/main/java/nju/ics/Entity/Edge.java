@@ -1,4 +1,4 @@
-package Entity;
+package nju.ics.Entity;
 
 public class Edge {
     public Node inNode;

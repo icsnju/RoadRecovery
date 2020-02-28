@@ -1,4 +1,4 @@
-package Entity;
+package nju.ics.Entity;
 
 public enum NodeSource{
     IDENTIFY, // 0

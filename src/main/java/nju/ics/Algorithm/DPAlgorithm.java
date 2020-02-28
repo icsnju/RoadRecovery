@@ -1,11 +1,11 @@
-package Algorithm;
+package nju.ics.Algorithm;
 
-import static Entity.NodeSource.*;
+import static nju.ics.Entity.NodeSource.*;
 
-import Entity.Graph;
-import Entity.Node;
-import Entity.NodeType;
-import Entity.Path;
+import nju.ics.Entity.Graph;
+import nju.ics.Entity.Node;
+import nju.ics.Entity.NodeType;
+import nju.ics.Entity.Path;
 
 public class DPAlgorithm implements Algorithm {
 

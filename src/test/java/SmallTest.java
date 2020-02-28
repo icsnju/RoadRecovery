@@ -1,8 +1,9 @@
-import Algorithm.*;
-import Entity.Graph;
-import Entity.Path;
-import Entity.PathSet;
-import Tool.ReadExcel;
+import nju.ics.Entity.Graph;
+import nju.ics.Entity.Path;
+import nju.ics.Entity.PathSet;
+import nju.ics.Tool.ReadExcel;
+import nju.ics.Algorithm.DPAlgorithm;
+import nju.ics.Main.Main;
 import org.junit.Test;
 
 import java.io.FileNotFoundException;
@@ -10,8 +11,8 @@ import java.io.PrintWriter;
 
 public class SmallTest {
 
-    private int testBegin = 10001;
-    private int testCount = 32;
+    private int testBegin = 10022;
+    private int testCount = 1;
 
     private static PrintWriter writer = null;
     private static final Graph graph;
@@ -37,7 +38,7 @@ public class SmallTest {
             pathSet.readAll2Path(graph, testIndex, writer, false);
 
             //execute algorithm
-            DPAlgorithm algorithm = new DPAlgorithm();
+            nju.ics.Algorithm.DPAlgorithm algorithm = new DPAlgorithm();
             pathSet.paths.get(0).print("原始路径");
             assert(pathSet.paths.size() == 1);
             Path recoverPath = algorithm.execute(graph, pathSet.paths.get(0));

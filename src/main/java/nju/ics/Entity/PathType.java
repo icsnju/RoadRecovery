@@ -1,4 +1,4 @@
-package Entity;
+package nju.ics.Entity;
 
 public enum PathType {
     Normal, // literally

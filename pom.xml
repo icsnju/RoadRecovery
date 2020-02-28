@@ -23,7 +23,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>Main</mainClass>
+                            <mainClass>nju.ics.Main.Main</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

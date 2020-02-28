@@ -1,6 +1,10 @@
-import Algorithm.*;
-import Entity.*;
-import Tool.ReadExcel;
+package nju.ics.Main;
+
+
+import nju.ics.Tool.ReadExcel;
+import nju.ics.Algorithm.Algorithm;
+import nju.ics.Algorithm.DPAlgorithm;
+import nju.ics.Entity.*;
 import org.json.JSONObject;
 
 public class PathRestoration {
