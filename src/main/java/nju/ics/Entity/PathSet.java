@@ -263,7 +263,7 @@ public class PathSet {
                     Node deleteNode = new Node(oriNode.index, oriNode.name, oriNode.type, oriNode.mutualNode);
                     deleteNode.source = NodeSource.DELETE;
                     finalPath.nodeList.add(deleteNode);
-                    System.out.println("[Delete a node]: no more recovered node.");
+//                    System.out.println("[Delete a node]: no more recovered node.");
                     if (debugging) System.exit(1);
                 }
             }
@@ -290,7 +290,7 @@ public class PathSet {
                         //oriNode is marked as "Delete" in pre-processing.
                         if (oriNode.source == NodeSource.DELETE) {
                             finalPath.nodeList.add(oriNode);
-                            System.out.println("[Delete a node]: duplicated nodes.");
+//                            System.out.println("[Delete a node]: duplicated nodes.");
                             if (debugging) System.exit(1);
                             recoveredIndex--;
                         }
@@ -305,7 +305,7 @@ public class PathSet {
                             deleteNode.source = NodeSource.DELETE;
                             finalPath.nodeList.add(deleteNode);
                             oriNode.source = NodeSource.DELETE;
-                            System.out.println("[Delete a node]: DP deletes a node " + deleteNode.index);
+//                            System.out.println("[Delete a node]: DP deletes a node " + deleteNode.index);
                             if (debugging) System.exit(1);
                             recoveredIndex--;
                         }
