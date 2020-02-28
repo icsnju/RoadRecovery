@@ -180,7 +180,6 @@ public class PathRestoration {
         returnJsonObj.put("flagGroup", "0");
         returnJsonObj.put("gantryGroup", gantryGroup);
         returnJsonObj.put("useType", "0");
-        //there is a typo: updateGrantry -> updateGantry
         returnJsonObj.put("updateGantry", "0");
     }
 

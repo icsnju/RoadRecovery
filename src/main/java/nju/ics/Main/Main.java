@@ -19,7 +19,7 @@ public class Main {
 
     public static String xlsFileName = "src/test/resources/basic-data.xls";
 
-    public static void main(String[] args) throws FileNotFoundException, UnsupportedEncodingException {
+    public static void main(String[] args) throws FileNotFoundException {
         //get graph
         ReadExcel readExcel = new ReadExcel();
         Graph graph = readExcel.buildGraph(xlsFileName);
