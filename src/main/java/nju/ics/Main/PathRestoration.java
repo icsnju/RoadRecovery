@@ -8,6 +8,8 @@ import nju.ics.Entity.*;
 import org.json.JSONObject;
 
 public class PathRestoration {
+
+    public static Graph graph = null;
     /**
      * input key
      */
@@ -29,8 +31,10 @@ public class PathRestoration {
     public static String pathRestorationMethod(String jsonData, String basicDataPath)  {
         //build the graph
         //specify the excel path
-        ReadExcel readExcel = new ReadExcel();
-        Graph graph = readExcel.buildGraph(basicDataPath);
+        if (graph == null) {
+            ReadExcel readExcel = new ReadExcel();
+            graph = readExcel.buildGraph(basicDataPath);
+        }
 
         //analyze JSON data
         JSONObject jsonObj = new JSONObject(jsonData);

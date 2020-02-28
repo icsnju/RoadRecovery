@@ -12,35 +12,10 @@ public class PathSet {
     public List<Path> paths = new ArrayList<Path>();
     public Path finalPathInCard = null;
     public Path finalPathInFlow = null;
-    String testFileName = "src/test/resources/test-data.xls";
-//    String testFileName1 = "src/main/resources/test-data-10000-1.txt";
-    String testFileName1 = "src/test/resources/test-data-32.txt";
-    String testFileName2 = "src/test/resources/test-data-10000-2.txt";
+    public static HashMap<String, HashMap<Integer, List<String>>> inputsMap = new HashMap<>();
+
     int SheetHead = 3;
     String outDirectory = "src/test/resources/outputs/";
-
-    /*
-    I don't where is test oracle.
-    read two kinds of paths, combined into a path set.
-     */
-    public void readAllPath(Graph graph, int testIndex) {
-        System.out.println("testIndex=" + testIndex);
-        try {
-            /*
-            get steam info and test oracle.
-             */
-            Workbook workbook = WorkbookFactory.create(new File(testFileName));
-
-            //get steam info
-            Sheet sheet = workbook.getSheetAt(testIndex*2-1);
-            extractOnePath(graph, sheet, 0); // first path:  simplified path
-            extractOnePath(graph, sheet, 2); // second path: complete path
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
 
     private void extractOnePath(Graph graph, Sheet sheet, int columnBase) {
         Path path = new Path();
@@ -62,8 +37,11 @@ public class PathSet {
         paths.add(path); //testcase has only one path.
     }
 
-    public boolean readAll2Path(Graph graph, int testIndex, PrintWriter writer, boolean hasSecond) {
-        PathType flag1 = extractOnePath2(graph, testIndex, testFileName1, hasSecond);
+    public boolean readAll2Path(Graph graph, int testIndex, PrintWriter writer,
+                                boolean hasSecond,
+                                String testFile1,
+                                String testFile2) {
+        PathType flag1 = extractOnePath2(graph, testIndex, testFile1, hasSecond);
 
         writer.print(testIndex + ", ");
 
@@ -73,7 +51,7 @@ public class PathSet {
 
         PathType flag2 = null;
         if (hasSecond) {
-            flag2 = extractOnePath2(graph, testIndex, testFileName2, hasSecond);
+            flag2 = extractOnePath2(graph, testIndex, testFile2, hasSecond);
             if (flag2 == PathType.Normal) writer.print("0, ");
             else if (flag2 == PathType.Missing) writer.print("1, ");
             else if (flag2 == PathType.UnknownNode) writer.print("2, ");
@@ -91,25 +69,27 @@ public class PathSet {
      */
     private PathType extractOnePath2(Graph graph, int testIndex, String testFileName, boolean hasSecond) {
         try {
-            Path path = new Path();
-            FileInputStream fs = new FileInputStream(testFileName);
-            BufferedReader br = new BufferedReader(new InputStreamReader(fs));
-            String allInfo;
-            List<String> commaSeparatedList = null;
-            br.readLine();
-            allInfo = br.readLine();
-            while (allInfo != null) {
-                commaSeparatedList = Arrays.asList(allInfo.split(","));
-                //find the index-th data.
-                if (Integer.parseInt(commaSeparatedList.get(0)) == testIndex) {
-                    System.out.println(testIndex);
-                    break;
-                }
+            //TODO: cache file content
+            if (!inputsMap.containsKey(testFileName))
+            {
+                inputsMap.put(testFileName, new HashMap<>());
+                HashMap<Integer, List<String>> inputMap = inputsMap.get(testFileName);
+                FileInputStream fs = new FileInputStream(testFileName);
+                BufferedReader br = new BufferedReader(new InputStreamReader(fs));
+                String allInfo;
+
+                br.readLine();
                 allInfo = br.readLine();
+                while (allInfo != null) {
+                    List<String> commaSeparatedListTmp = Arrays.asList(allInfo.split(","));
+                    int currentIndex = Integer.parseInt(commaSeparatedListTmp.get(0));
+                    inputMap.put(currentIndex, commaSeparatedListTmp);
+                    allInfo = br.readLine();
+                }
             }
 
-            if (allInfo == null) return PathType.Missing;
-
+            List<String> commaSeparatedList = inputsMap.get(testFileName).get(testIndex);
+            Path path = new Path();
             String[] indexList = commaSeparatedList.get(2).split("\\|");
             for (String index : indexList) {
                 Node node = new Node();

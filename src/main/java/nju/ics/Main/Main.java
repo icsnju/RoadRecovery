@@ -35,7 +35,10 @@ public class Main {
             PathSet pathSet = new PathSet();
 //            pathSet.readAllPath(graph, testIndex);
             boolean success = true;
-            if (pathSet.readAll2Path(graph, testIndex, writer, true)) {
+            if (pathSet.readAll2Path(graph, testIndex, writer, true,
+                    "src/main/resources/test-data-10000-1.txt",
+                    "src/test/resources/test-data-10000-2.txt")
+            ) {
                 //execute the algorithm
 //                Algorithm algorithm = new NullAlgorithm();
                 Algorithm algorithm = new DPAlgorithm();

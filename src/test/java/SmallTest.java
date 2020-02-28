@@ -11,8 +11,8 @@ import java.io.PrintWriter;
 
 public class SmallTest {
 
-    private int testBegin = 10022;
-    private int testCount = 1;
+    private int testBegin = 10001;
+    private int testCount = 32;
 
     private static PrintWriter writer = null;
     private static final Graph graph;
@@ -35,14 +35,14 @@ public class SmallTest {
             //read one path
             System.out.println("\nCase " + testIndex + ":");
             PathSet pathSet = new PathSet();
-            pathSet.readAll2Path(graph, testIndex, writer, false);
+            pathSet.readAll2Path(graph, testIndex, writer, false,
+                    "src/test/resources/test-data-32.txt", null);
 
             //execute algorithm
             nju.ics.Algorithm.DPAlgorithm algorithm = new DPAlgorithm();
             pathSet.paths.get(0).print("原始路径");
             assert(pathSet.paths.size() == 1);
             Path recoverPath = algorithm.execute(graph, pathSet.paths.get(0));
-
 
             //print output
             if (recoverPath != null) {
