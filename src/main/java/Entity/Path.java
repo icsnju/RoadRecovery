@@ -30,8 +30,8 @@ public class Path {
         }
     }
 
-    public void print() {
-        System.out.println("---path begin---");
+    public void print(String desc) {
+        System.out.println("---"+ desc +" begin---");
         System.out.println("---length = "+ nodeList.size() +" ---");
         for (Node node : nodeList) {
             System.out.println(fixedLengthString(node.index, 20) + " " +

@@ -7,9 +7,9 @@ public class PathRestoration {
     /**
      * input key
      */
-    String enStationId, exStationId;
-    String enTime, exTime;
-    String gantryGroup, typeGroup, timeGroup;
+    static String enStationId, exStationId;
+    static String enTime, exTime;
+    static String gantryGroup, typeGroup, timeGroup;
 
     /** TODO:
      * output key
@@ -22,7 +22,7 @@ public class PathRestoration {
      * @param jsonData each element of an input path in JSON format
      * @return
      */
-    public String pathRestorationMethod(String jsonData, String basicDataPath)  {
+    public static String pathRestorationMethod(String jsonData, String basicDataPath)  {
         //build the graph
         //TODO: specify the excel path
         ReadExcel readExcel = new ReadExcel();
@@ -78,6 +78,7 @@ public class PathRestoration {
 
         Algorithm algorithm = new DPAlgorithm();
         Path recoveredPath = algorithm.execute(graph, originalPath);
+        recoveredPath.print("算法恢复的路径");
 
         //generate JSON data for return
         JSONObject returnJsonObj = getReturnedJsonObject(originalPath, recoveredPath, "奇怪的错误");
@@ -85,7 +86,7 @@ public class PathRestoration {
         return returnJsonObj.toString();
     }
 
-    private JSONObject getReturnedJsonObject(Path originalPath, Path recoveredPath, String description) {
+    private static JSONObject getReturnedJsonObject(Path originalPath, Path recoveredPath, String description) {
         JSONObject returnJsonObj = new JSONObject();
         if (recoveredPath != null) {
             returnJsonObj.put("code", "1");
@@ -124,9 +125,9 @@ public class PathRestoration {
 
             //mark the original node as one of {1:identify, 2:modify, 3:delete}
             PathSet pathSet = new PathSet();
-            originalPath.print();
+            originalPath.print("原始路径");
             pathSet.addDeleteAndModifyTag(recoveredPath.nodeList, originalPath.nodeList);
-            originalPath.print();
+            originalPath.print("原始路径的修订版");
 
             StringBuilder useType = new StringBuilder();
             StringBuilder updateGantry = new StringBuilder();
@@ -161,7 +162,7 @@ public class PathRestoration {
         return returnJsonObj;
     }
 
-    private void handleFailure(JSONObject returnJsonObj, String description) {
+    private static void handleFailure(JSONObject returnJsonObj, String description) {
         //TODO: exception handling
         returnJsonObj.put("code", "2");
         //FIXME: @fancy: describe why restoration fails.
@@ -175,7 +176,7 @@ public class PathRestoration {
         returnJsonObj.put("updateGantry", "0");
     }
 
-    private Node getNode(Graph graph, String gantry) throws NodeUnknownException {
+    private static Node getNode(Graph graph, String gantry) throws NodeUnknownException {
         Node node = new Node();
         node.index = gantry;
         if (graph.nodes.indexOf(node) == -1) {
@@ -185,7 +186,21 @@ public class PathRestoration {
         return graph.nodes.get(graph.nodes.indexOf(node));
     }
 
-    private class NodeUnknownException extends Throwable {
+    private static class NodeUnknownException extends Throwable {
+
+    }
+
+    public static void main(String[] args) {
+        if (args.length < 2) {
+            System.err.println("please provide two args:\n" +
+                    "\tString jsonData\n" +
+                    "\tString basicDataPath");
+            System.exit(1);
+        }
+
+//        System.out.println(args[0]);
+
+        pathRestorationMethod(args[0], args[1]);
 
     }
 }

@@ -19,15 +19,13 @@ public class PathRestorationTest {
 
 
         String returnString;
-//        returnString = pathRestoration.pathRestorationMethod(successJsonObject.toString(), basic_data_file_path);
-//        System.out.println(returnString);
-
-        returnString = pathRestoration.pathRestorationMethod(failureJsonObject.toString(), basic_data_file_path);
+        returnString = pathRestoration.pathRestorationMethod(successJsonObject.toString(), basic_data_file_path);
         System.out.println(returnString);
 
+//        returnString = pathRestoration.pathRestorationMethod(failureJsonObject.toString(), basic_data_file_path);
+//        System.out.println(returnString);
+
         //TODO: assert some properties
-
-
     }
 
     private static void getInput() {
@@ -53,6 +51,6 @@ public class PathRestorationTest {
         failureJsonObject.put("typeGroup",   "0|0|0|0|0|0|0");
         failureJsonObject.put("timeGroup",   "");
 
-        System.out.println(failureJsonObject.toString());
+//        System.out.println(failureJsonObject.toString());
     }
 }

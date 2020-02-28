@@ -14,7 +14,7 @@ public class JarTest {
             NoSuchMethodException, InvocationTargetException, MalformedURLException {
 
         //Java Reflection
-        File myJar = new File("target/RoadRecovery-1.2-SNAPSHOT.jar");
+        File myJar = new File("target/RoadRecovery-1.0-jar-with-dependencies.jar");
 
         URLClassLoader child = new URLClassLoader(
                 new URL[] {myJar.toURI().toURL()},

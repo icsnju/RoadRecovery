@@ -10,8 +10,8 @@ import java.io.PrintWriter;
 
 public class SmallTest {
 
-    private int testBegin = 10001;
-    private int testCount = 32;
+    private int testBegin = 10018;
+    private int testCount = 1;
 
     @Test
     public void test32Items() throws FileNotFoundException {
@@ -28,7 +28,7 @@ public class SmallTest {
 
             //execute algorithm
             DPAlgorithm algorithm = new DPAlgorithm();
-            pathSet.paths.get(0).print();
+            pathSet.paths.get(0).print("原始路径");
             assert(pathSet.paths.size() == 1);
             Path recoverPath = algorithm.execute(graph, pathSet.paths.get(0));
 
@@ -37,8 +37,9 @@ public class SmallTest {
             if (recoverPath != null) {
                 PathSet recoveredPathSet = new PathSet();
                 recoveredPathSet.paths.add(recoverPath);
-                recoveredPathSet.paths.get(0).print();
+                recoveredPathSet.paths.get(0).print("算法恢复的路径");
                 recoveredPathSet.compareAndPrint(graph, testIndex, writer, pathSet, false);
+                recoveredPathSet.finalPathInCard.print("合并的路径");
             }
             else {
                 System.err.println("recoverPath is null");

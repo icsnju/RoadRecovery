@@ -11,8 +11,8 @@ import java.io.UnsupportedEncodingException;
 
 public class Main {
 
-    private static int TestCasesBegin = 23;
-    private static int TestCasesCount = (int) 1;
+    private static int TestCasesBegin = 1;
+    private static int TestCasesCount = (int) 10;
 
     static String xlsFileName = "src/test/resources/basic-data.xls";
 
@@ -49,8 +49,8 @@ public class Main {
                 }
                 //print outputs
                 if (success) {
-                    recoveredPathSet.paths.get(0).print();
-                    recoveredPathSet.paths.get(1).print();
+                    recoveredPathSet.paths.get(0).print("算法恢复的路径1");
+                    recoveredPathSet.paths.get(1).print("算法恢复的路径2");
                     recoveredPathSet.compareAndPrint(graph, testIndex, writer, pathSet, true);
                 } else {
                     // example:
