@@ -11,8 +11,8 @@ import java.io.PrintWriter;
 
 public class SmallTest {
 
-    private int testBegin = 10001;
-    private int testCount = 47;
+    private int testBegin = 10041;
+    private int testCount = 1;
 
     private static PrintWriter writer = null;
     private static final Graph graph;

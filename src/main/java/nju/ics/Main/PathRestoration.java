@@ -143,7 +143,8 @@ public class PathRestoration {
             PathSet pathSet = new PathSet();
             originalPath.print("原始路径");
             pathSet.finalPathInCard = pathSet.addDeleteAndModifyTag(recoveredPath.nodeList, originalPath.nodeList);
-            pathSet.dumpIntoExcel(testIndex, false, true);
+            if (testIndex != 0)
+                pathSet.dumpIntoExcel(testIndex, false, true);
 
             originalPath.print("原始路径的修订版");
 
