@@ -29,10 +29,10 @@ public class SmallTest {
     }
 
     @Test
-    public void test32Items() {
+    public void testItems() {
 
         for (int testIndex = testBegin; testIndex < testBegin + testCount; testIndex++) {
-            if (testIndex == 10037) continue;
+//            if (testIndex == 10037) continue;
             //read one path
             System.out.println("\nCase " + testIndex + ":");
             PathSet pathSet = new PathSet();

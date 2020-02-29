@@ -91,10 +91,14 @@ public class PathSet {
             List<String> commaSeparatedList = inputsMap.get(testFileName).get(testIndex);
             Path path = new Path();
             String[] indexList = commaSeparatedList.get(2).split("\\|");
+            int count = 0;
             for (String index : indexList) {
                 Node node = new Node();
                 node.index = index;
                 if (graph.nodes.indexOf(node) == -1) {
+                    if (count++ == 0) {
+                        continue;
+                    }
                     System.out.println("[Error] Unknown nodes exist.");
 //                    System.exit(1);
                     return PathType.UnknownNode;
