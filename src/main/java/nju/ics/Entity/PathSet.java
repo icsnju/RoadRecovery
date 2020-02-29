@@ -51,7 +51,7 @@ public class PathSet {
 
         PathType flag2 = null;
         if (hasSecond) {
-            flag2 = extractOnePath2(graph, testIndex, testFile2, hasSecond);
+            flag2 = extractOnePath2(graph, testIndex, testFile2, true);
             if (flag2 == PathType.Normal) writer.print("0, ");
             else if (flag2 == PathType.Missing) writer.print("1, ");
             else if (flag2 == PathType.UnknownNode) writer.print("2, ");
@@ -118,7 +118,7 @@ public class PathSet {
         return PathType.Normal;
     }
 
-    public void compareAndPrint(Graph graph, int testIndex, PrintWriter writer, PathSet inputPathSet, boolean hasSecond) {
+    public void compareAndPrint(int testIndex, PrintWriter writer, PathSet inputPathSet, boolean hasSecond) {
         /*
          if equal, print "Successful recovery",
          else, print "Failed recovery".
@@ -165,11 +165,19 @@ public class PathSet {
 
         //save result
         //correctly output chinese characters
+        dumpIntoExcel(testIndex, hasSecond, successful);
+    }
+
+    public void dumpIntoExcel(int testIndex, boolean hasSecond, boolean successful) {
         try {
             //use Excel file to save outputs.
             String[] columns = {"门架HEX/收费站编号","收费站/门架名称","门架来源"};
             Workbook workbook = new XSSFWorkbook();
             Sheet sheet = workbook.createSheet("case " + testIndex);
+            for (int i = 0; i < 10; i++) {
+                sheet.setColumnWidth(i, 8000);
+            }
+
             Row row = sheet.createRow(0);
             if (successful) row.createCell(0).setCellValue("Success: All recovered paths are identical.");
             else row.createCell(0).setCellValue("Failure: Recovered paths are different.");
@@ -217,15 +225,15 @@ public class PathSet {
             row.createCell(baseColumnIndex+1).setCellValue(node.name);
             //(if needed): print node.type
             if (node.source == NodeSource.IDENTIFY)
-                row.createCell(baseColumnIndex+2).setCellValue("标记出的点");
+                row.createCell(baseColumnIndex+2).setCellValue("标记点");
             else if (node.source == NodeSource.ADD)
-                row.createCell(baseColumnIndex+2).setCellValue("增加出的点");
+                row.createCell(baseColumnIndex+2).setCellValue("增加点");
             else if (node.source == NodeSource.MODIFY)
-                row.createCell(baseColumnIndex+2).setCellValue("改为对向的点");
+                row.createCell(baseColumnIndex+2).setCellValue("对向点");
             else if (node.source == NodeSource.DELETE)
-                row.createCell(baseColumnIndex+2).setCellValue("删除的点");
+                row.createCell(baseColumnIndex+2).setCellValue("删除点");
             else
-                row.createCell(baseColumnIndex+2).setCellValue("不明出处的点");
+                row.createCell(baseColumnIndex+2).setCellValue("不明出处");
         }
     }
 

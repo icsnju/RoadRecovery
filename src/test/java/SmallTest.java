@@ -50,7 +50,7 @@ public class SmallTest {
                 PathSet recoveredPathSet = new PathSet();
                 recoveredPathSet.paths.add(recoverPath);
                 recoveredPathSet.paths.get(0).print("算法恢复的路径");
-                recoveredPathSet.compareAndPrint(graph, testIndex, writer, pathSet, false);
+                recoveredPathSet.compareAndPrint(testIndex, writer, pathSet, false);
                 recoveredPathSet.finalPathInCard.print("合并的路径");
             }
             else {

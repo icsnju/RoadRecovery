@@ -17,10 +17,12 @@ public class PathRestorationTest {
 
         //execute the method under test
         PathRestoration pathRestoration = new PathRestoration();
+        String returnString = pathRestoration.pathRestorationMethod(
+                successJsonObject.toString(),
+                basic_data_file_path,
+                0
+        );
 
-
-        String returnString;
-        returnString = pathRestoration.pathRestorationMethod(successJsonObject.toString(), basic_data_file_path);
         System.out.println(returnString);
 
 //        returnString = pathRestoration.pathRestorationMethod(failureJsonObject.toString(), basic_data_file_path);

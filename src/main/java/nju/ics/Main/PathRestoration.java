@@ -13,9 +13,10 @@ public class PathRestoration {
     /**
      * input key
      */
-    static String enStationId, exStationId;
-    static String enTime, exTime;
-    static String gantryGroup, typeGroup, timeGroup;
+    String enStationId, exStationId;
+    String enTime, exTime;
+    String gantryGroup, typeGroup, timeGroup;
+    private int testIndex;
 
     /**
      * output key
@@ -28,7 +29,7 @@ public class PathRestoration {
      * @param jsonData each element of an input path in JSON format
      * @return
      */
-    public static String pathRestorationMethod(String jsonData, String basicDataPath)  {
+    public String pathRestorationMethod(String jsonData, String basicDataPath, int testIndex)  {
         //build the graph
         //specify the excel path
         if (graph == null) {
@@ -36,6 +37,7 @@ public class PathRestoration {
             graph = readExcel.buildGraph(basicDataPath);
         }
 
+        this.testIndex = testIndex;
         //analyze JSON data
         JSONObject jsonObj = new JSONObject(jsonData);
 
@@ -84,9 +86,15 @@ public class PathRestoration {
             return getReturnedJsonObject(originalPath, null, "存在未知门架").toString();
         }
 
+        PathSet originalPathSet = new PathSet();
+        originalPathSet.paths.add(originalPath);
+
         Algorithm algorithm = new DPAlgorithm();
         Path recoveredPath = algorithm.execute(graph, originalPath);
         recoveredPath.print("算法恢复的路径");
+
+        PathSet recoveredPathSet = new PathSet();
+        recoveredPathSet.paths.add(recoveredPath);
 
         //generate JSON data for return
         JSONObject returnJsonObj = getReturnedJsonObject(originalPath, recoveredPath, "奇怪的错误");
@@ -94,7 +102,7 @@ public class PathRestoration {
         return returnJsonObj.toString();
     }
 
-    private static JSONObject getReturnedJsonObject(Path originalPath, Path recoveredPath, String description) {
+    private JSONObject getReturnedJsonObject(Path originalPath, Path recoveredPath, String description) {
         JSONObject returnJsonObj = new JSONObject();
         if (recoveredPath != null) {
             returnJsonObj.put("code", "1");
@@ -134,7 +142,9 @@ public class PathRestoration {
             //mark the original node as one of {1:identify, 2:modify, 3:delete}
             PathSet pathSet = new PathSet();
             originalPath.print("原始路径");
-            pathSet.addDeleteAndModifyTag(recoveredPath.nodeList, originalPath.nodeList);
+            pathSet.finalPathInCard = pathSet.addDeleteAndModifyTag(recoveredPath.nodeList, originalPath.nodeList);
+            pathSet.dumpIntoExcel(testIndex, false, true);
+
             originalPath.print("原始路径的修订版");
 
             StringBuilder useType = new StringBuilder();
@@ -170,7 +180,7 @@ public class PathRestoration {
         return returnJsonObj;
     }
 
-    private static void handleFailure(JSONObject returnJsonObj, String description) {
+    private void handleFailure(JSONObject returnJsonObj, String description) {
         // exception handling
         returnJsonObj.put("code", "2");
         //@fancy: describe why restoration fails.
@@ -183,7 +193,7 @@ public class PathRestoration {
         returnJsonObj.put("updateGantry", "0");
     }
 
-    private static Node getNode(Graph graph, String gantry) throws NodeUnknownException {
+    private Node getNode(Graph graph, String gantry) throws NodeUnknownException {
         Node node = new Node();
         node.index = gantry;
         if (graph.nodes.indexOf(node) == -1) {
@@ -193,7 +203,7 @@ public class PathRestoration {
         return graph.nodes.get(graph.nodes.indexOf(node));
     }
 
-    private static class NodeUnknownException extends Throwable {
+    private class NodeUnknownException extends Throwable {
 
     }
 
@@ -206,8 +216,8 @@ public class PathRestoration {
         }
 
 //        System.out.println(args[0]);
-
-        pathRestorationMethod(args[0], args[1]);
+        PathRestoration pathRestoration = new PathRestoration();
+        pathRestoration.pathRestorationMethod(args[0], args[1], 0);
 
     }
 }

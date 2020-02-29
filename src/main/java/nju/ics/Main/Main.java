@@ -10,7 +10,6 @@ import nju.ics.Algorithm.DPAlgorithm;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 
 public class Main {
 
@@ -57,7 +56,7 @@ public class Main {
                 if (success) {
                     recoveredPathSet.paths.get(0).print("算法恢复的路径1");
                     recoveredPathSet.paths.get(1).print("算法恢复的路径2");
-                    recoveredPathSet.compareAndPrint(graph, testIndex, writer, pathSet, true);
+                    recoveredPathSet.compareAndPrint(testIndex, writer, pathSet, true);
                 } else {
                     // example:
                     // case 5369, 5544: 出省
