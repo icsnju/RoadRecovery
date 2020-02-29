@@ -19,8 +19,10 @@ public class DPAlgorithm implements Algorithm {
         double alpha = 0.01;
         double beta = graph.nodes.size() + 1; // delete side node
         double gamma = 1; // delete mid node
-        double delta = 1 / gamma;
+        double delta = 0.1; // add node // 尽量加而不是删
         double inf = 1e9;
+
+        boolean debug = false;
 
         Path originalPath = path;
 //        Path originalPath = new Path();
@@ -66,13 +68,19 @@ public class DPAlgorithm implements Algorithm {
                         Path shortestPath = graph.getShortestPath(nodeJ, nodeI);
                         if (shortestPath == null) {
                             continue;
-                        } else if (flagI == 1) { // 反转结点
-                            shortestPath.nodeList
-                                .get(shortestPath.nodeList.size() - 1).source = MODIFY;
+                        }
+                        if (shortestPath.getLength() > 0 || (flagI == 1 && flagJ == 1)) { // When i == j and has one IDENTIFY, then IDENTIFY
+                            if (flagJ == 1) { // 反转结点
+                                shortestPath.nodeList.get(0).source = MODIFY;
+                            }
+                            if (flagI == 1) { // 反转结点
+                                shortestPath.nodeList
+                                    .get(shortestPath.nodeList.size() - 1).source = MODIFY;
+                            }
                         }
                         // FIXME: find suitable cost
                         double distance = Double.max(shortestPath.getLength() - 1, 0);
-                        // update method 1: delete node i+1 to j-1
+                        // update method 1: delete node j+1 to i-1
                         double result = dp[j][flagJ]
                             // transformation 1: mutual node, cost alpha
                             + alpha * flagI
@@ -85,26 +93,30 @@ public class DPAlgorithm implements Algorithm {
                             dp[i][flagI] = result;
                             dpPath[i][flagI].nodeList.clear();
                             dpPath[i][flagI].add(dpPath[j][flagJ]);
-                            if (flagJ == 1 && nodeI.equals(nodeJ)) {
-                                dpPath[i][flagI].nodeList
-                                    .remove(dpPath[i][flagI].nodeList.size() - 1);
-                            }
+//                            if (flagJ == 1 && nodeI.equals(nodeJ)) {
+//                                dpPath[i][flagI].nodeList
+//                                    .remove(dpPath[i][flagI].nodeList.size() - 1);
+//                            }
                             dpPath[i][flagI].add(shortestPath);
-//                            System.out.println(
-//                                "dp[" + i + "][" + flagI + "]: " + dp[i][flagI] + " (from dp[" + j
-//                                    + "][" + flagJ + "])");
-//                            dpPath[i][flagI].print();
+                            if (debug) {
+                                dpPath[i][flagI].print(
+                                    "dp[" + i + "][" + flagI + "]: " + dp[i][flagI] + " (from dp["
+                                        + j + "][" + flagJ + "])");
+                            }
                         }
-                        // update method 2: delete node 0 to i-1, i+1 to j-1
+                        // update method 2: delete node 0 to j-1, j+1 to i-1
                         if (!not_delete_first) {
-                            result =
-                                alpha * flagI + beta * j + gamma * (i - j - 1) + delta * distance;
+                            result = alpha * (flagJ + flagI) + beta * j + gamma * (i - j - 1)
+                                + delta * distance;
                             if (result <= dp[i][flagI]) {
                                 dp[i][flagI] = result;
                                 dpPath[i][flagI].nodeList.clear();
                                 dpPath[i][flagI].add(shortestPath);
-//                            System.out.println("dp[" + i + "][" + flagI + "]: " + dp[i][flagI]);
-//                            dpPath[i][flagI].print();
+                                if (debug) {
+                                    dpPath[i][flagI].print(
+                                        "dp[" + i + "][" + flagI + "]: " + dp[i][flagI]
+                                            + " (from node[" + j + "][" + flagJ + "])");
+                                }
                             }
                         }
                     }
