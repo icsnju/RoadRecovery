@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-name="outputs-10101-10200-0302.zip"
+name="outputs-10201-10300-0302.zip"
 
 cd src/test/resources/
 zip -r $name outputs/
