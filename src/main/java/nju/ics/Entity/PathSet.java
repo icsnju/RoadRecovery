@@ -89,6 +89,10 @@ public class PathSet {
             }
 
             List<String> commaSeparatedList = inputsMap.get(testFileName).get(testIndex);
+            for (String item: commaSeparatedList
+                 ) {
+                System.out.println(item);
+            }
             Path path = new Path();
             String[] indexList = commaSeparatedList.get(2).split("\\|");
             int count = 0;
