@@ -17,8 +17,8 @@ public class DPAlgorithm implements Algorithm {
      */
     public Path execute(Graph graph, Path path) {
         double alpha = 0.01;
-        double beta = graph.nodes.size() + 1; // delete side node
-        double gamma = 1; // delete mid node
+        double beta = graph.nodes.size() + 10; // delete side node
+        double gamma = 10; // delete mid node
         double delta = 0.1; // add node // 尽量加而不是删
         double inf = 1e9;
 
