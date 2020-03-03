@@ -293,12 +293,14 @@ public class PathSet {
                     // recNode == oriNode (unchanged) or mutual(recNode, oriNode)
                     //FIXME: hacky code: (!recNode.equals(oriNextNode))
                     if (recNode.equals(oriNode) ||
-                            recNode.equals(oriNode.mutualNode) && (!recNode.equals(oriNextNode)))
+                            recNode.equals(oriNode.mutualNode)
+                                    && (!recNode.equals(oriNextNode))
+                                    && (recNode.source == NodeSource.MODIFY))
                     {
                         finalPath.nodeList.add(recNode);
                         if (recNode.equals(oriNode.mutualNode)) {
                             oriNode.source = NodeSource.MODIFY;
-                            recNode.source = NodeSource.MODIFY;
+//                            recNode.source = NodeSource.MODIFY;
                         }
                     }
                     //if two nodes are different.
