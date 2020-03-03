@@ -11,8 +11,8 @@ import java.io.PrintWriter;
 
 public class SmallTest {
 
-    private int testBegin = 10201;
-    private int testCount = 100;
+    private int testBegin = 10048;
+    private int testCount = 4;
 
     private static PrintWriter writer = null;
     private static final Graph graph;
@@ -37,7 +37,7 @@ public class SmallTest {
             System.out.println("\nCase " + testIndex + ":");
             PathSet pathSet = new PathSet();
             pathSet.readAll2Path(graph, testIndex, writer, false,
-                    "src/test/resources/test-data-10201-10300.txt", null);
+                    "src/test/resources/test-data-10048-10051.txt", null);
 
             //execute algorithm
             nju.ics.Algorithm.DPAlgorithm algorithm = new DPAlgorithm();
