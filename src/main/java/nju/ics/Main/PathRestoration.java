@@ -19,7 +19,7 @@ public class PathRestoration {
     private int testIndex;
     String basicDataPath;
 
-    StringBuilder description = new StringBuilder("未知门架:");
+    StringBuilder description = new StringBuilder("Unknown gantry: ");
     int desCount = 0;
 
     /**
@@ -59,7 +59,7 @@ public class PathRestoration {
         //add the start and end node into original path
         Path originalPath = new Path();
 
-        Node startNode = getNode(graph, enStationId);
+        Node startNode = getNode(graph, enStationId, false);
         if (startNode != null) {
             startNode.source = NodeSource.IDENTIFY;
             originalPath.nodeList.add(startNode);
@@ -69,7 +69,7 @@ public class PathRestoration {
         if (gantryGroup.length() > 0) {
             for (String gantry : gantryList) {
                 System.out.println(gantry);
-                Node completeNode = getNode(graph, gantry);
+                Node completeNode = getNode(graph, gantry, true);
                 if (completeNode != null) {
                     completeNode.source = NodeSource.IDENTIFY;
                     originalPath.nodeList.add(completeNode);
@@ -77,7 +77,7 @@ public class PathRestoration {
             }
         }
 
-        Node endNode = getNode(graph, exStationId);
+        Node endNode = getNode(graph, exStationId, false);
         if (endNode != null) {
             endNode.source = NodeSource.IDENTIFY;
             originalPath.nodeList.add(endNode);
@@ -102,7 +102,7 @@ public class PathRestoration {
         recoveredPathSet.paths.add(recoveredPath);
 
         //generate JSON data for return
-        JSONObject returnJsonObj = getReturnedJsonObject(originalPath, recoveredPath, "奇怪的错误");
+        JSONObject returnJsonObj = getReturnedJsonObject(originalPath, recoveredPath, "Unknown reason");
 
         return returnJsonObj.toString();
     }
@@ -111,7 +111,7 @@ public class PathRestoration {
         JSONObject returnJsonObj = new JSONObject();
         if (recoveredPath != null) {
             returnJsonObj.put("code", "1");
-            returnJsonObj.put("description", "路径还原成功");
+            returnJsonObj.put("description", "Success");
 
             //directly obtain the recoveredPath info.
             StringBuilder pathInfo = new StringBuilder();
@@ -190,7 +190,7 @@ public class PathRestoration {
         // exception handling
         returnJsonObj.put("code", "2");
         //@fancy: describe why restoration fails.
-        returnJsonObj.put("description", "还原失败的原因："+description);
+        returnJsonObj.put("description", "Failure cause: "+description);
         returnJsonObj.put("pathInfo", "0");
         returnJsonObj.put("typeGroup", "0");
         returnJsonObj.put("flagGroup", "0");
@@ -199,12 +199,14 @@ public class PathRestoration {
         returnJsonObj.put("updateGantry", "0");
     }
 
-    private Node getNode(Graph graph, String gantry) {
+    private Node getNode(Graph graph, String gantry, boolean isGantry) {
         Node node = new Node();
         node.index = gantry;
         if (graph.nodes.indexOf(node) == -1) {
-            System.err.println("[Error] 未知门架/收费站 " + gantry + " 存在.");
-            updateDescription(gantry);
+            if (isGantry) {
+                System.err.println("[Error] Unknown gantry [" + gantry + "] exists.");
+                updateDescription(gantry);
+            }
             return null;
         }
         return graph.nodes.get(graph.nodes.indexOf(node));

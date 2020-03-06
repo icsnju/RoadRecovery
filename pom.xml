@@ -6,7 +6,7 @@
 
     <groupId>icsnju</groupId>
     <artifactId>RoadRecovery</artifactId>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
     <build>
         <plugins>
             <plugin>
@@ -23,7 +23,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>nju.ics.Main.Main</mainClass>
+                            <mainClass>nju.ics.Backend.Backend</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
