@@ -23,6 +23,7 @@ public class BackendThread extends Thread {
             byte[] buffer = new byte[defaultByteSize];  //缓冲区的大小
             in.read(buffer);               //处理接收到的报文，转换成字符串
             JSONData = new String(buffer).trim();
+            System.out.println(JSONData);
 
             // 获得输出输出流
             out = new PrintStream(cppSocket.getOutputStream());
@@ -42,6 +43,8 @@ public class BackendThread extends Thread {
         String returnedJSONData = pathRestoration.pathRestorationMethod(JSONData);
         byte[] returnedBytes = returnedJSONData.getBytes();
         out.write(returnedBytes, 0, returnedBytes.length);
+//        String returned = "I am server, and receive your request.";
+//        out.write(returned.getBytes(), 0, returned.getBytes().length);
         try {
             cppSocket.close();
         } catch (IOException e) {

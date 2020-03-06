@@ -26,11 +26,11 @@ public class PathRestorationTest {
         returnString = pathRestoration.pathRestorationMethod(testString);
         System.out.println(returnString);
 
-        returnString = pathRestoration.pathRestorationMethod(successJsonObject.toString());
-        System.out.println(returnString);
-
-        returnString = pathRestoration.pathRestorationMethod(failureJsonObject.toString());
-        System.out.println(returnString);
+//        returnString = pathRestoration.pathRestorationMethod(successJsonObject.toString());
+//        System.out.println(returnString);
+//
+//        returnString = pathRestoration.pathRestorationMethod(failureJsonObject.toString());
+//        System.out.println(returnString);
 
         //assert some properties
     }
