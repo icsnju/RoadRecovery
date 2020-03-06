@@ -17,11 +17,10 @@ public class PathRestoration {
     String enTime, exTime;
     String gantryGroup, typeGroup, timeGroup;
     private int testIndex;
+    String basicDataPath;
 
-    /**
-     * output key
-     */
-
+    StringBuilder description = new StringBuilder("未知门架:");
+    int desCount = 0;
 
     /**
      * interface method for external call
@@ -29,15 +28,7 @@ public class PathRestoration {
      * @param jsonData each element of an input path in JSON format
      * @return
      */
-    public String pathRestorationMethod(String jsonData, String basicDataPath, int testIndex)  {
-        //build the graph
-        //specify the excel path
-        if (graph == null) {
-            ReadExcel readExcel = new ReadExcel();
-            graph = readExcel.buildGraph(basicDataPath);
-        }
-
-        this.testIndex = testIndex;
+    public String pathRestorationMethod(String jsonData)  {
         //analyze JSON data
         JSONObject jsonObj = new JSONObject(jsonData);
 
@@ -50,45 +41,59 @@ public class PathRestoration {
         typeGroup   = jsonObj.getString("typeGroup");
         timeGroup   = jsonObj.getString("timeGroup");
 
+        basicDataPath = jsonObj.getString("basicDataPath");
+        testIndex     = jsonObj.getInt("testIndex");
+
+        //build the graph
+        //specify the excel path
+        if (graph == null) {
+            ReadExcel readExcel = new ReadExcel();
+            graph = readExcel.buildGraph(basicDataPath);
+        }
+
+//        System.out.println(gantryGroup.length());
         String[] gantryList = gantryGroup.split("\\|");
         //FIXME: time information isn't used right now.
         String[] timeList = timeGroup.split("\\|");
 
-
         //add the start and end node into original path
         Path originalPath = new Path();
 
-        try {
-            try {
-                Node startNode = getNode(graph, enStationId);
-                startNode.source = NodeSource.IDENTIFY;
-                originalPath.nodeList.add(startNode);
-            } catch (NodeUnknownException e) {
-                //do nothing
-            }
-
-            //FIXME: I need a runtime node, {node, timestamp}
-            for (String gantry : gantryList) {
-                Node completeNode = getNode(graph, gantry);
-                completeNode.source = NodeSource.IDENTIFY;
-                originalPath.nodeList.add(completeNode);
-            }
-
-            try {
-                Node endNode = getNode(graph, exStationId);
-                endNode.source = NodeSource.IDENTIFY;
-                originalPath.nodeList.add(endNode);
-            } catch (NodeUnknownException e) {
-                //do nothing
-            }
-
-        }  catch (NodeUnknownException e) {
-            return getReturnedJsonObject(originalPath, null, "存在未知门架").toString();
+        Node startNode = getNode(graph, enStationId);
+        if (startNode != null) {
+            startNode.source = NodeSource.IDENTIFY;
+            originalPath.nodeList.add(startNode);
         }
+
+        //FIXME: I need a runtime node, {node, timestamp}
+        if (gantryGroup.length() > 0) {
+            for (String gantry : gantryList) {
+                System.out.println(gantry);
+                Node completeNode = getNode(graph, gantry);
+                if (completeNode != null) {
+                    completeNode.source = NodeSource.IDENTIFY;
+                    originalPath.nodeList.add(completeNode);
+                }
+            }
+        }
+
+        Node endNode = getNode(graph, exStationId);
+        if (endNode != null) {
+            endNode.source = NodeSource.IDENTIFY;
+            originalPath.nodeList.add(endNode);
+        }
+
+        if (desCount > 0)
+            return getReturnedJsonObject(
+                    originalPath,
+                    null,
+                    description.toString()
+            ).toString();
 
         PathSet originalPathSet = new PathSet();
         originalPathSet.paths.add(originalPath);
 
+        originalPath.print("input path");
         Algorithm algorithm = new DPAlgorithm();
         Path recoveredPath = algorithm.execute(graph, originalPath);
         recoveredPath.print("算法恢复的路径");
@@ -194,31 +199,32 @@ public class PathRestoration {
         returnJsonObj.put("updateGantry", "0");
     }
 
-    private Node getNode(Graph graph, String gantry) throws NodeUnknownException {
+    private Node getNode(Graph graph, String gantry) {
         Node node = new Node();
         node.index = gantry;
         if (graph.nodes.indexOf(node) == -1) {
             System.err.println("[Error] 未知门架/收费站 " + gantry + " 存在.");
-            throw new NodeUnknownException();
+            updateDescription(gantry);
+            return null;
         }
         return graph.nodes.get(graph.nodes.indexOf(node));
     }
 
-    private class NodeUnknownException extends Throwable {
-
+    private void updateDescription(String gantry) {
+        if (desCount > 0) description.append("|");
+        desCount++;
+        description.append(gantry);
     }
 
+
     public static void main(String[] args) {
-        if (args.length < 2) {
+        if (args.length < 1) {
             System.err.println("please provide two args:\n" +
-                    "\tString jsonData\n" +
-                    "\tString basicDataPath");
+                    "\tString jsonData");
             System.exit(1);
         }
 
-//        System.out.println(args[0]);
         PathRestoration pathRestoration = new PathRestoration();
-        pathRestoration.pathRestorationMethod(args[0], args[1], 0);
-
+        pathRestoration.pathRestorationMethod(args[0]);
     }
 }
