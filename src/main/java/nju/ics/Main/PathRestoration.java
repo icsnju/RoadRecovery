@@ -83,12 +83,22 @@ public class PathRestoration {
             originalPath.nodeList.add(endNode);
         }
 
+        //If exist unknown gantry, then return with failure.
         if (desCount > 0)
             return getReturnedJsonObject(
                     originalPath,
                     null,
                     description.toString()
             ).toString();
+
+        //If only exist one node, then return with failure.
+        if (originalPath.nodeList.size() == 1) {
+            return getReturnedJsonObject(
+                    originalPath,
+                    null,
+                    "Exist only one node "+originalPath.nodeList.get(0).index+"."
+            ).toString();
+        }
 
         PathSet originalPathSet = new PathSet();
         originalPathSet.paths.add(originalPath);

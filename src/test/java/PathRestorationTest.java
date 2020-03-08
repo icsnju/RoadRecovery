@@ -20,17 +20,17 @@ public class PathRestorationTest {
 
         String returnString;
 
-        String testString = "{\"typeGroup\":\"\",\"exStationId\":\"S0029370010010\",\"enTime\":\"2020-01-22 11:19:19\"," +
-                "\"basicDataPath\":\"src/test/resources/basic-data.xls\",\"exTime\":\"\",\"enStationId\":\"\",\"timeGroup\":\"\"," +
-                "\"gantryGroup\":\"3E3001|3D3012|3C3004|3C3005|3C3006|3C3007|3C3008|3C3009|3C3107\",\"testIndex\":0}";
-        returnString = pathRestoration.pathRestorationMethod(testString);
-        System.out.println(returnString);
+//        String testString = "{\"typeGroup\":\"\",\"exStationId\":\"S0029370010010\",\"enTime\":\"2020-01-22 11:19:19\"," +
+//                "\"basicDataPath\":\"src/test/resources/basic-data.xls\",\"exTime\":\"\",\"enStationId\":\"\",\"timeGroup\":\"\"," +
+//                "\"gantryGroup\":\"3E3001|3D3012|3C3004|3C3005|3C3006|3C3007|3C3008|3C3009|3C3107\",\"testIndex\":0}";
+//        returnString = pathRestoration.pathRestorationMethod(testString);
+//        System.out.println(returnString);
 
 //        returnString = pathRestoration.pathRestorationMethod(successJsonObject.toString());
 //        System.out.println(returnString);
 //
-//        returnString = pathRestoration.pathRestorationMethod(failureJsonObject.toString());
-//        System.out.println(returnString);
+        returnString = pathRestoration.pathRestorationMethod(failureJsonObject.toString());
+        System.out.println(returnString);
 
         //assert some properties
     }
@@ -51,11 +51,11 @@ public class PathRestorationTest {
         System.out.println(successJsonObject.toString());
 
         //manually curate a failure JSON data
-        failureJsonObject.put("enStationId", "S0033370020050");
+        failureJsonObject.put("enStationId", "");
         failureJsonObject.put("exStationId", "S0033370010030");
         failureJsonObject.put("enTime",      "2020-02-26 08:01:15");
         failureJsonObject.put("exTime",      "2020-02-26 08:58:19");
-        failureJsonObject.put("gantryGroup", "falseGantry");
+        failureJsonObject.put("gantryGroup", "");
         failureJsonObject.put("typeGroup",   "");
         failureJsonObject.put("timeGroup",   "");
         failureJsonObject.put("basicDataPath", basic_data_file_path);
