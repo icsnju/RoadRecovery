@@ -21,7 +21,9 @@ public class BackendThread extends Thread {
             //接受数据，但不允许有中文，因为会乱码
             DataInputStream in = new DataInputStream(cppSocket.getInputStream());
             byte[] buffer = new byte[defaultByteSize];  //缓冲区的大小
-            in.read(buffer);               //处理接收到的报文，转换成字符串
+            int size = in.read(buffer);//处理接收到的报文，转换成字符串
+            System.out.println(size);
+            System.out.println(buffer);
             JSONData = new String(buffer).trim();
             System.out.println(JSONData);
 

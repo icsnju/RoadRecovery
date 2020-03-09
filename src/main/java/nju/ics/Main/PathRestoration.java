@@ -5,6 +5,7 @@ import nju.ics.Tool.ReadExcel;
 import nju.ics.Algorithm.Algorithm;
 import nju.ics.Algorithm.DPAlgorithm;
 import nju.ics.Entity.*;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class PathRestoration {
@@ -33,6 +34,7 @@ public class PathRestoration {
         JSONObject jsonObj = new JSONObject(jsonData);
 
         enStationId = jsonObj.getString("enStationId");
+//        System.out.println(enStationId);
         exStationId = jsonObj.getString("exStationId");
         enTime      = jsonObj.getString("enTime");
         exTime      = jsonObj.getString("exTime");
@@ -42,6 +44,7 @@ public class PathRestoration {
         timeGroup   = jsonObj.getString("timeGroup");
 
         basicDataPath = jsonObj.getString("basicDataPath");
+        System.out.println(basicDataPath);
         testIndex     = jsonObj.getInt("testIndex");
 
         //build the graph
