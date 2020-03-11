@@ -20,7 +20,6 @@ public class DPAlgorithm implements Algorithm {
         double beta = graph.nodes.size() + 10; // delete side node
         double gamma = 10; // delete mid node
         double delta = 0.1; // add node // 尽量加而不是删
-        double inf = 1e9;
 
         boolean debug = false;
 
@@ -36,7 +35,7 @@ public class DPAlgorithm implements Algorithm {
         double[][] dp = new double[originalPathLength + 1][2];
         Path[][] dpPath = new Path[originalPathLength + 1][2];
 
-        double answer = inf;
+        double answer = -1;
         Path answerPath = new Path();
 
         boolean not_delete_first = originalPath.nodeList.get(0).type == NodeType.TOLLSTATION;
@@ -46,7 +45,7 @@ public class DPAlgorithm implements Algorithm {
         for (int i = 0; i <= originalPathLength; ++i) {
             for (int flagI = 0; flagI <= 1; ++flagI) {
                 // initial dp array
-                dp[i][flagI] = (i == 0) ? (alpha * flagI) : inf;
+                dp[i][flagI] = (i == 0) ? (alpha * flagI) : -1;
                 dpPath[i][flagI] = new Path();
                 // nodeI: v_i or T(v_i) controlled by nodeI
                 Node nodeI = flagI == 0 ? originalPath.nodeList.get(i)
@@ -81,34 +80,36 @@ public class DPAlgorithm implements Algorithm {
                         // FIXME: find suitable cost
                         double distance = Double.max(shortestPath.getLength() - 1, 0);
                         // update method 1: delete node j+1 to i-1
-                        double result = dp[j][flagJ]
-                            // transformation 1: mutual node, cost alpha
-                            + alpha * flagI
-                            // transformation 3: delete node j+1 to i-1, cost gamma
-                            + gamma * (i - j - 1)
-                            // transformation 4: complement path, cost delta * distance
-                            + delta * distance;
-                        // update
-                        if (result <= dp[i][flagI]) {
-                            dp[i][flagI] = result;
-                            dpPath[i][flagI].nodeList.clear();
-                            dpPath[i][flagI].add(dpPath[j][flagJ]);
+                        if (dp[j][flagJ] != -1) {
+                            double result = dp[j][flagJ]
+                                // transformation 1: mutual node, cost alpha
+                                + alpha * flagI
+                                // transformation 3: delete node j+1 to i-1, cost gamma
+                                + gamma * (i - j - 1)
+                                // transformation 4: complement path, cost delta * distance
+                                + delta * distance;
+                            // update
+                            if (dp[i][flagI] == -1 || result <= dp[i][flagI]) {
+                                dp[i][flagI] = result;
+                                dpPath[i][flagI].nodeList.clear();
+                                dpPath[i][flagI].add(dpPath[j][flagJ]);
 //                            if (flagJ == 1 && nodeI.equals(nodeJ)) {
 //                                dpPath[i][flagI].nodeList
 //                                    .remove(dpPath[i][flagI].nodeList.size() - 1);
 //                            }
-                            dpPath[i][flagI].add(shortestPath);
-                            if (debug) {
-                                dpPath[i][flagI].print(
-                                    "dp[" + i + "][" + flagI + "]: " + dp[i][flagI] + " (from dp["
-                                        + j + "][" + flagJ + "])");
+                                dpPath[i][flagI].add(shortestPath);
+                                if (debug) {
+                                    dpPath[i][flagI].print(
+                                        "dp[" + i + "][" + flagI + "]: " + dp[i][flagI]
+                                            + " (from dp[" + j + "][" + flagJ + "])");
+                                }
                             }
                         }
                         // update method 2: delete node 0 to j-1, j+1 to i-1
                         if (!not_delete_first) {
-                            result = alpha * (flagJ + flagI) + beta * j + gamma * (i - j - 1)
+                            double result = alpha * (flagJ + flagI) + beta * j + gamma * (i - j - 1)
                                 + delta * distance;
-                            if (result <= dp[i][flagI]) {
+                            if (dp[i][flagI] == -1 || result <= dp[i][flagI]) {
                                 dp[i][flagI] = result;
                                 dpPath[i][flagI].nodeList.clear();
                                 dpPath[i][flagI].add(shortestPath);
@@ -121,8 +122,8 @@ public class DPAlgorithm implements Algorithm {
                         }
                     }
                 }
-                if ((!not_delete_last || i == originalPathLength)
-                    && dp[i][flagI] + (originalPathLength - i) * beta < answer) {
+                if ((!not_delete_last || i == originalPathLength) && (answer == -1
+                    || dp[i][flagI] + (originalPathLength - i) * beta < answer)) {
                     answer = dp[i][flagI] + (originalPathLength - i) * beta; // 相当于后面都删掉
                     answerPath = dpPath[i][flagI];
                 }
