@@ -26,9 +26,9 @@ public class PathRestorationTest {
 //        returnString = pathRestoration.pathRestorationMethod(testString);
 //        System.out.println(returnString);
 
-//        returnString = pathRestoration.pathRestorationMethod(successJsonObject.toString());
-//        System.out.println(returnString);
-//
+        returnString = pathRestoration.pathRestorationMethod(successJsonObject.toString());
+        System.out.println(returnString);
+
         returnString = pathRestoration.pathRestorationMethod(failureJsonObject.toString());
         System.out.println(returnString);
 
@@ -48,6 +48,11 @@ public class PathRestorationTest {
         successJsonObject.put("basicDataPath", basic_data_file_path);
         successJsonObject.put("testIndex", 0);
 
+        successJsonObject.put("modifyCost", 0.01);
+        successJsonObject.put("addCost", 0.1);
+        successJsonObject.put("deleteCost", 10);
+        successJsonObject.put("deleteEndCost", 10000);
+
         System.out.println(successJsonObject.toString());
 
         //manually curate a failure JSON data
@@ -60,6 +65,11 @@ public class PathRestorationTest {
         failureJsonObject.put("timeGroup",   "");
         failureJsonObject.put("basicDataPath", basic_data_file_path);
         failureJsonObject.put("testIndex", 0);
+
+        failureJsonObject.put("modifyCost", 0.01);
+        failureJsonObject.put("addCost", 0.1);
+        failureJsonObject.put("deleteCost", 10);
+        failureJsonObject.put("deleteEndCost", 10000);
 
 //        System.out.println(failureJsonObject.toString());
     }

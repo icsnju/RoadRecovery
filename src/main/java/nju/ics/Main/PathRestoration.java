@@ -8,6 +8,9 @@ import nju.ics.Entity.*;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PathRestoration {
 
     public static Graph graph = null;
@@ -17,8 +20,10 @@ public class PathRestoration {
     String enStationId, exStationId;
     String enTime, exTime;
     String gantryGroup, typeGroup, timeGroup;
-    private int testIndex;
+    int testIndex;
     String basicDataPath;
+
+    double addCost, deleteCost, modifyCost, deleteEndCost;
 
     StringBuilder description = new StringBuilder("Unknown gantry: ");
     int desCount = 0;
@@ -44,8 +49,19 @@ public class PathRestoration {
         timeGroup   = jsonObj.getString("timeGroup");
 
         basicDataPath = jsonObj.getString("basicDataPath");
-        System.out.println(basicDataPath);
         testIndex     = jsonObj.getInt("testIndex");
+
+        //configuration parameter for DP
+        modifyCost    = jsonObj.getDouble("modifyCost");
+        addCost       = jsonObj.getDouble("addCost");
+        deleteCost    = jsonObj.getDouble("deleteCost");
+        deleteEndCost = jsonObj.getDouble("deleteEndCost");
+
+        List<Double> configs = new ArrayList<>();
+        configs.add(modifyCost);
+        configs.add(addCost);
+        configs.add(deleteCost);
+        configs.add(deleteEndCost);
 
         //build the graph
         //specify the excel path
@@ -108,7 +124,7 @@ public class PathRestoration {
 
         originalPath.print("input path");
         Algorithm algorithm = new DPAlgorithm();
-        Path recoveredPath = algorithm.execute(graph, originalPath);
+        Path recoveredPath = algorithm.execute(graph, originalPath, configs);
         recoveredPath.print("算法恢复的路径");
 
         PathSet recoveredPathSet = new PathSet();

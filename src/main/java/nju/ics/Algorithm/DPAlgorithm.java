@@ -7,19 +7,23 @@ import nju.ics.Entity.Node;
 import nju.ics.Entity.NodeType;
 import nju.ics.Entity.Path;
 
+import java.util.List;
+
 public class DPAlgorithm implements Algorithm {
 
     /**
      * Road recovery DP algorithm
      * @param graph graph(G(V, E), T(V))
      * @param path input path P
+     *
      * @return output path(P*), return null when failed
      */
-    public Path execute(Graph graph, Path path) {
-        double alpha = 0.01;
-        double beta = graph.nodes.size() + 10; // delete side node
-        double gamma = 10; // delete mid node
-        double delta = 0.1; // add node // 尽量加而不是删
+    public Path execute(Graph graph, Path path, List<Double> configs) {
+
+        double modifyCost = configs.get(0); //0.01
+        double addCost = configs.get(1); //0.1
+        double deleteCost = configs.get(2); //10
+        double deleteEndCost = configs.get(3); //graph.nodes.size() + 10
 
         boolean debug = false;
 
@@ -45,7 +49,7 @@ public class DPAlgorithm implements Algorithm {
         for (int i = 0; i <= originalPathLength; ++i) {
             for (int flagI = 0; flagI <= 1; ++flagI) {
                 // initial dp array
-                dp[i][flagI] = (i == 0) ? (alpha * flagI) : -1;
+                dp[i][flagI] = (i == 0) ? (modifyCost * flagI) : -1;
                 dpPath[i][flagI] = new Path();
                 // nodeI: v_i or T(v_i) controlled by nodeI
                 Node nodeI = flagI == 0 ? originalPath.nodeList.get(i)
@@ -83,11 +87,11 @@ public class DPAlgorithm implements Algorithm {
                         if (dp[j][flagJ] != -1) {
                             double result = dp[j][flagJ]
                                 // transformation 1: mutual node, cost alpha
-                                + alpha * flagI
+                                + modifyCost * flagI
                                 // transformation 3: delete node j+1 to i-1, cost gamma
-                                + gamma * (i - j - 1)
+                                + deleteCost * (i - j - 1)
                                 // transformation 4: complement path, cost delta * distance
-                                + delta * distance;
+                                + addCost * distance;
                             // update
                             if (dp[i][flagI] == -1 || result <= dp[i][flagI]) {
                                 dp[i][flagI] = result;
@@ -107,8 +111,8 @@ public class DPAlgorithm implements Algorithm {
                         }
                         // update method 2: delete node 0 to j-1, j+1 to i-1
                         if (!not_delete_first) {
-                            double result = alpha * (flagJ + flagI) + beta * j + gamma * (i - j - 1)
-                                + delta * distance;
+                            double result = modifyCost * (flagJ + flagI) + deleteEndCost * j + deleteCost * (i - j - 1)
+                                + addCost * distance;
                             if (dp[i][flagI] == -1 || result <= dp[i][flagI]) {
                                 dp[i][flagI] = result;
                                 dpPath[i][flagI].nodeList.clear();
@@ -123,8 +127,8 @@ public class DPAlgorithm implements Algorithm {
                     }
                 }
                 if ((!not_delete_last || i == originalPathLength) && (answer == -1
-                    || dp[i][flagI] + (originalPathLength - i) * beta < answer)) {
-                    answer = dp[i][flagI] + (originalPathLength - i) * beta; // 相当于后面都删掉
+                    || dp[i][flagI] + (originalPathLength - i) * deleteEndCost < answer)) {
+                    answer = dp[i][flagI] + (originalPathLength - i) * deleteEndCost; // 相当于后面都删掉
                     answerPath = dpPath[i][flagI];
                 }
             }

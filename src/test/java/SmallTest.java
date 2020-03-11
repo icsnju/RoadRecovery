@@ -8,6 +8,8 @@ import org.junit.Test;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SmallTest {
 
@@ -43,7 +45,13 @@ public class SmallTest {
             nju.ics.Algorithm.DPAlgorithm algorithm = new DPAlgorithm();
             assert(pathSet.paths.size() == 1);
             pathSet.paths.get(0).print("原始路径");
-            Path recoverPath = algorithm.execute(graph, pathSet.paths.get(0));
+
+            List<Double> configs = new ArrayList<>();
+            configs.add(0.01);
+            configs.add(0.1);
+            configs.add(10.0);
+            configs.add(10000.0);
+            Path recoverPath = algorithm.execute(graph, pathSet.paths.get(0), configs);
 
             //print output
             if (recoverPath != null) {

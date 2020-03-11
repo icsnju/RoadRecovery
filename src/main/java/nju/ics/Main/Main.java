@@ -44,7 +44,7 @@ public class Main {
                 PathSet recoveredPathSet = new PathSet();
 //                Path path = pathSet.paths.get(1);
                 for (Path path : pathSet.paths) {
-                    Path recoveredPath = algorithm.execute(graph, path);
+                    Path recoveredPath = algorithm.execute(graph, path, null);
                     if (recoveredPath == null) {
                         success = false;
                     } else {
