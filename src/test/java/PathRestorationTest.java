@@ -20,12 +20,10 @@ public class PathRestorationTest {
 
         String returnString;
 
-//        String testString = "{\"typeGroup\":\"\",\"exStationId\":\"S0029370010010\",\"enTime\":\"2020-01-22 11:19:19\"," +
-//                "\"basicDataPath\":\"src/test/resources/basic-data.xls\",\"exTime\":\"\",\"enStationId\":\"\",\"timeGroup\":\"\"," +
-//                "\"gantryGroup\":\"3E3001|3D3012|3C3004|3C3005|3C3006|3C3007|3C3008|3C3009|3C3107\",\"testIndex\":0}";
-//        returnString = pathRestoration.pathRestorationMethod(testString);
-//        System.out.println(returnString);
-
+        String testString = "{\"typeGroup\":\"\",\"deleteEndCost\":10000,\"modifyCost\":0.01,\"addCost\":0.1,\"enStationId\":\"G0015370080070\",\"timeGroup\":\"\",\"testIndex\":0,\"exStationId\":\"G0025370030010\",\"enTime\":\"2020-01-22 07:20:00\",\"basicDataPath\":\"src/test/resources/basic-data.xls\",\"exTime\":\"\",\"deleteCost\":0.6,\"gantryGroup\":\"3D2509|3C2401|3C2402|3D240E|3C2404|3D240C|3C2407|3C2408|3C2B01|3C2B02|3C7001|3C7002|3C7003|3C7101|3C7102|3C7103|3C7207|3C7209|3C720B|3C7301|3C4004|3C4005|3C4006|3C3F01|3C3F02|3C3F03|3C3F04|3C3F0B|3D3E08|3C3E02|3D510C\"}";
+        returnString = pathRestoration.pathRestorationMethod(testString);
+        System.out.println(returnString);
+//
         returnString = pathRestoration.pathRestorationMethod(successJsonObject.toString());
         System.out.println(returnString);
 
