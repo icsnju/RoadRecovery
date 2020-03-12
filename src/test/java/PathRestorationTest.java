@@ -20,15 +20,22 @@ public class PathRestorationTest {
 
         String returnString;
 
-        String testString = "{\"typeGroup\":\"\",\"deleteEndCost\":10000,\"modifyCost\":0.01,\"addCost\":0.1,\"enStationId\":\"G0015370080070\",\"timeGroup\":\"\",\"testIndex\":0,\"exStationId\":\"G0025370030010\",\"enTime\":\"2020-01-22 07:20:00\",\"basicDataPath\":\"src/test/resources/basic-data.xls\",\"exTime\":\"\",\"deleteCost\":0.6,\"gantryGroup\":\"3D2509|3C2401|3C2402|3D240E|3C2404|3D240C|3C2407|3C2408|3C2B01|3C2B02|3C7001|3C7002|3C7003|3C7101|3C7102|3C7103|3C7207|3C7209|3C720B|3C7301|3C4004|3C4005|3C4006|3C3F01|3C3F02|3C3F03|3C3F04|3C3F0B|3D3E08|3C3E02|3D510C\"}";
+        String testString = "{\"typeGroup\":\"\",\"deleteEndCost\":10000," +
+                "\"modifyCost\":0.01,\"addCost\":0.1," +
+                "\"enStationId\":\"G003W370030010\",\"timeGroup\":\"\"," +
+                "\"testIndex\":0,\"exStationId\":\"G003W370030030\"," +
+                "\"enTime\":\"2020-01-22 16:04:11\"," +
+                "\"basicDataPath\":\"src/test/resources/basic-data.xls\"," +
+                "\"exTime\":\"\"," +
+                "\"deleteCost\":0.6,\"gantryGroup\":\"3D5F07|3D5F08|3D5F09|3D5F0A|3D6009|3D600A|3C6008|3C5F01|3C5F02|3C5F02\"}";
         returnString = pathRestoration.pathRestorationMethod(testString);
         System.out.println(returnString);
 //
-        returnString = pathRestoration.pathRestorationMethod(successJsonObject.toString());
-        System.out.println(returnString);
-
-        returnString = pathRestoration.pathRestorationMethod(failureJsonObject.toString());
-        System.out.println(returnString);
+//        returnString = pathRestoration.pathRestorationMethod(successJsonObject.toString());
+//        System.out.println(returnString);
+//
+//        returnString = pathRestoration.pathRestorationMethod(failureJsonObject.toString());
+//        System.out.println(returnString);
 
         //assert some properties
     }
