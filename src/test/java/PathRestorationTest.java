@@ -89,6 +89,16 @@ public class PathRestorationTest {
                 "\"exTime\":\"2020-01-23 15:32:36\",\"deleteCost\":0.6,\"gantryGroup\":\"\"}";
         returnString = pathRestoration.pathRestorationMethod(testString);
         System.out.println(returnString);
+
+        testString = "{\"typeGroup\":\"\",\"deleteEndCost\":10000," +
+                "\"modifyCost\":0.01,\"addCost\":0.1," +
+                "\"enStationId\":\"3D3B01\",\"timeGroup\":\"\"," +
+                "\"testIndex\":0,\"exStationId\":\"G0321370090020\"," +
+                "\"enTime\":\"2020-01-04 12:10:02\"," +
+                "\"basicDataPath\":\"src/test/resources/basic-data.xls\"," +
+                "\"exTime\":\"2020-01-23 15:32:36\",\"deleteCost\":0.6,\"gantryGroup\":\"\"}";
+        returnString = pathRestoration.pathRestorationMethod(testString);
+        System.out.println(returnString);
 //        returnString = pathRestoration.pathRestorationMethod(successJsonObject.toString());
 //        System.out.println(returnString);
 //
