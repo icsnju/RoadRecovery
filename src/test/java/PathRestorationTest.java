@@ -35,7 +35,7 @@ public class PathRestorationTest {
             jsonObject.getString("id");
             System.out.print("id = " + jsonObject.getString("id") + ": ");
             jsonObject.getString("passid");
-            jsonObject.getString("pathinfo");
+//            jsonObject.getString("pathinfo");
             jsonObject.getString("truePath");
 
             PathRestoration pathRestoration = new PathRestoration();

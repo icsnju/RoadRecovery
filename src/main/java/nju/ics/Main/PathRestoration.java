@@ -20,6 +20,7 @@ import java.util.List;
 
 public class PathRestoration {
 
+    private boolean testing = true;
     private boolean debugging = false;
 
     public static Graph graph = null;
@@ -87,11 +88,30 @@ public class PathRestoration {
         //FIXME: time information isn't used right now.
         String[] timeList = timeGroup.split("\\|");
 
+        if (testing) {
         try {
             manualPath = new Path();
-            String[] manualGantryList = jsonObj.getString("pathinfo").split("\\|");
+            //from Chinese gantry to gantry index
+            String[] manualGantryList = jsonObj.getString("truePath").split("\\|");
+
+            int count = 0;
             for (String gantry : manualGantryList) {
-                Node completeNode = getNode(graph, gantry, true);
+                //
+                StringBuilder completeGantry = new StringBuilder(gantry);
+                if (count == 0 || count == manualGantryList.length-1) {
+                    completeGantry.insert(0, "山东");
+                    completeGantry.append("站");
+                }
+                count++;
+                String gantryIndex = null;
+                for (Node node: graph.nodes
+                     ) {
+                    if (node.name.equals(completeGantry.toString())) {
+                        gantryIndex = node.index;
+                    }
+                }
+
+                Node completeNode = getNode(graph, gantryIndex, true);
                 if (completeNode != null) {
                     completeNode.source = NodeSource.IDENTIFY;
                     manualPath.nodeList.add(completeNode);
@@ -99,7 +119,7 @@ public class PathRestoration {
             }
         } catch (Exception e) {
             // do nothing
-        }
+        }}
 
         //add the start and end node into original path
 
