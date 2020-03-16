@@ -1,7 +1,10 @@
 package nju.ics.Algorithm;
 
+import static java.lang.Math.pow;
 import static nju.ics.Entity.NodeSource.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import nju.ics.Entity.Graph;
 import nju.ics.Entity.Node;
 import nju.ics.Entity.NodeType;
@@ -22,8 +25,9 @@ public class DPAlgorithm implements Algorithm {
 
         double modifyCost = configs.get(0); //0.01
         double addCost = configs.get(1); //0.1
-        double deleteCost = configs.get(2); //10
-        double deleteEndCost = configs.get(3); //graph.nodes.size() + 10
+        double deleteCost = configs.get(2); //1
+        double deleteCost2 = deleteCost;
+        double deleteEndCost = configs.get(3); //graph.nodes.size() + 1
 
         boolean debug = false;
 
@@ -45,6 +49,13 @@ public class DPAlgorithm implements Algorithm {
         boolean not_delete_first = originalPath.nodeList.get(0).type == NodeType.TOLLSTATION;
         boolean not_delete_last =
             originalPath.nodeList.get(originalPathLength).type == NodeType.TOLLSTATION;
+
+        ArrayList<Node> reasonableNodeList = new ArrayList<Node>();
+
+        for (int i = 0; i < originalPathLength; ++i) {
+            Path path1 = graph.getShortestPath(originalPath.nodeList.get(i), originalPath.nodeList.get(i + 1));
+            if (path1 != null) reasonableNodeList.addAll(path1.nodeList);
+        }
 
         for (int i = 0; i <= originalPathLength; ++i) {
             for (int flagI = 0; flagI <= 1; ++flagI) {
@@ -83,15 +94,18 @@ public class DPAlgorithm implements Algorithm {
                         }
                         // FIXME: find suitable cost
                         double distance = Double.max(shortestPath.getLength() - 1, 0);
-                        // update method 1: delete node j+1 to i-1
+                        double distanceFromDeletedNodesToIJ = distanceFromNodesToNodes(graph,
+                            new ArrayList<>(Arrays.asList(nodeJ, nodeI)), new ArrayList<>(Arrays
+                                .asList(originalPath.nodeList.get(j + 1),
+                                    originalPath.nodeList.get(i - 1))));
+                        // update method 1: 从 (j, flagJ) 转移到 (i, flagI)，删除 j+1 到 i-1 之间的门架，补上 j 到 i 的最短路
                         if (dp[j][flagJ] != -1) {
                             double result = dp[j][flagJ]
-                                // transformation 1: mutual node, cost alpha
                                 + modifyCost * flagI
-                                // transformation 3: delete node j+1 to i-1, cost gamma
                                 + deleteCost * (i - j - 1)
-                                // transformation 4: complement path, cost delta * distance
-                                + addCost * distance;
+                                + deleteCost2 * distanceFromDeletedNodesToIJ
+                                + addCost * pow(distance, 1.5);
+//                                + addCost2 * unreasonableNodes(reasonableNodeList, shortestPath);
                             // update
                             if (dp[i][flagI] == -1 || result <= dp[i][flagI]) {
                                 dp[i][flagI] = result;
@@ -134,5 +148,31 @@ public class DPAlgorithm implements Algorithm {
             }
         }
         return answerPath; // empty when failed
+    }
+
+    private int distanceFromNodesToNodes(Graph graph, List<Node> list1, List<Node> list2) {
+        int ret = -1;
+        for (Node node1 : list1) {
+            for (Node node2 : list2) {
+                Path path = graph.getShortestPath(node1, node2);
+                if (path != null && (ret == -1 || path.getLength() < ret)) {
+                    ret = path.getLength();
+                }
+                path = graph.getShortestPath(node2, node1);
+                if (path != null && (ret == -1 || path.getLength() < ret)) {
+                    ret = path.getLength();
+                }
+            }
+
+        }
+        return ret;
+    }
+
+    private int unreasonableNodes(List<Node> reasonableNodeList, Path path) {
+        int ret = 0;
+        for (Node node: path.nodeList) {
+            if (!reasonableNodeList.contains(node)) ret++;
+        }
+        return ret;
     }
 }
