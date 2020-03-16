@@ -30,6 +30,7 @@ hs_err_pid*
 # RoadRecovery.iml
 target/
 src/test/resources/outputs/
+src/test/resources/Deprecated/
 
 # temp log file
 test-data-calculated-tmp.csv
