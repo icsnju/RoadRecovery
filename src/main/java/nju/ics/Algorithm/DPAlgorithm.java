@@ -27,7 +27,7 @@ public class DPAlgorithm implements Algorithm {
         double modifyCost = configs.get(0); //0.01
         double addCost = configs.get(1); //0.1
         double deleteCost = 1; //configs.get(2); //1
-        double deleteCost2 = deleteCost;
+        double deleteCost2 = 2;
         double deleteEndCost = configs.get(3); //graph.nodes.size() + 1
 
         boolean debug = false;
@@ -64,8 +64,10 @@ public class DPAlgorithm implements Algorithm {
             for (int j = i; j <= originalPathLength; ++j) {
                 distanceFromDeletedNodesToIJ[i][j] =
                     j - i <= 1 ? 0 : distanceFromNodesToNodes(graph, originalPath.nodeList, i, j);
-//                System.out.println(
-//                    "distance delete " + i + " " + j + ": " + distanceFromDeletedNodesToIJ[i][j]);
+                if (debug) {
+                    System.out.println("distance delete " + i + " " + j + ": "
+                        + distanceFromDeletedNodesToIJ[i][j]);
+                }
             }
         }
 
@@ -111,7 +113,7 @@ public class DPAlgorithm implements Algorithm {
                         if (dp[j][flagJ] != -1) {
                             double result = dp[j][flagJ]
                                 + modifyCost * flagI
-                                + deleteCost * pow(i - j - 1, 1.5)
+                                + deleteCost * pow(i - j - 1, 1)
                                 + deleteCost2 * distanceFromDeletedNodesToIJ[j][i]
                                 + addCost * pow(distance, 1.5);
 //                                + addCost2 * unreasonableNodes(reasonableNodeList, shortestPath);
@@ -169,6 +171,17 @@ public class DPAlgorithm implements Algorithm {
             if (path != null && (dis == -1 || path.getLength() < dis)) dis = path.getLength();
             path = graph.getShortestPath(nodeK, nodeJ);
             if (path != null && (dis == -1 || path.getLength() < dis)) dis = path.getLength();
+            if (nodeK.getMutualNode() != null) {
+                nodeK = nodeK.getMutualNode();
+                path = graph.getShortestPath(nodeI, nodeK);
+                if (path != null && (dis == -1 || path.getLength() < dis)) {
+                    dis = path.getLength();
+                }
+                path = graph.getShortestPath(nodeK, nodeJ);
+                if (path != null && (dis == -1 || path.getLength() < dis)) {
+                    dis = path.getLength();
+                }
+            }
             ret += max(dis - 1, 0);
         }
         return ret / (j - i - 1);
