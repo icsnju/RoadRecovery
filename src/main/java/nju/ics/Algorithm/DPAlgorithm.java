@@ -1,5 +1,6 @@
 package nju.ics.Algorithm;
 
+import static java.lang.Math.max;
 import static java.lang.Math.pow;
 import static nju.ics.Entity.NodeSource.*;
 
@@ -25,7 +26,7 @@ public class DPAlgorithm implements Algorithm {
 
         double modifyCost = configs.get(0); //0.01
         double addCost = configs.get(1); //0.1
-        double deleteCost = configs.get(2); //1
+        double deleteCost = 1; //configs.get(2); //1
         double deleteCost2 = deleteCost;
         double deleteEndCost = configs.get(3); //graph.nodes.size() + 1
 
@@ -42,6 +43,8 @@ public class DPAlgorithm implements Algorithm {
         int originalPathLength = originalPath.getLength();
         double[][] dp = new double[originalPathLength + 1][2];
         Path[][] dpPath = new Path[originalPathLength + 1][2];
+        double[][] distanceFromDeletedNodesToIJ = new double[originalPathLength + 1][
+            originalPathLength + 1];
 
         double answer = -1;
         Path answerPath = new Path();
@@ -55,6 +58,15 @@ public class DPAlgorithm implements Algorithm {
         for (int i = 0; i < originalPathLength; ++i) {
             Path path1 = graph.getShortestPath(originalPath.nodeList.get(i), originalPath.nodeList.get(i + 1));
             if (path1 != null) reasonableNodeList.addAll(path1.nodeList);
+        }
+
+        for (int i = 0; i <= originalPathLength; ++i) {
+            for (int j = i; j <= originalPathLength; ++j) {
+                distanceFromDeletedNodesToIJ[i][j] =
+                    j - i <= 1 ? 0 : distanceFromNodesToNodes(graph, originalPath.nodeList, i, j);
+//                System.out.println(
+//                    "distance delete " + i + " " + j + ": " + distanceFromDeletedNodesToIJ[i][j]);
+            }
         }
 
         for (int i = 0; i <= originalPathLength; ++i) {
@@ -93,17 +105,14 @@ public class DPAlgorithm implements Algorithm {
                             }
                         }
                         // FIXME: find suitable cost
-                        double distance = Double.max(shortestPath.getLength() - 1, 0);
-                        double distanceFromDeletedNodesToIJ = distanceFromNodesToNodes(graph,
-                            new ArrayList<>(Arrays.asList(nodeJ, nodeI)), new ArrayList<>(Arrays
-                                .asList(originalPath.nodeList.get(j + 1),
-                                    originalPath.nodeList.get(i - 1))));
+                        double distance = max(shortestPath.getLength() - 1, 0);
+
                         // update method 1: 从 (j, flagJ) 转移到 (i, flagI)，删除 j+1 到 i-1 之间的门架，补上 j 到 i 的最短路
                         if (dp[j][flagJ] != -1) {
                             double result = dp[j][flagJ]
                                 + modifyCost * flagI
-                                + deleteCost * (i - j - 1)
-                                + deleteCost2 * distanceFromDeletedNodesToIJ
+                                + deleteCost * pow(i - j - 1, 1.5)
+                                + deleteCost2 * distanceFromDeletedNodesToIJ[j][i]
                                 + addCost * pow(distance, 1.5);
 //                                + addCost2 * unreasonableNodes(reasonableNodeList, shortestPath);
                             // update
@@ -150,22 +159,34 @@ public class DPAlgorithm implements Algorithm {
         return answerPath; // empty when failed
     }
 
-    private int distanceFromNodesToNodes(Graph graph, List<Node> list1, List<Node> list2) {
-        int ret = -1;
-        for (Node node1 : list1) {
-            for (Node node2 : list2) {
-                Path path = graph.getShortestPath(node1, node2);
-                if (path != null && (ret == -1 || path.getLength() < ret)) {
-                    ret = path.getLength();
-                }
-                path = graph.getShortestPath(node2, node1);
-                if (path != null && (ret == -1 || path.getLength() < ret)) {
-                    ret = path.getLength();
-                }
-            }
-
+    private int distanceFromNodesToNodes(Graph graph, List<Node> nodeList, int i, int j) {
+        int ret = 0;
+        Node nodeI = nodeList.get(i), nodeJ = nodeList.get(j);
+        for (int k = i + 1; k < j; ++k) {
+            Node nodeK = nodeList.get(k);
+            Path path = graph.getShortestPath(nodeI, nodeK);
+            int dis = -1;
+            if (path != null && (dis == -1 || path.getLength() < dis)) dis = path.getLength();
+            path = graph.getShortestPath(nodeK, nodeJ);
+            if (path != null && (dis == -1 || path.getLength() < dis)) dis = path.getLength();
+            ret += max(dis - 1, 0);
         }
-        return ret;
+        return ret / (j - i - 1);
+
+//        int ret = -1;
+//        for (Node node1 : list1) {
+//            for (Node node2 : list2) {
+//                Path path = graph.getShortestPath(node1, node2);
+//                if (path != null && (ret == -1 || path.getLength() < ret)) {
+//                    ret = path.getLength();
+//                }
+//                path = graph.getShortestPath(node2, node1);
+//                if (path != null && (ret == -1 || path.getLength() < ret)) {
+//                    ret = path.getLength();
+//                }
+//            }
+//        }
+//        return max(ret - 1, 0);
     }
 
     private int unreasonableNodes(List<Node> reasonableNodeList, Path path) {
