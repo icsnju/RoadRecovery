@@ -5,13 +5,22 @@ import nju.ics.Tool.ReadExcel;
 import nju.ics.Algorithm.Algorithm;
 import nju.ics.Algorithm.DPAlgorithm;
 import nju.ics.Entity.*;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class PathRestoration {
+
+    private boolean debugging = false;
 
     public static Graph graph = null;
     /**
@@ -28,6 +37,9 @@ public class PathRestoration {
     StringBuilder description = new StringBuilder("Unknown gantry: ");
     int desCount = 0;
 
+    Path originalPath = new Path();
+    Path recoveredPath = null;
+    Path manualPath = null;
     /**
      * interface method for external call
      *
@@ -75,8 +87,22 @@ public class PathRestoration {
         //FIXME: time information isn't used right now.
         String[] timeList = timeGroup.split("\\|");
 
+        try {
+            manualPath = new Path();
+            String[] manualGantryList = jsonObj.getString("pathinfo").split("\\|");
+            for (String gantry : manualGantryList) {
+                Node completeNode = getNode(graph, gantry, true);
+                if (completeNode != null) {
+                    completeNode.source = NodeSource.IDENTIFY;
+                    manualPath.nodeList.add(completeNode);
+                }
+            }
+        } catch (Exception e) {
+            // do nothing
+        }
+
         //add the start and end node into original path
-        Path originalPath = new Path();
+
 
         Node startNode = getNode(graph, enStationId, false);
         if (startNode != null) {
@@ -87,7 +113,7 @@ public class PathRestoration {
         //FIXME: I need a runtime node, {node, timestamp}
         if (gantryGroup.length() > 0) {
             for (String gantry : gantryList) {
-                System.out.println(gantry);
+//                System.out.println(gantry);
                 Node completeNode = getNode(graph, gantry, true);
                 if (completeNode != null) {
                     completeNode.source = NodeSource.IDENTIFY;
@@ -122,10 +148,10 @@ public class PathRestoration {
         PathSet originalPathSet = new PathSet();
         originalPathSet.paths.add(originalPath);
 
-        originalPath.print("input path");
+//        originalPath.print("input path");
         Algorithm algorithm = new DPAlgorithm();
-        Path recoveredPath = algorithm.execute(graph, originalPath, configs);
-        recoveredPath.print("算法恢复的路径");
+        recoveredPath = algorithm.execute(graph, originalPath, configs);
+        if (debugging) recoveredPath.print("算法恢复的路径");
 
         PathSet recoveredPathSet = new PathSet();
         recoveredPathSet.paths.add(recoveredPath);
@@ -180,8 +206,8 @@ public class PathRestoration {
             if (testIndex != 0)
                 pathSet.dumpIntoExcel(testIndex, false, true);
 
-            originalPath.print("原始路径的修订版");
-            pathSet.finalPathInCard.print("合并的路径");
+            if (debugging) originalPath.print("原始路径的修订版");
+            if (debugging) pathSet.finalPathInCard.print("合并的路径");
 
             StringBuilder useType = new StringBuilder();
             StringBuilder updateGantry = new StringBuilder();
@@ -258,5 +284,70 @@ public class PathRestoration {
 
         PathRestoration pathRestoration = new PathRestoration();
         pathRestoration.pathRestorationMethod(args[0]);
+    }
+
+    public boolean compare(int testIndex) {
+        boolean same = true;
+
+        try {
+            //use Excel file to save outputs.
+            String[] columns = {"门架HEX/收费站编号","收费站/门架名称","门架来源"};
+            Workbook workbook = new XSSFWorkbook();
+            Sheet sheet = workbook.createSheet("ID " + testIndex);
+            for (int i = 0; i < 10; i++) {
+                sheet.setColumnWidth(i, 8000);
+            }
+
+            for (int i = 0; i < recoveredPath.nodeList.size(); i++) {
+                Node recoveredNode = recoveredPath.nodeList.get(i);
+                if (manualPath.nodeList.size() > i) {
+                    Node manualNode = manualPath.nodeList.get(i);
+                    if (!recoveredNode.index.equals(manualNode.index)) {
+                        same = false;
+                        break;
+                    }
+                }
+                else {
+                    same = false;
+                    break;
+                }
+            }
+
+            Row row = sheet.createRow(0);
+            if (same) row.createCell(0).setCellValue("相同：手工和恢复");
+            else row.createCell(0).setCellValue("不相同：手工和恢复");
+
+            row = sheet.createRow(1);
+            row.createCell(0).setCellValue("输入");
+            row.createCell(3).setCellValue("算法恢复");
+            row.createCell(6).setCellValue("人工恢复");
+
+            row = sheet.createRow(2);
+            for (int columnIndex = 0; columnIndex < 9; columnIndex++) {
+                row.createCell(columnIndex).setCellValue(columns[columnIndex%3]);
+            }
+
+            PathSet pathSet = new PathSet();
+            pathSet.printRecoveredPath(sheet, originalPath, 0);
+            pathSet.printRecoveredPath(sheet, recoveredPath, 3);
+            pathSet.printRecoveredPath(sheet, manualPath, 6);
+
+            // Write the output to a file
+            File outDir = new File(pathSet.outDirectory);
+            if (!outDir.exists()) outDir.mkdir();
+            String filename = pathSet.outDirectory + testIndex + ".xlsx";
+            FileOutputStream fileOut = new FileOutputStream(filename);
+            workbook.write(fileOut);
+            fileOut.close();
+
+            // Closing the workbook
+            workbook.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        return same;
     }
 }

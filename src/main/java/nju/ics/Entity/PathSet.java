@@ -15,7 +15,7 @@ public class PathSet {
     public static HashMap<String, HashMap<Integer, List<String>>> inputsMap = new HashMap<>();
 
     int SheetHead = 3;
-    String outDirectory = "src/test/resources/outputs/";
+    public String outDirectory = "src/test/resources/outputs/";
 
     private void extractOnePath(Graph graph, Sheet sheet, int columnBase) {
         Path path = new Path();
@@ -179,7 +179,7 @@ public class PathSet {
             Workbook workbook = new XSSFWorkbook();
             Sheet sheet = workbook.createSheet("case " + testIndex);
             for (int i = 0; i < 10; i++) {
-                sheet.setColumnWidth(i, 8000);
+                sheet.setColumnWidth(i, 5000);
             }
 
             Row row = sheet.createRow(0);
@@ -215,7 +215,7 @@ public class PathSet {
         }
     }
 
-    private void printRecoveredPath(Sheet sheet, Path path, int baseColumnIndex) {
+    public void printRecoveredPath(Sheet sheet, Path path, int baseColumnIndex) {
         int rowIndex = 3;
 
         for (Node node: path.nodeList
