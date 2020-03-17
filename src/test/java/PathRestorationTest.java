@@ -8,8 +8,10 @@ public class PathRestorationTest {
 
     static JSONObject successJsonObject = new JSONObject();
     static JSONObject failureJsonObject = new JSONObject();
-    static String basic_data_file_path = "src/test/resources/basic-data.xls";
-    static String test_data_file_path = "src/test/resources/test-data-20200316-03.txt";
+    static String basic_data_file_path = "src/test/resources/inputs/basic" +
+            "-data.xls";
+    static String test_data_file_path = "src/test/resources/inputs/test-data" +
+            "-20200317-02.txt";
 
     static {
         getInput();
