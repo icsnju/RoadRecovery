@@ -139,7 +139,7 @@ public class PathRestoration {
             originalPath.runtimeNodeList.add(new RuntimeNode(startNode, enTime));
         }
 
-        //FIXME: I need a runtime node, {node, timestamp}
+        //I need a runtime node, {node, timestamp}
         int count = 0;
         if (gantryList.size() > 0) {
             for (String gantry : gantryList) {
@@ -197,7 +197,7 @@ public class PathRestoration {
             StringBuilder gantryHexGroup  = new StringBuilder();
             StringBuilder gantryFlagGroup = new StringBuilder();
 
-            //TODO: fix missing time information
+            //fix missing time information
             StringBuilder transTimeGroup  = new StringBuilder();
             String lastTime = null;
 
@@ -209,7 +209,7 @@ public class PathRestoration {
                 if (runtimeNode.transTime == null) runtimeNode.transTime = lastTime;
             }
 
-            //TODO: delete the entry & exit toll station
+            //delete the entry & exit toll station
             int count = 0;
             for (RuntimeNode runtimeNode: recoveredPath.runtimeNodeList
                  ) {

@@ -10,8 +10,15 @@ public class RuntimePath {
     public List<RuntimeNode> runtimeNodeList = new ArrayList<>();
 
     public RuntimePath(Path path, RuntimeNode startRuntimeNode, RuntimeNode endRuntimeNode) {
-        //TODO: build a path with start and end time information
+        //build a path with start and end time information
+        for (Node node: path.nodeList
+             ) {
+            String transTime = null;
+            if (node.equals(startRuntimeNode.node)) transTime = startRuntimeNode.transTime;
+            if (node.equals(endRuntimeNode.node))   transTime = endRuntimeNode.transTime;
 
+            runtimeNodeList.add(new RuntimeNode(node, transTime));
+        }
     }
 
     public RuntimePath() {}
