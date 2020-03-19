@@ -83,9 +83,11 @@ public class PathRestorationTest {
         successJsonObject.put("exStationId", "S0033370010030");
         successJsonObject.put("enTime",      "2020-02-26 08:01:15");
         successJsonObject.put("exTime",      "2020-02-26 08:58:19");
+
         successJsonObject.put("gantryGroup", "3D6105|3C610A|3D6104|3D6103|3C610D|3D6101|3D5311");
         successJsonObject.put("typeGroup",   "0|0|0|0|0|0|0");
         successJsonObject.put("timeGroup",   "");
+
         successJsonObject.put("basicDataPath", basic_data_file_path);
         successJsonObject.put("testIndex", 0);
 
@@ -93,6 +95,7 @@ public class PathRestorationTest {
         successJsonObject.put("addCost", 0.1);
         successJsonObject.put("deleteCost", 10);
         successJsonObject.put("deleteEndCost", 10000);
+
 
 //        System.out.println(successJsonObject.toString());
 
