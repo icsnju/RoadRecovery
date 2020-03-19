@@ -38,11 +38,11 @@ public class ReadExcel {
             System.out.println("node size = " + graph.nodes.size());
             System.out.println("edge size = " + graph.edgeSet.size());
 
-            for (Node node: graph.nodes
-                 ) {
-                if (node.index.length() <= 10) graph.gantryCount++;
-            }
-            System.out.println("gantry size = " + graph.gantryCount);
+//            for (Node node: graph.nodes
+//                 ) {
+//                if (node.index.length() <= 10) graph.gantryCount++;
+//            }
+//            System.out.println("gantry size = " + graph.gantryCount);
 
 //            graph.buildAllShortestPathByFloyd();
             graph.buildAllShortestPathByDijkstra();

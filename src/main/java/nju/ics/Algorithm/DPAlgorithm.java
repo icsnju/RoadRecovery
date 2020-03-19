@@ -6,10 +6,8 @@ import static nju.ics.Entity.NodeSource.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import nju.ics.Entity.Graph;
-import nju.ics.Entity.Node;
-import nju.ics.Entity.NodeType;
-import nju.ics.Entity.Path;
+
+import nju.ics.Entity.*;
 
 import java.util.List;
 
@@ -22,7 +20,7 @@ public class DPAlgorithm implements Algorithm {
      *
      * @return output path(P*), return null when failed
      */
-    public Path execute(Graph graph, Path path, List<Double> configs) {
+    public RuntimePath execute(Graph graph, RuntimePath path, List<Double> configs) {
 
         double modifyCost = configs.get(0); //0.01
         double addCost = 0.2; //configs.get(1); //0.1
@@ -33,7 +31,7 @@ public class DPAlgorithm implements Algorithm {
 
         boolean debug = false;
 
-        Path originalPath = path;
+        RuntimePath originalPath = path;
 //        Path originalPath = new Path();
 //        for (Node node : path.nodeList) {
 //            if (originalPath.nodeList.isEmpty() || node != originalPath.nodeList
@@ -43,28 +41,28 @@ public class DPAlgorithm implements Algorithm {
 //        }
         int originalPathLength = originalPath.getLength();
         double[][] dp = new double[originalPathLength + 1][2];
-        Path[][] dpPath = new Path[originalPathLength + 1][2];
+        RuntimePath[][] dpPath = new RuntimePath[originalPathLength + 1][2];
         double[][] distanceFromDeletedNodesToIJ = new double[originalPathLength + 1][
             originalPathLength + 1];
 
         double answer = -1;
-        Path answerPath = new Path();
+        RuntimePath answerPath = new RuntimePath();
 
-        boolean not_delete_first = originalPath.nodeList.get(0).type == NodeType.TOLLSTATION;
+        boolean not_delete_first = originalPath.runtimeNodeList.get(0).node.type == NodeType.TOLLSTATION;
         boolean not_delete_last =
-            originalPath.nodeList.get(originalPathLength).type == NodeType.TOLLSTATION;
+            originalPath.runtimeNodeList.get(originalPathLength).node.type == NodeType.TOLLSTATION;
 
         ArrayList<Node> reasonableNodeList = new ArrayList<Node>();
 
         for (int i = 0; i < originalPathLength; ++i) {
-            Path path1 = graph.getShortestPath(originalPath.nodeList.get(i), originalPath.nodeList.get(i + 1));
+            Path path1 = graph.getShortestPath(originalPath.runtimeNodeList.get(i).node, originalPath.runtimeNodeList.get(i + 1).node);
             if (path1 != null) reasonableNodeList.addAll(path1.nodeList);
         }
 
         for (int i = 0; i <= originalPathLength; ++i) {
             for (int j = i; j <= originalPathLength; ++j) {
                 distanceFromDeletedNodesToIJ[i][j] =
-                    j - i <= 1 ? 0 : distanceFromNodesToNodes(graph, originalPath.nodeList, i, j);
+                    j - i <= 1 ? 0 : distanceFromNodesToNodes(graph, originalPath.runtimeNodeList, i, j);
                 if (debug) {
                     System.out.println("distance delete " + i + " " + j + ": "
                         + distanceFromDeletedNodesToIJ[i][j]);
@@ -76,39 +74,40 @@ public class DPAlgorithm implements Algorithm {
             for (int flagI = 0; flagI <= 1; ++flagI) {
                 // initial dp array
                 dp[i][flagI] = (i == 0) ? (modifyCost * flagI) : -1;
-                dpPath[i][flagI] = new Path();
+                dpPath[i][flagI] = new RuntimePath();
                 // nodeI: v_i or T(v_i) controlled by nodeI
-                Node nodeI = flagI == 0 ? originalPath.nodeList.get(i)
-                    : originalPath.nodeList.get(i).getMutualNode();
+                RuntimeNode nodeI = flagI == 0 ? originalPath.runtimeNodeList.get(i)
+                    : new RuntimeNode(originalPath.runtimeNodeList.get(i).node.getMutualNode(), null);
                 if (nodeI == null) {
                     continue;
                 }
-                dpPath[i][flagI].nodeList.add((Node) nodeI.clone());
-                dpPath[i][flagI].nodeList.get(0).source = IDENTIFY;
+                dpPath[i][flagI].runtimeNodeList.add(new RuntimeNode((Node) nodeI.clone(), null));
+                dpPath[i][flagI].runtimeNodeList.get(0).node.source = IDENTIFY;
                 for (int flagJ = 0; flagJ <= 1; ++flagJ) {
                     for (int j = i - 1; j >= 0; --j) {
                         // nodeJ: v_j or T(v_j) controlled by flagJ
-                        Node nodeJ = flagJ == 0 ? originalPath.nodeList.get(j)
-                            : originalPath.nodeList.get(j).getMutualNode();
+                        RuntimeNode nodeJ = flagJ == 0 ? originalPath.runtimeNodeList.get(j)
+                            : new RuntimeNode(originalPath.runtimeNodeList.get(j).node.getMutualNode(), null);
                         if (nodeJ == null) {
                             continue;
                         }
                         // shortest path from nodeJ to nodeI
-                        Path shortestPath = graph.getShortestPath(nodeJ, nodeI);
+                        Path shortestPath = graph.getShortestPath(nodeJ.node, nodeI.node);
                         if (shortestPath == null) {
                             continue;
                         }
-                        if (shortestPath.getLength() > 0 || (flagI == 1 && flagJ == 1)) { // When i == j and has one IDENTIFY, then IDENTIFY
+                        RuntimePath runtimeShortestPath = new RuntimePath(shortestPath, nodeJ, nodeI);
+                        if (runtimeShortestPath.getLength() > 0 || (flagI == 1 && flagJ == 1)) { // When i == j and has one IDENTIFY, then IDENTIFY
                             if (flagJ == 1) { // 反转结点
-                                shortestPath.nodeList.get(0).source = MODIFY;
+                                runtimeShortestPath.runtimeNodeList.get(0).node.source = MODIFY;
                             }
                             if (flagI == 1) { // 反转结点
-                                shortestPath.nodeList
-                                    .get(shortestPath.nodeList.size() - 1).source = MODIFY;
+                                runtimeShortestPath.runtimeNodeList
+                                    .get(runtimeShortestPath.runtimeNodeList.size() - 1).node.source = MODIFY;
                             }
                         }
                         // FIXME: find suitable cost
-                        double distance = max(shortestPath.getLength() - 1, 0);
+                        double distance = max(runtimeShortestPath.getLength() - 1, 0);
 
                         // update method 1: 从 (j, flagJ) 转移到 (i, flagI)，删除 j+1 到 i-1 之间的门架，补上 j 到 i 的最短路
                         if (dp[j][flagJ] != -1) {
@@ -121,13 +120,13 @@ public class DPAlgorithm implements Algorithm {
                             // update
                             if (dp[i][flagI] == -1 || result <= dp[i][flagI]) {
                                 dp[i][flagI] = result;
-                                dpPath[i][flagI].nodeList.clear();
+                                dpPath[i][flagI].runtimeNodeList.clear();
                                 dpPath[i][flagI].add(dpPath[j][flagJ]);
 //                            if (flagJ == 1 && nodeI.equals(nodeJ)) {
 //                                dpPath[i][flagI].nodeList
 //                                    .remove(dpPath[i][flagI].nodeList.size() - 1);
 //                            }
-                                dpPath[i][flagI].add(shortestPath);
+                                dpPath[i][flagI].add(runtimeShortestPath);
                                 if (debug) {
                                     dpPath[i][flagI].print(
                                         "dp[" + i + "][" + flagI + "]: " + dp[i][flagI]
@@ -144,8 +143,8 @@ public class DPAlgorithm implements Algorithm {
                                 + addCost * pow(distance, 1.4);
                             if (dp[i][flagI] == -1 || result <= dp[i][flagI]) {
                                 dp[i][flagI] = result;
-                                dpPath[i][flagI].nodeList.clear();
-                                dpPath[i][flagI].add(shortestPath);
+                                dpPath[i][flagI].runtimeNodeList.clear();
+                                dpPath[i][flagI].add(runtimeShortestPath);
                                 if (debug) {
                                     dpPath[i][flagI].print(
                                         "dp[" + i + "][" + flagI + "]: " + dp[i][flagI]
@@ -165,23 +164,34 @@ public class DPAlgorithm implements Algorithm {
         return answerPath; // empty when failed
     }
 
-    private int distanceFromNodesToNodes(Graph graph, List<Node> nodeList, int i, int j) {
+    /***
+     * NOTE:
+     * any shortest path computed in this method is not accessible from outside,
+     * therefore no need to wrap with runtime.
+     ***/
+    private int distanceFromNodesToNodes(Graph graph, List<RuntimeNode> nodeList, int i, int j) {
         int ret = 0;
-        Node nodeI = nodeList.get(i), nodeJ = nodeList.get(j);
+        RuntimeNode nodeI = nodeList.get(i);
+        RuntimeNode nodeJ = nodeList.get(j);
         for (int k = i + 1; k < j; ++k) {
-            Node nodeK = nodeList.get(k);
-            Path path = graph.getShortestPath(nodeI, nodeK);
+            RuntimeNode nodeK = nodeList.get(k);
+            Path path = graph.getShortestPath(nodeI.node, nodeK.node);
             int dis = -1;
+            if (path != null) {
+                if (dis != -1) {
+                    path.getLength();
+                }
+                dis = path.getLength();
+            }
+            path = graph.getShortestPath(nodeK.node, nodeJ.node);
             if (path != null && (dis == -1 || path.getLength() < dis)) dis = path.getLength();
-            path = graph.getShortestPath(nodeK, nodeJ);
-            if (path != null && (dis == -1 || path.getLength() < dis)) dis = path.getLength();
-            if (nodeK.getMutualNode() != null) {
-                nodeK = nodeK.getMutualNode();
-                path = graph.getShortestPath(nodeI, nodeK);
+            if (nodeK.node.getMutualNode() != null) {
+                nodeK = new RuntimeNode(nodeK.node.getMutualNode(), null);
+                path = graph.getShortestPath(nodeI.node, nodeK.node);
                 if (path != null && (dis == -1 || path.getLength() < dis)) {
                     dis = path.getLength();
                 }
-                path = graph.getShortestPath(nodeK, nodeJ);
+                path = graph.getShortestPath(nodeK.node, nodeJ.node);
                 if (path != null && (dis == -1 || path.getLength() < dis)) {
                     dis = path.getLength();
                 }

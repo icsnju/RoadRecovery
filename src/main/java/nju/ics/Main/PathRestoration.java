@@ -9,14 +9,16 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.json.JSONException;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PathRestoration {
 
@@ -29,7 +31,7 @@ public class PathRestoration {
      */
     String enStationId, exStationId;
     String enTime, exTime;
-    String gantryGroup, typeGroup, timeGroup;
+    List<Map<String, String>> gantryIdList = null;
     int testIndex;
     String basicDataPath;
 
@@ -38,9 +40,9 @@ public class PathRestoration {
     StringBuilder description = new StringBuilder("Unknown gantry: ");
     int desCount = 0;
 
-    Path originalPath = new Path();
-    Path recoveredPath = null;
-    Path manualPath = null;
+    RuntimePath originalPath = new RuntimePath();
+    RuntimePath recoveredPath = null;
+    RuntimePath manualPath = null;
     /**
      * interface method for external call
      *
@@ -52,17 +54,31 @@ public class PathRestoration {
         JSONObject jsonObj = new JSONObject(jsonData);
 
         enStationId = jsonObj.getString("enStationId");
-//        System.out.println(enStationId);
         exStationId = jsonObj.getString("exStationId");
         enTime      = jsonObj.getString("enTime");
         exTime      = jsonObj.getString("exTime");
 
-        gantryGroup = jsonObj.getString("gantryGroup");
-        typeGroup   = jsonObj.getString("typeGroup");
-        timeGroup   = jsonObj.getString("timeGroup");
+        //new interface params, from JSONArray to List<Map<String, String>>
+        JSONArray json_arr = jsonObj.getJSONArray("gantryIdList");
+        List<String> gantryList = new ArrayList<>();
+        List<String> timeList = new ArrayList<>();
+
+        gantryIdList = new ArrayList<>();
+        for (int i = 0; i < json_arr.length(); i++) {
+            JSONObject jsonArrayObj = json_arr.getJSONObject(i);
+            String gantryHex = jsonArrayObj.keySet().iterator().next();
+            String transTime = jsonArrayObj.getString(gantryHex);
+            Map<String, String> map = new HashMap<>();
+            map.put(gantryHex, transTime);
+            gantryIdList.add(map);
+
+            gantryList.add(gantryHex);
+            timeList.add(transTime);
+        }
+
+        System.out.println(gantryIdList);
 
         basicDataPath = jsonObj.getString("basicDataPath");
-        testIndex     = jsonObj.getInt("testIndex");
 
         //configuration parameter for DP
         modifyCost    = jsonObj.getDouble("modifyCost");
@@ -81,17 +97,11 @@ public class PathRestoration {
         if (graph == null) {
             ReadExcel readExcel = new ReadExcel();
             graph = readExcel.buildGraph(basicDataPath);
-
         }
-
-//        System.out.println(gantryGroup.length());
-        String[] gantryList = gantryGroup.split("\\|");
-        //FIXME: time information isn't used right now.
-        String[] timeList = timeGroup.split("\\|");
 
         if (testing) {
         try {
-            manualPath = new Path();
+            manualPath = new RuntimePath();
             //from Chinese gantry to gantry index
             String[] manualGantryList = jsonObj.getString("truePath").split("\\|");
 
@@ -115,38 +125,38 @@ public class PathRestoration {
                 Node completeNode = getNode(graph, gantryIndex, true);
                 if (completeNode != null) {
                     completeNode.source = NodeSource.IDENTIFY;
-                    manualPath.nodeList.add(completeNode);
+                    manualPath.runtimeNodeList.add(new RuntimeNode(completeNode, null));
                 }
             }
         } catch (Exception e) {
-            // do nothing
+            e.printStackTrace();
         }}
 
         //add the start and end node into original path
-
-
         Node startNode = getNode(graph, enStationId, false);
         if (startNode != null) {
             startNode.source = NodeSource.IDENTIFY;
-            originalPath.nodeList.add(startNode);
+            originalPath.runtimeNodeList.add(new RuntimeNode(startNode, enTime));
         }
 
         //FIXME: I need a runtime node, {node, timestamp}
-        if (gantryGroup.length() > 0) {
+        int count = 0;
+        if (gantryList.size() > 0) {
             for (String gantry : gantryList) {
 //                System.out.println(gantry);
                 Node completeNode = getNode(graph, gantry, true);
                 if (completeNode != null) {
                     completeNode.source = NodeSource.IDENTIFY;
-                    originalPath.nodeList.add(completeNode);
+                    originalPath.runtimeNodeList.add(new RuntimeNode(completeNode, timeList.get(count)));
                 }
+                count++;
             }
         }
 
         Node endNode = getNode(graph, exStationId, false);
         if (endNode != null) {
             endNode.source = NodeSource.IDENTIFY;
-            originalPath.nodeList.add(endNode);
+            originalPath.runtimeNodeList.add(new RuntimeNode(endNode, exTime));
         }
 
         //If exist unknown gantry, then return with failure.
@@ -158,24 +168,18 @@ public class PathRestoration {
             ).toString();
 
         //If only exist one node, then return with failure.
-        if (originalPath.nodeList.size() == 1) {
+        if (originalPath.runtimeNodeList.size() == 1) {
             return getReturnedJsonObject(
                     originalPath,
                     null,
-                    "Exist only one node "+originalPath.nodeList.get(0).index+"."
+                    "Exist only one node "+originalPath.runtimeNodeList.get(0).node.index+"."
             ).toString();
         }
-
-        PathSet originalPathSet = new PathSet();
-        originalPathSet.paths.add(originalPath);
 
 //        originalPath.print("input path");
         Algorithm algorithm = new DPAlgorithm();
         recoveredPath = algorithm.execute(graph, originalPath, configs);
         if (debugging) recoveredPath.print("算法恢复的路径");
-
-        PathSet recoveredPathSet = new PathSet();
-        recoveredPathSet.paths.add(recoveredPath);
 
         //generate JSON data for return
         JSONObject returnJsonObj = getReturnedJsonObject(originalPath, recoveredPath, "Unknown reason");
@@ -183,80 +187,88 @@ public class PathRestoration {
         return returnJsonObj.toString();
     }
 
-    private JSONObject getReturnedJsonObject(Path originalPath, Path recoveredPath, String description) {
+    private JSONObject getReturnedJsonObject(RuntimePath originalPath, RuntimePath recoveredPath, String description) {
         JSONObject returnJsonObj = new JSONObject();
         if (recoveredPath != null) {
             returnJsonObj.put("code", "1");
             returnJsonObj.put("description", "Success");
 
             //directly obtain the recoveredPath info.
-            StringBuilder pathInfo = new StringBuilder();
-            StringBuilder typeGroup = new StringBuilder();
-            StringBuilder flagGroup = new StringBuilder();
+            StringBuilder gantryHexGroup  = new StringBuilder();
+            StringBuilder gantryFlagGroup = new StringBuilder();
 
+            //TODO: fix missing time information
+            StringBuilder transTimeGroup  = new StringBuilder();
+            String lastTime = null;
+
+            //reverse order
+            for (int i = recoveredPath.runtimeNodeList.size()-1; i >= 0 ; i--) {
+                RuntimeNode runtimeNode = recoveredPath.runtimeNodeList.get(i);
+                if (runtimeNode.transTime != null) lastTime = runtimeNode.transTime;
+                if (runtimeNode.node.index.length() >= 10) continue;
+                if (runtimeNode.transTime == null) runtimeNode.transTime = lastTime;
+            }
+
+            //TODO: delete the entry & exit toll station
             int count = 0;
-            for (Node node: recoveredPath.nodeList
+            for (RuntimeNode runtimeNode: recoveredPath.runtimeNodeList
                  ) {
+                if (runtimeNode.node.index.length() >= 10) continue;
+
                 if (count > 0) {
-                    pathInfo.append("|");
-                    typeGroup.append("|");
-                    flagGroup.append("|");
+                    gantryHexGroup.append("|");
+                    gantryFlagGroup.append("|");
+                    transTimeGroup.append("|");
                 }
                 count++;
 
-                pathInfo.append(node.index);
+                gantryHexGroup.append(runtimeNode.node.index);
 
-                if (node.type == NodeType.NORMALPORTAL) typeGroup.append("0");
-                if (node.type == NodeType.PROVINCIALPORTAL) typeGroup.append("1");
-                if (node.type == NodeType.TOLLSTATION) typeGroup.append("3");
+                if (runtimeNode.node.source == NodeSource.IDENTIFY) gantryFlagGroup.append("1");
+                if (runtimeNode.node.source == NodeSource.MODIFY)   gantryFlagGroup.append("2");
+                if (runtimeNode.node.source == NodeSource.ADD)      gantryFlagGroup.append("2");
 
-                if (node.source == NodeSource.IDENTIFY) flagGroup.append("1");
-                if (node.source == NodeSource.MODIFY) flagGroup.append("2");
-                if (node.source == NodeSource.ADD) flagGroup.append("3");
-
+                transTimeGroup.append(runtimeNode.transTime);
             }
 
-            returnJsonObj.put("pathInfo", pathInfo.toString());
-            returnJsonObj.put("typeGroup", typeGroup.toString());
-            returnJsonObj.put("flagGroup", flagGroup.toString());
+            returnJsonObj.put("gantryHexGroup",  gantryHexGroup.toString());
+            returnJsonObj.put("gantryFlagGroup", gantryFlagGroup.toString());
+            returnJsonObj.put("transTimeGroup",  gantryFlagGroup.toString());
 
-            //mark the original node as one of {1:identify, 2:modify, 3:delete}
-            PathSet pathSet = new PathSet();
-//            originalPath.print("原始路径");
-            pathSet.finalPathInCard = pathSet.addDeleteAndModifyTag(recoveredPath.nodeList, originalPath.nodeList);
-            if (testIndex != 0)
-                pathSet.dumpIntoExcel(testIndex, false, true);
+//            //mark the original node as one of {1:identify, 2:modify, 3:delete}
+//            PathSet pathSet = new PathSet();
+////            originalPath.print("原始路径");
+//            pathSet.finalPathInCard = pathSet.addDeleteAndModifyTag(recoveredPath.runtimeNodeList, originalPath.runtimeNodeList);
+//            if (testIndex != 0)
+//                pathSet.dumpIntoExcel(testIndex, false, true);
+//
+//            if (debugging) originalPath.print("原始路径的修订版");
+//            if (debugging) pathSet.finalPathInCard.print("合并的路径");
+//
+//            StringBuilder useType = new StringBuilder();
+//            StringBuilder updateGantry = new StringBuilder();
+//
+//            count = 0;
+//            int updateCount = 0;
+//            for (RuntimeNode runtimeNode: originalPath.runtimeNodeList
+//                 ) {
+//                if (count > 0) {
+//                    useType.append("|");
+//                }
+//                count++;
+//
+//                if (runtimeNode.node.source == NodeSource.IDENTIFY) useType.append("1");
+//                if (runtimeNode.node.source == NodeSource.MODIFY) {
+//                    if (updateCount > 0)
+//                        updateGantry.append("|");
+//                    updateCount++;
+//
+//                    useType.append("2");
+//                    updateGantry.append(runtimeNode.node.index).append("-").append(runtimeNode.node.mutualNode.index);
+//                }
+//                if (runtimeNode.node.source == NodeSource.DELETE) useType.append("3");
+//            }
 
-            if (debugging) originalPath.print("原始路径的修订版");
-            if (debugging) pathSet.finalPathInCard.print("合并的路径");
-
-            StringBuilder useType = new StringBuilder();
-            StringBuilder updateGantry = new StringBuilder();
-
-            count = 0;
-            int updateCount = 0;
-            for (Node node: originalPath.nodeList
-                 ) {
-                if (count > 0) {
-                    useType.append("|");
-                }
-                count++;
-
-                if (node.source == NodeSource.IDENTIFY) useType.append("1");
-                if (node.source == NodeSource.MODIFY) {
-                    if (updateCount > 0)
-                        updateGantry.append("|");
-                    updateCount++;
-
-                    useType.append("2");
-                    updateGantry.append(node.index).append("-").append(node.mutualNode.index);
-                }
-                if (node.source == NodeSource.DELETE) useType.append("3");
-            }
-
-            returnJsonObj.put("gantryGroup", gantryGroup);
-            returnJsonObj.put("useType", useType.toString());
-            returnJsonObj.put("updateGantry", updateGantry.toString());
         } else {
             handleFailure(returnJsonObj, description);
         }
@@ -264,16 +276,12 @@ public class PathRestoration {
     }
 
     private void handleFailure(JSONObject returnJsonObj, String description) {
-        // exception handling
-        returnJsonObj.put("code", "2");
-        //@fancy: describe why restoration fails.
-        returnJsonObj.put("description", "Failure cause: "+description);
-        returnJsonObj.put("pathInfo", "0");
-        returnJsonObj.put("typeGroup", "0");
-        returnJsonObj.put("flagGroup", "0");
-        returnJsonObj.put("gantryGroup", gantryGroup);
-        returnJsonObj.put("useType", "0");
-        returnJsonObj.put("updateGantry", "0");
+        //A 5-element tuple
+        returnJsonObj.put("code",            "2");
+        returnJsonObj.put("description",     "Failure cause: "+description);
+        returnJsonObj.put("gantryHexGroup",  "0");
+        returnJsonObj.put("gantryFlagGroup", "0");
+        returnJsonObj.put("transTimeGroup",  "0");
     }
 
     private Node getNode(Graph graph, String gantry, boolean isGantry) {
@@ -295,18 +303,6 @@ public class PathRestoration {
         description.append(gantry);
     }
 
-
-    public static void main(String[] args) {
-        if (args.length < 1) {
-            System.err.println("please provide two args:\n" +
-                    "\tString jsonData");
-            System.exit(1);
-        }
-
-        PathRestoration pathRestoration = new PathRestoration();
-        pathRestoration.pathRestorationMethod(args[0]);
-    }
-
     public boolean compare(int testIndex) {
         boolean same = true;
 
@@ -319,11 +315,11 @@ public class PathRestoration {
                 sheet.setColumnWidth(i, 8000);
             }
 
-            for (int i = 0; i < recoveredPath.nodeList.size(); i++) {
-                Node recoveredNode = recoveredPath.nodeList.get(i);
-                if (manualPath.nodeList.size() > i) {
-                    Node manualNode = manualPath.nodeList.get(i);
-                    if (!recoveredNode.index.equals(manualNode.index)) {
+            for (int i = 0; i < recoveredPath.runtimeNodeList.size(); i++) {
+                RuntimeNode recoveredNode = recoveredPath.runtimeNodeList.get(i);
+                if (manualPath.runtimeNodeList.size() > i) {
+                    RuntimeNode manualNode = manualPath.runtimeNodeList.get(i);
+                    if (!recoveredNode.node.index.equals(manualNode.node.index)) {
                         same = false;
                         break;
                     }
