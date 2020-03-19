@@ -25,10 +25,11 @@ public class DPAlgorithm implements Algorithm {
     public Path execute(Graph graph, Path path, List<Double> configs) {
 
         double modifyCost = configs.get(0); //0.01
-        double addCost = configs.get(1); //0.1
-        double deleteCost = 1; //configs.get(2); //1
-        double deleteCost2 = 2;
+        double addCost = 0.2; //configs.get(1); //0.1
+        double deleteCost = 1.5; //configs.get(2); //1
+        double deleteCost2 = deleteCost * 2;
         double deleteEndCost = configs.get(3); //graph.nodes.size() + 1
+        // 保证5个加<1个删 (id9710)
 
         boolean debug = false;
 
@@ -113,9 +114,9 @@ public class DPAlgorithm implements Algorithm {
                         if (dp[j][flagJ] != -1) {
                             double result = dp[j][flagJ]
                                 + modifyCost * flagI
-                                + deleteCost * pow(i - j - 1, 1)
+                                + deleteCost * pow(i - j - 1, 1.2)
                                 + deleteCost2 * distanceFromDeletedNodesToIJ[j][i]
-                                + addCost * pow(distance, 1.5);
+                                + addCost * pow(distance, 1.4);
 //                                + addCost2 * unreasonableNodes(reasonableNodeList, shortestPath);
                             // update
                             if (dp[i][flagI] == -1 || result <= dp[i][flagI]) {
@@ -136,8 +137,11 @@ public class DPAlgorithm implements Algorithm {
                         }
                         // update method 2: delete node 0 to j-1, j+1 to i-1
                         if (!not_delete_first) {
-                            double result = modifyCost * (flagJ + flagI) + deleteEndCost * j + deleteCost * (i - j - 1)
-                                + addCost * distance;
+                            double result = modifyCost * (flagJ + flagI)
+                                + deleteEndCost * j
+                                + deleteCost * pow(i - j - 1, 1.2)
+                                + deleteCost2 * distanceFromDeletedNodesToIJ[j][i]
+                                + addCost * pow(distance, 1.4);
                             if (dp[i][flagI] == -1 || result <= dp[i][flagI]) {
                                 dp[i][flagI] = result;
                                 dpPath[i][flagI].nodeList.clear();
