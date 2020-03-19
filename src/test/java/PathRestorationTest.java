@@ -66,11 +66,12 @@ public class PathRestorationTest {
         //execute the method under test
         PathRestoration pathRestoration = new PathRestoration();
 
-//        returnString = pathRestoration.pathRestorationMethod(successJsonObject.toString());
-//        System.out.println(returnString);
-//
-//        returnString = pathRestoration.pathRestorationMethod(failureJsonObject.toString());
-//        System.out.println(returnString);
+        String returnString =
+                pathRestoration.pathRestorationMethod(successJsonObject.toString());
+        System.out.println(returnString);
+
+        returnString = pathRestoration.pathRestorationMethod(failureJsonObject.toString());
+        System.out.println(returnString);
 
         //assert some properties
     }
