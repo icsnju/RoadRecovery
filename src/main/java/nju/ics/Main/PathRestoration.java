@@ -81,6 +81,7 @@ public class PathRestoration {
         if (graph == null) {
             ReadExcel readExcel = new ReadExcel();
             graph = readExcel.buildGraph(basicDataPath);
+
         }
 
 //        System.out.println(gantryGroup.length());

@@ -23,6 +23,8 @@ public class Graph {
     public int[][] pre_node;
     private ArrayList<ArrayList<Integer>> edges = new ArrayList<ArrayList<Integer>>(); // for Dijkstra
 
+    public int gantryCount = 0;
+
     private static class NodeDijkstra {
 
         private int dis;
