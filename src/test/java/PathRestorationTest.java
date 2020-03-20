@@ -114,7 +114,7 @@ public class PathRestorationTest {
         addToList(gantryIDList, "3D7510", "");
         addToList(gantryIDList, "3D750C", "2020-01-22 12:05:00");
         successJsonObject.put("gantryIdList", gantryIDList);
-        System.out.println(gantryIDList);
+//        System.out.println(gantryIDList);
 
         System.out.println(successJsonObject.toString());
 

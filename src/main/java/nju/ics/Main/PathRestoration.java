@@ -79,7 +79,7 @@ public class PathRestoration {
             timeList.add(transTime);
         }
 
-        System.out.println(gantryIdList);
+//        System.out.println(gantryIdList);
 
         basicDataPath = jsonObj.getString("basicDataPath");
 
@@ -140,7 +140,7 @@ public class PathRestoration {
         if (startNode != null) {
             startNode.source = NodeSource.IDENTIFY;
             originalPath.runtimeNodeList.add(new RuntimeNode(startNode, enTime));
-            System.out.println(enTime);
+//            System.out.println(enTime);
         }
 
         //I need a runtime node, {node, timestamp}
