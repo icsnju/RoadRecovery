@@ -81,7 +81,7 @@ public class DPAlgorithm implements Algorithm {
                 if (nodeI.node == null) {
                     continue;
                 }
-                dpPath[i][flagI].runtimeNodeList.add(new RuntimeNode(nodeI.node, null));
+                dpPath[i][flagI].runtimeNodeList.add(new RuntimeNode(nodeI.node, nodeI.transTime));
                 dpPath[i][flagI].runtimeNodeList.get(0).node.source = IDENTIFY;
                 for (int flagJ = 0; flagJ <= 1; ++flagJ) {
                     for (int j = i - 1; j >= 0; --j) {

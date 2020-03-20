@@ -33,6 +33,7 @@ public class RuntimePath {
         for (RuntimeNode runtimeNode : runtimeNodeList) {
             System.out.println(fixedLengthString(runtimeNode.node.index, 20) + " " +
                     fixedLengthString(runtimeNode.node.source.toString(), 20)+ " " +
+                    fixedLengthString(runtimeNode.transTime, 20) + " " +
                     fixedLengthString(runtimeNode.node.name, 20));
         }
         System.out.println("---path end---");

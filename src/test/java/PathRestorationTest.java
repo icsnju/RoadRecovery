@@ -96,9 +96,9 @@ public class PathRestorationTest {
          ***/
         //manually curate a successful JSON data
         //case 10026
-        successJsonObject.put("enStationId", "S0019370010080");
+        successJsonObject.put("enStationId", "");
         successJsonObject.put("exStationId", "G2011370010010");
-        successJsonObject.put("enTime",      "2020-01-22 11:39:03");
+        successJsonObject.put("enTime",      "");
         successJsonObject.put("exTime",      "2020-01-22 12:06:05");
 
         successJsonObject.put("basicDataPath", basic_data_file_path);
@@ -110,8 +110,8 @@ public class PathRestorationTest {
 
         List<Map<String, String>> gantryIDList = new ArrayList<>();
         addToList(gantryIDList, "3C581B", "2020-01-22 11:50:00");
-        addToList(gantryIDList, "3D5819", "2020-01-22 11:55:00");
-        addToList(gantryIDList, "3D7510", "2020-01-22 12:00:00");
+        addToList(gantryIDList, "3D5819", "");
+        addToList(gantryIDList, "3D7510", "");
         addToList(gantryIDList, "3D750C", "2020-01-22 12:05:00");
         successJsonObject.put("gantryIdList", gantryIDList);
         System.out.println(gantryIDList);

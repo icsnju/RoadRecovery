@@ -56,7 +56,9 @@ public class PathRestoration {
         enStationId = jsonObj.getString("enStationId");
         exStationId = jsonObj.getString("exStationId");
         enTime      = jsonObj.getString("enTime");
+        if (enTime.length() == 0) enTime = null;
         exTime      = jsonObj.getString("exTime");
+        if (exTime.length() == 0) exTime = null;
 
         //new interface params, from JSONArray to List<Map<String, String>>
         JSONArray json_arr = jsonObj.getJSONArray("gantryIdList");
@@ -68,6 +70,7 @@ public class PathRestoration {
             JSONObject jsonArrayObj = json_arr.getJSONObject(i);
             String gantryHex = jsonArrayObj.keySet().iterator().next();
             String transTime = jsonArrayObj.getString(gantryHex);
+            if (transTime.length() == 0) transTime = null;
             Map<String, String> map = new HashMap<>();
             map.put(gantryHex, transTime);
             gantryIdList.add(map);
@@ -137,6 +140,7 @@ public class PathRestoration {
         if (startNode != null) {
             startNode.source = NodeSource.IDENTIFY;
             originalPath.runtimeNodeList.add(new RuntimeNode(startNode, enTime));
+            System.out.println(enTime);
         }
 
         //I need a runtime node, {node, timestamp}
@@ -235,7 +239,7 @@ public class PathRestoration {
 
             returnJsonObj.put("gantryHexGroup",  gantryHexGroup.toString());
             returnJsonObj.put("gantryFlagGroup", gantryFlagGroup.toString());
-            returnJsonObj.put("transTimeGroup",  gantryFlagGroup.toString());
+            returnJsonObj.put("transTimeGroup",  transTimeGroup.toString());
 
 //            //mark the original node as one of {1:identify, 2:modify, 3:delete}
 //            PathSet pathSet = new PathSet();
