@@ -96,9 +96,9 @@ public class PathRestorationTest {
          ***/
         //manually curate a successful JSON data
         //case 10026
-        successJsonObject.put("enStationId", "");
+        successJsonObject.put("enStationId", "S0019370010080");
         successJsonObject.put("exStationId", "G2011370010010");
-        successJsonObject.put("enTime",      "");
+        successJsonObject.put("enTime",      "2020-01-22 11:39:03");
         successJsonObject.put("exTime",      "2020-01-22 12:06:05");
 
         successJsonObject.put("basicDataPath", basic_data_file_path);

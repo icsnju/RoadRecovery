@@ -14,9 +14,12 @@ import static nju.ics.Entity.NodeType.*;
 public class ReadExcel {
 
 
-    private int SHEETHEAD = 4;
+    private int SHEETHEAD1AND3 = 4;
+    private int SHEETHEAD6 = 3;
+
     int EDGESHEET = 1;
     int MUTUALSHEET = 3;
+    int MILEAGESHEET = 6;
 
     int gantryCount = 0;
 
@@ -33,6 +36,9 @@ public class ReadExcel {
                 }
                 else if (sheet.getSheetName().equals("3")) { // all mutual information
                     addEdgeFromSheet(sheet, MUTUALSHEET);
+                }
+                else if (sheet.getSheetName().equals("门架里程")) {
+                    addEdgeFromSheet(sheet, MILEAGESHEET);
                 }
             }
             System.out.println("node size = " + graph.nodes.size());
@@ -54,17 +60,28 @@ public class ReadExcel {
         return graph;
     }
 
+
     private void addEdgeFromSheet(Sheet sheet, int sheetIndex) {
         Iterator<Row> rowIterator = sheet.rowIterator();
         while (rowIterator.hasNext()) {
             Row row = rowIterator.next();
-            if (row.getRowNum() < SHEETHEAD) continue;
+            if ((sheetIndex <=3 && row.getRowNum() < SHEETHEAD1AND3) ||
+                    (sheetIndex == 6 && row.getRowNum() < SHEETHEAD6)) continue;
 
+            //Specifically for sheet 6
+            Node inNode = extractNodeFromRow(row, 1);
+
+            if (sheetIndex == 6) {
+                if (inNode == null || !graph.nodes.contains(inNode)) continue;
+
+                inNode = graph.nodes.get(graph.nodes.indexOf(inNode));
+                inNode.mileage = (long) row.getCell(3).getNumericCellValue();
+                continue;
+            }
             /*
              Add two nodes and one edge into graph
              */
             //add two nodes
-            Node inNode = extractNodeFromRow(row, 1);
             Node outNode = extractNodeFromRow(row, 4);
             // exist outNode is {0, wu, wu} | {index, wu, wu}
             if (inNode == null || outNode == null) continue;
@@ -92,9 +109,6 @@ public class ReadExcel {
             if (sheetIndex == EDGESHEET) {
                 if (!graph.edgeSet.contains(edge)) graph.edgeSet.add(edge);
             }
-//            else if (sheetIndex == MUTUALSHEET) {
-//                if (!graph.mutualSet.contains(edge)) graph.mutualSet.add(edge);
-//            }
         }
     }
 

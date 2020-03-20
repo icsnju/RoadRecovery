@@ -9,7 +9,7 @@ public class Node implements Cloneable {
     public NodeType type;
     public NodeSource source; // for testing
     public Node mutualNode = null;
-    String timestamp;
+    public long mileage;
 
     // unused attributes
     double longitude; //jing'du
