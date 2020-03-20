@@ -22,7 +22,7 @@ import java.util.Map;
 
 public class PathRestoration {
 
-    private boolean testing = true;
+    private boolean testing = false;
     private boolean debugging = false;
 
     public static Graph graph = null;
@@ -190,6 +190,8 @@ public class PathRestoration {
     private JSONObject getReturnedJsonObject(RuntimePath originalPath, RuntimePath recoveredPath, String description) {
         JSONObject returnJsonObj = new JSONObject();
         if (recoveredPath != null) {
+            recoveredPath.print("恢复出的路径");
+
             returnJsonObj.put("code", "1");
             returnJsonObj.put("description", "Success");
 

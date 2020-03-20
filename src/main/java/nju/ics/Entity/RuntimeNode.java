@@ -2,7 +2,7 @@ package nju.ics.Entity;
 
 import static nju.ics.Entity.NodeSource.IDENTIFY;
 
-public class RuntimeNode {
+public class RuntimeNode implements Cloneable {
     public Node node;
     public String transTime = null;
 

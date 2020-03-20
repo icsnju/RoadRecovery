@@ -78,17 +78,17 @@ public class DPAlgorithm implements Algorithm {
                 // nodeI: v_i or T(v_i) controlled by nodeI
                 RuntimeNode nodeI = flagI == 0 ? originalPath.runtimeNodeList.get(i)
                     : new RuntimeNode(originalPath.runtimeNodeList.get(i).node.getMutualNode(), null);
-                if (nodeI == null) {
+                if (nodeI.node == null) {
                     continue;
                 }
-                dpPath[i][flagI].runtimeNodeList.add(new RuntimeNode((Node) nodeI.clone(), null));
+                dpPath[i][flagI].runtimeNodeList.add(new RuntimeNode(nodeI.node, null));
                 dpPath[i][flagI].runtimeNodeList.get(0).node.source = IDENTIFY;
                 for (int flagJ = 0; flagJ <= 1; ++flagJ) {
                     for (int j = i - 1; j >= 0; --j) {
                         // nodeJ: v_j or T(v_j) controlled by flagJ
                         RuntimeNode nodeJ = flagJ == 0 ? originalPath.runtimeNodeList.get(j)
                             : new RuntimeNode(originalPath.runtimeNodeList.get(j).node.getMutualNode(), null);
-                        if (nodeJ == null) {
+                        if (nodeJ.node == null) {
                             continue;
                         }
                         // shortest path from nodeJ to nodeI

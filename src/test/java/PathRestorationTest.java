@@ -3,19 +3,21 @@ import org.json.JSONObject;
 import org.junit.Test;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class PathRestorationTest {
 
-    static JSONObject successJsonObject = new JSONObject();
-    static JSONObject failureJsonObject = new JSONObject();
-    static String basic_data_file_path = "src/test/resources/inputs/basic" +
-            "-data.xls";
-    static String test_data_file_path = "src/test/resources/inputs/test-data" +
-            "-20200317-02.txt";
+    JSONObject successJsonObject = new JSONObject();
+    JSONObject failureJsonObject = new JSONObject();
 
-    static {
-        getInput();
-    }
+    String basic_data_file_path = "src/test/resources/inputs/basic" +
+            "-data-20200319.xls";
+
+    String test_data_file_path = "src/test/resources/inputs/test-data" +
+            "-20200317-02.txt";
 
     @Test
     public void testPathRestorationWithNewCases() throws IOException {
@@ -63,58 +65,65 @@ public class PathRestorationTest {
 
     @Test
     public void testPathRestorationMethod() {
-        //execute the method under test
+        getInput();
+
         PathRestoration pathRestoration = new PathRestoration();
 
-        String returnString =
-                pathRestoration.pathRestorationMethod(successJsonObject.toString());
+        String returnString = pathRestoration.pathRestorationMethod(successJsonObject.toString());
         System.out.println(returnString);
 
-        returnString = pathRestoration.pathRestorationMethod(failureJsonObject.toString());
-        System.out.println(returnString);
+//        returnString = pathRestoration.pathRestorationMethod(failureJsonObject.toString());
+//        System.out.println(returnString);
 
         //assert some properties
     }
 
-    private static void getInput() {
+    @Test
+    public void getInput() {
+        /***{
+        // "deleteEndCost":10000,
+        // "modifyCost":0.01,
+        // "addCost":0.1,
+        // "deleteCost":0.6,
+
+        // "enStationId":"S0019370010080",
+        // "exStationId":"G2011370010010",
+        // "enTime":"2020-01-22 11:39:03",
+        // "exTime":"2020-01-22 12:06:05",
+
+        // "gantryGroup":"3C581B|3D5819|3D7510|3D750C",
+        // "truePath":"城阳|城阳-城阳南虚收费门架|城阳南虚-夏庄虚收费门架|夏庄虚-李村虚收费门架|李村虚-青岛东收费门架|青岛东"}
+         ***/
         //manually curate a successful JSON data
         //case 10026
-        successJsonObject.put("enStationId", "S0033370020050");
-        successJsonObject.put("exStationId", "S0033370010030");
-        successJsonObject.put("enTime",      "2020-02-26 08:01:15");
-        successJsonObject.put("exTime",      "2020-02-26 08:58:19");
-
-        successJsonObject.put("gantryGroup", "3D6105|3C610A|3D6104|3D6103|3C610D|3D6101|3D5311");
-        successJsonObject.put("typeGroup",   "0|0|0|0|0|0|0");
-        successJsonObject.put("timeGroup",   "");
+        successJsonObject.put("enStationId", "S0019370010080");
+        successJsonObject.put("exStationId", "G2011370010010");
+        successJsonObject.put("enTime",      "2020-01-22 11:39:03");
+        successJsonObject.put("exTime",      "2020-01-22 12:06:05");
 
         successJsonObject.put("basicDataPath", basic_data_file_path);
-        successJsonObject.put("testIndex", 0);
 
         successJsonObject.put("modifyCost", 0.01);
         successJsonObject.put("addCost", 0.1);
-        successJsonObject.put("deleteCost", 10);
+        successJsonObject.put("deleteCost", 0.6);
         successJsonObject.put("deleteEndCost", 10000);
 
+        List<Map<String, String>> gantryIDList = new ArrayList<>();
+        addToList(gantryIDList, "3C581B", "2020-01-22 11:50:00");
+        addToList(gantryIDList, "3D5819", "2020-01-22 11:55:00");
+        addToList(gantryIDList, "3D7510", "2020-01-22 12:00:00");
+        addToList(gantryIDList, "3D750C", "2020-01-22 12:05:00");
+        successJsonObject.put("gantryIdList", gantryIDList);
+        System.out.println(gantryIDList);
 
-//        System.out.println(successJsonObject.toString());
+        System.out.println(successJsonObject.toString());
 
         //manually curate a failure JSON data
-        failureJsonObject.put("enStationId", "");
-        failureJsonObject.put("exStationId", "S0033370010030");
-        failureJsonObject.put("enTime",      "2020-02-26 08:01:15");
-        failureJsonObject.put("exTime",      "2020-02-26 08:58:19");
-        failureJsonObject.put("gantryGroup", "");
-        failureJsonObject.put("typeGroup",   "");
-        failureJsonObject.put("timeGroup",   "");
-        failureJsonObject.put("basicDataPath", basic_data_file_path);
-        failureJsonObject.put("testIndex", 0);
+    }
 
-        failureJsonObject.put("modifyCost", 0.01);
-        failureJsonObject.put("addCost", 0.1);
-        failureJsonObject.put("deleteCost", 10);
-        failureJsonObject.put("deleteEndCost", 10000);
-
-//        System.out.println(failureJsonObject.toString());
+    private void addToList(List<Map<String, String>> list, String key, String value) {
+        Map<String, String> map = new HashMap<>();
+        map.put(key, value);
+        list.add(map);
     }
 }
