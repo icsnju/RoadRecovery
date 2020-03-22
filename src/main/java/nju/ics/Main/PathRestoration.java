@@ -35,7 +35,7 @@ public class PathRestoration {
     int testIndex;
     String basicDataPath;
 
-    double addCost, deleteCost, modifyCost, deleteEndCost;
+    double addCost, deleteCost, deleteCost2, modifyCost, deleteEndCost;
 
     StringBuilder description = new StringBuilder("Unknown gantry: ");
     int desCount = 0;
@@ -87,12 +87,14 @@ public class PathRestoration {
         modifyCost    = jsonObj.getDouble("modifyCost");
         addCost       = jsonObj.getDouble("addCost");
         deleteCost    = jsonObj.getDouble("deleteCost");
+        deleteCost2   = jsonObj.getDouble("deleteCost2");
         deleteEndCost = jsonObj.getDouble("deleteEndCost");
 
         List<Double> configs = new ArrayList<>();
         configs.add(modifyCost);
         configs.add(addCost);
         configs.add(deleteCost);
+        configs.add(deleteCost2);
         configs.add(deleteEndCost);
 
         //build the graph
