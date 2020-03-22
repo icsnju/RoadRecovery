@@ -23,8 +23,16 @@ public class RuntimePath {
 
     public RuntimePath() {}
 
-    public int getLength() {
-        return runtimeNodeList.size() - 1;
+    public long getLength() {
+        long length = 0;
+        for (int i = 1; i < runtimeNodeList.size() - 1; ++i) {
+            length += runtimeNodeList.get(i).node.mileage;
+        }
+        return length;
+    }
+
+    public long getLengthWithEnd() {
+        return getLength() + runtimeNodeList.get(runtimeNodeList.size() - 1).node.mileage;
     }
 
     public void print(String desc) {

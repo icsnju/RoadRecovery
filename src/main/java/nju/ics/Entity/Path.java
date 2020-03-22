@@ -10,8 +10,16 @@ public class Path {
     public List<Node> nodeList = new ArrayList<Node>();
 
 
-    public int getLength() {
-        return nodeList.size() - 1;
+    public long getLength() {
+        long length = 0;
+        for (int i = 1; i < nodeList.size() - 1; ++i) {
+            length += nodeList.get(i).mileage;
+        }
+        return length;
+    }
+
+    public long getLengthWithEnd() {
+        return getLength() + nodeList.get(nodeList.size() - 1).mileage;
     }
 
     public void add(Path path2) {

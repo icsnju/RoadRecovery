@@ -76,7 +76,7 @@ public class Graph {
             path.nodeList.add(node);
         }
         Collections.reverse(path.nodeList);
-        assert (path.getLength() == dist[from][to]);
+//        assert (path.getLength() == dist[from][to]);
         return path;
 
         /*int inIndex = nodes.indexOf(inNode);
@@ -177,8 +177,9 @@ public class Graph {
                         continue;
                     }
                     for (int y : edges.get(x.index)) {
-                        if (dist[from][y] > x.dis + 1) {
-                            q.add(new NodeDijkstra(y, dist[from][y] = x.dis + 1, x.index));
+                        int disy = x.dis + (int)nodes.get(y).mileage;
+                        if (dist[from][y] > disy) {
+                            q.add(new NodeDijkstra(y, dist[from][y] = disy, x.index));
                         }
                     }
                 }
