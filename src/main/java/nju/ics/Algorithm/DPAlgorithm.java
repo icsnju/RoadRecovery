@@ -11,34 +11,25 @@ public class DPAlgorithm implements Algorithm {
     /**
      * Road recovery DP algorithm
      * @param graph graph(G(V, E), T(V))
-     * @param path input path P
+     * @param originalPath input path P
      *
      * @return output path(P*), return null when failed
      */
-    public RuntimePath execute(Graph graph, RuntimePath path, List<Double> configs) {
+    public RuntimePath execute(Graph graph, RuntimePath originalPath, List<Double> configs) {
 
         double modifyCost = configs.get(0); //0.01
-        double addCost = 0.1; //configs.get(1); //0.1
-        double deleteCost = 4000; //configs.get(2); //1
-        double deleteCost2 = 2;
-        double deleteEndCost = configs.get(3); //graph.nodes.size() + 1
+        double addCost = configs.get(1); //0.1
+        double deleteCost = configs.get(2); //4000
+        double deleteCost2 = configs.get(3); //2
+        double deleteEndCost = configs.get(4); //1000000
         // 保证5个加<1个删 (id9710)
 
         boolean debug = false;
 
-        RuntimePath originalPath = path;
-//        Path originalPath = new Path();
-//        for (Node node : path.nodeList) {
-//            if (originalPath.nodeList.isEmpty() || node != originalPath.nodeList
-//                .get(originalPath.nodeList.size() - 1)) {
-//                originalPath.nodeList.add(node);
-//            }
-//        }
         int originalPathSize = originalPath.runtimeNodeList.size();
         double[][] dp = new double[originalPathSize][2];
         RuntimePath[][] dpPath = new RuntimePath[originalPathSize][2];
-        double[][] distanceFromDeletedNodesToIJ = new double[originalPathSize][
-            originalPathSize];
+        double[][] distanceFromDeletedNodesToIJ = new double[originalPathSize][originalPathSize];
 
         double answer = -1;
         RuntimePath answerPath = new RuntimePath();
@@ -92,7 +83,7 @@ public class DPAlgorithm implements Algorithm {
                             continue;
                         }
                         RuntimePath runtimeShortestPath = new RuntimePath(shortestPath, nodeJ, nodeI);
-                        if (nodeI.node.equals(nodeJ.node) || (flagI == 1 && flagJ == 1)) { // When i == j and has one IDENTIFY, then IDENTIFY
+                        if (!nodeI.node.equals(nodeJ.node) || (flagI == 1 && flagJ == 1)) { // When i == j and has one IDENTIFY, then IDENTIFY
                             if (flagJ == 1) { // 反转结点
                                 runtimeShortestPath.runtimeNodeList.get(0).node.source = MODIFY;
                             }
@@ -133,9 +124,9 @@ public class DPAlgorithm implements Algorithm {
                         if (!not_delete_first) {
                             double result = modifyCost * (flagJ + flagI)
                                 + deleteEndCost * j
-                                + deleteCost * pow(i - j - 1, 1.2)
+                                + deleteCost * pow(i - j - 1, 1)
                                 + deleteCost2 * distanceFromDeletedNodesToIJ[j][i]
-                                + addCost * pow(distance, 1.4);
+                                + addCost * pow(distance, 1);
                             if (dp[i][flagI] == -1 || result <= dp[i][flagI]) {
                                 dp[i][flagI] = result;
                                 dpPath[i][flagI].runtimeNodeList.clear();
@@ -185,7 +176,6 @@ public class DPAlgorithm implements Algorithm {
             ret += dis;
         }
         return ((double) ret) / (j - i - 1);
-
 //        int ret = -1;
 //        for (Node node1 : list1) {
 //            for (Node node2 : list2) {
