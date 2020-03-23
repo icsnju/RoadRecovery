@@ -31,7 +31,6 @@ public class PathRestoration {
      */
     String enStationId, exStationId;
     String enTime, exTime;
-    List<Map<String, String>> gantryIdList = null;
     int testIndex;
     String basicDataPath;
 
@@ -65,21 +64,15 @@ public class PathRestoration {
         List<String> gantryList = new ArrayList<>();
         List<String> timeList = new ArrayList<>();
 
-        gantryIdList = new ArrayList<>();
         for (int i = 0; i < json_arr.length(); i++) {
             JSONObject jsonArrayObj = json_arr.getJSONObject(i);
-            String gantryHex = jsonArrayObj.keySet().iterator().next();
-            String transTime = jsonArrayObj.getString(gantryHex);
+            String gantryHex = jsonArrayObj.getString("gantryHex");
+            String transTime = jsonArrayObj.getString("transTime");
             if (transTime.length() == 0) transTime = null;
-            Map<String, String> map = new HashMap<>();
-            map.put(gantryHex, transTime);
-            gantryIdList.add(map);
 
             gantryList.add(gantryHex);
             timeList.add(transTime);
         }
-
-//        System.out.println(gantryIdList);
 
         basicDataPath = jsonObj.getString("basicDataPath");
 

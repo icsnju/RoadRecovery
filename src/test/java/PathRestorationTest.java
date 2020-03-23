@@ -108,7 +108,7 @@ public class PathRestorationTest {
         successJsonObject.put("deleteCost", 0.6);
         successJsonObject.put("deleteEndCost", 10000);
 
-        List<Map<String, String>> gantryIDList = new ArrayList<>();
+        List<JSONObject> gantryIDList = new ArrayList<>();
 //        addToList(gantryIDList, "3C581B", "2020-01-22 11:50:00");
 //        addToList(gantryIDList, "3D5819", "");
 //        addToList(gantryIDList, "3D7510", "");
@@ -116,7 +116,7 @@ public class PathRestorationTest {
 //        successJsonObject.put("gantryIdList", gantryIDList);
 //        System.out.println(gantryIDList);
 
-        System.out.println(successJsonObject.toString());
+
 
         //manually curate a failure JSON data
 //        successJsonObject.put("id", "9674");
@@ -178,11 +178,15 @@ public class PathRestorationTest {
         addToList(gantryIDList, "3C4F03", "");
         addToList(gantryIDList, "3C2501", "");
         successJsonObject.put("gantryIdList", gantryIDList);
+
+        System.out.println(successJsonObject.toString());
     }
 
-    private void addToList(List<Map<String, String>> list, String key, String value) {
-        Map<String, String> map = new HashMap<>();
-        map.put(key, value);
-        list.add(map);
+    private void addToList(List<JSONObject> list, String gantryHex,
+                           String transTime) {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("gantryHex", gantryHex);
+        jsonObject.put("transTime", transTime);
+        list.add(jsonObject);
     }
 }
