@@ -68,12 +68,16 @@ public class PathRestorationTest {
         getInput();
 
         PathRestoration pathRestoration = new PathRestoration();
+        String returnString;
 
-        String returnString = pathRestoration.pathRestorationMethod(successJsonObject.toString());
-        System.out.println(returnString);
-
-//        returnString = pathRestoration.pathRestorationMethod(failureJsonObject.toString());
+//        System.out.println(successJsonObject);
+//        returnString = pathRestoration.pathRestorationMethod(successJsonObject.toString());
 //        System.out.println(returnString);
+//        System.out.println();
+
+        System.out.println(failureJsonObject);
+        returnString = pathRestoration.pathRestorationMethod(failureJsonObject.toString());
+        System.out.println(returnString);
 
         //assert some properties
     }
@@ -121,6 +125,27 @@ public class PathRestorationTest {
 
 
         //manually curate a failure JSON data
+        //"gantryIdList":[],"exStationId":"","enTime":"2020-01-24 00:33:23",
+                //"deleteEndCost":10000,"basicDataPath":"H:\\basic-data.xls",
+                //"modifyCost":0.01,"exTime":"2020-01-24 09:32:48","addCost":
+        // 0.1,"enStationId":"","deleteCost":0.6,"deleteCost2":2}
+        failureJsonObject.put("enStationId", "");
+        failureJsonObject.put("exStationId", "");
+        failureJsonObject.put("enTime",      "2020-01-22 11:39:03");
+        failureJsonObject.put("exTime",      "2020-01-22 12:06:05");
+
+        failureJsonObject.put("basicDataPath", basic_data_file_path);
+
+        failureJsonObject.put("modifyCost", 0.01);
+        failureJsonObject.put("addCost", 0.1);
+        failureJsonObject.put("deleteCost", 4000);
+        failureJsonObject.put("deleteCost2", 2);
+        failureJsonObject.put("deleteEndCost", 1000000);
+
+        List<JSONObject> failList = new ArrayList<>();
+        failureJsonObject.put("gantryIdList", failList);
+
+
 //        successJsonObject.put("id", "9674");
 //        successJsonObject.put("enStationId", "G0321370090040");
 //        successJsonObject.put("exStationId", "G0321370090020");
@@ -181,7 +206,7 @@ public class PathRestorationTest {
         addToList(gantryIDList, "3C2501", "");
         successJsonObject.put("gantryIdList", gantryIDList);
 
-        System.out.println(successJsonObject.toString());
+//        System.out.println(successJsonObject.toString());
     }
 
     private void addToList(List<JSONObject> list, String gantryHex,

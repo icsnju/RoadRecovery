@@ -167,11 +167,19 @@ public class PathRestoration {
             ).toString();
 
         //If only exist one node, then return with failure.
+        if (originalPath.runtimeNodeList.size() == 0) {
+            return getReturnedJsonObject(
+                    originalPath,
+                    null,
+                    "No identified node"
+            ).toString();
+        }
+
         if (originalPath.runtimeNodeList.size() == 1) {
             return getReturnedJsonObject(
                     originalPath,
                     null,
-                    "Exist only one node "+originalPath.runtimeNodeList.get(0).node.index+"."
+                    "Exist only one node "+originalPath.runtimeNodeList.get(0).node.index
             ).toString();
         }
 
@@ -200,7 +208,7 @@ public class PathRestoration {
 
             //fix missing time information
             StringBuilder transTimeGroup  = new StringBuilder();
-            String lastTime = null;
+            String lastTime = "";
 
             //reverse order
             for (int i = recoveredPath.runtimeNodeList.size()-1; i >= 0 ; i--) {
@@ -280,9 +288,9 @@ public class PathRestoration {
         //A 5-element tuple
         returnJsonObj.put("code",            "2");
         returnJsonObj.put("description",     "Failure cause: "+description);
-        returnJsonObj.put("gantryHexGroup",  "0");
-        returnJsonObj.put("gantryFlagGroup", "0");
-        returnJsonObj.put("transTimeGroup",  "0");
+        returnJsonObj.put("gantryHexGroup",  "");
+        returnJsonObj.put("gantryFlagGroup", "");
+        returnJsonObj.put("transTimeGroup",  "");
     }
 
     private Node getNode(Graph graph, String gantry, boolean isGantry) {
