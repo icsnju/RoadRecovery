@@ -141,7 +141,8 @@ public class DPAlgorithm implements Algorithm {
                     }
                 }
                 if ((!not_delete_last || i == originalPathSize - 1) && (answer == -1
-                    || dp[i][flagI] + (originalPathSize - 1 - i) * deleteEndCost < answer)) {
+                    || dp[i][flagI] + (originalPathSize - 1 - i) * deleteEndCost < answer) && (
+                    dp[i][flagI] != -1)) {
                     answer = dp[i][flagI] + (originalPathSize - 1 - i) * deleteEndCost; // 相当于后面都删掉
                     answerPath = dpPath[i][flagI];
                 }
