@@ -70,41 +70,26 @@ public class PathRestorationTest {
         PathRestoration pathRestoration = new PathRestoration();
         String returnString;
 
-//        System.out.println(successJsonObject);
-//        returnString = pathRestoration.pathRestorationMethod(successJsonObject.toString());
-//        System.out.println(returnString);
-//        System.out.println();
-
-        System.out.println(failureJsonObject);
-        returnString = pathRestoration.pathRestorationMethod(failureJsonObject.toString());
+        System.out.println(successJsonObject);
+        returnString = pathRestoration.pathRestorationMethod(successJsonObject.toString());
         System.out.println(returnString);
+        System.out.println();
+
+//        System.out.println(failureJsonObject);
+//        returnString = pathRestoration.pathRestorationMethod(failureJsonObject.toString());
+//        System.out.println(returnString);
 
         //assert some properties
     }
 
     @Test
     public void getInput() {
-        /***{
         // "deleteEndCost":10000,
         // "modifyCost":0.01,
         // "addCost":0.1,
         // "deleteCost":0.6,
 
-        // "enStationId":"S0019370010080",
-        // "exStationId":"G2011370010010",
-        // "enTime":"2020-01-22 11:39:03",
-        // "exTime":"2020-01-22 12:06:05",
-
-        // "gantryGroup":"3C581B|3D5819|3D7510|3D750C",
-        // "truePath":"城阳|城阳-城阳南虚收费门架|城阳南虚-夏庄虚收费门架|夏庄虚-李村虚收费门架|李村虚-青岛东收费门架|青岛东"}
-         ***/
         //manually curate a successful JSON data
-        //case 10026
-        successJsonObject.put("enStationId", "S0019370010080");
-        successJsonObject.put("exStationId", "G2011370010010");
-        successJsonObject.put("enTime",      "2020-01-22 11:39:03");
-        successJsonObject.put("exTime",      "2020-01-22 12:06:05");
-
         successJsonObject.put("basicDataPath", basic_data_file_path);
 
         successJsonObject.put("modifyCost", 0.01);
@@ -114,14 +99,36 @@ public class PathRestorationTest {
         successJsonObject.put("deleteEndCost", 1000000);
 
         List<JSONObject> gantryIDList = new ArrayList<>();
-//        addToList(gantryIDList, "3C581B", "2020-01-22 11:50:00");
-//        addToList(gantryIDList, "3D5819", "");
-//        addToList(gantryIDList, "3D7510", "");
-//        addToList(gantryIDList, "3D750C", "2020-01-22 12:05:00");
-//        successJsonObject.put("gantryIdList", gantryIDList);
-//        System.out.println(gantryIDList);
+        successJsonObject.put("enStationId", "");
+        successJsonObject.put("exStationId", "");
+        successJsonObject.put("enTime", "2020-01-23 16:30:31");
+        successJsonObject.put("exTime", "2020-01-23 18:40:20");
+        //{"transTime":"","gantryHex":"3F5A0A"},
+        // {"transTime":"","gantryHex":"3D5A0C"},
+        // {"transTime":"","gantryHex":"3D5A0E"},
+        // {"transTime":"","gantryHex":"3D5A0F"},
+        // {"transTime":"","gantryHex":"3D5A10"},
+        // {"transTime":"","gantryHex":"3D5A11"},
+        // {"transTime":"","gantryHex":"3D5A12"},
+        // {"transTime":"","gantryHex":"3D5F06"},
+        // {"transTime":"","gantryHex":"3D5F07"},
+        // {"transTime":"","gantryHex":"3D5F08"},
+        // {"transTime":"","gantryHex":"3C4A04"},
+        // {"transTime":"","gantryHex":"3E4A05"}
+        addToList(gantryIDList, "3F5A0A", "");
+        addToList(gantryIDList, "3D5A0C", "");
+        addToList(gantryIDList, "3D5A0E", "");
+        addToList(gantryIDList, "3D5A0F", "");
+        addToList(gantryIDList, "3D5A10", "");
+        addToList(gantryIDList, "3D5A11", "");
+        addToList(gantryIDList, "3D5A12", "");
+        addToList(gantryIDList, "3D5F06", "");
+        addToList(gantryIDList, "3D5F07", "");
+        addToList(gantryIDList, "3D5F08", "");
+        addToList(gantryIDList, "3C4A04", "");
+        addToList(gantryIDList, "3E4A05", "");
 
-
+        successJsonObject.put("gantryIdList", gantryIDList);
 
 
         //manually curate a failure JSON data
@@ -144,69 +151,6 @@ public class PathRestorationTest {
 
         List<JSONObject> failList = new ArrayList<>();
         failureJsonObject.put("gantryIdList", failList);
-
-
-//        successJsonObject.put("id", "9674");
-//        successJsonObject.put("enStationId", "G0321370090040");
-//        successJsonObject.put("exStationId", "G0321370090020");
-//        successJsonObject.put("enTime", "2020-01-04 12:10:02");
-//        successJsonObject.put("exTime", "2020-01-23 15:32:36");
-//        addToList(gantryIDList, "3D7C0E", "1");
-//        addToList(gantryIDList, "3C7C02", "2");
-//        addToList(gantryIDList, "3D7C0F", "3");
-//        addToList(gantryIDList, "3C7C01", "4");
-//        addToList(gantryIDList, "3D7C10", "5");
-//        addToList(gantryIDList, "3C7C08", "6");
-//        addToList(gantryIDList, "3D7C11", "7");
-//        addToList(gantryIDList, "3C7C07", "8");
-//        addToList(gantryIDList, "3D7C12", "9");
-//        addToList(gantryIDList, "3C7C06", "10");
-//        addToList(gantryIDList, "3D3B0D", "11");
-//        addToList(gantryIDList, "3D3B0C", "12");
-//        addToList(gantryIDList, "3D3B0B", "13");
-//        addToList(gantryIDList, "3D3B08", "14");
-//        addToList(gantryIDList, "3D3B06", "15");
-//        addToList(gantryIDList, "3D3B03", "16");
-//        addToList(gantryIDList, "3D3B01", "17");
-//        addToList(gantryIDList, "3D1C06", "18");
-//        successJsonObject.put("gantryIdList", gantryIDList);
-
-//        case 8460
-//        successJsonObject.put("enStationId", "S0019370040030");
-//        successJsonObject.put("exStationId", "S0019370040040");
-//        successJsonObject.put("enTime", "2020-01-24 09:06:24");
-//        successJsonObject.put("exTime", "2020-01-24 10:28:36");
-//        addToList(gantryIDList, "3D6C08", "");
-//        addToList(gantryIDList, "3D6C09", "");
-//        addToList(gantryIDList, "3D6C0A", "");
-//        addToList(gantryIDList, "3D7402", "");
-//        addToList(gantryIDList, "3C6C01", "");
-//        addToList(gantryIDList, "3C6C02", "");
-//        addToList(gantryIDList, "3C6C03", "");
-//        addToList(gantryIDList, "3C6C04", "");
-//        addToList(gantryIDList, "3C6C05", "");
-//        successJsonObject.put("gantryIdList", gantryIDList);
-
-        successJsonObject.put("enStationId", "G0015370080030");
-        successJsonObject.put("exStationId", "G0015370080010");
-        successJsonObject.put("enTime", "2020-01-22 12:33:16");
-        successJsonObject.put("exTime", "2020-01-22 16:59:40");
-        addToList(gantryIDList, "3D250E", "");
-        addToList(gantryIDList, "3D250F", "");
-        addToList(gantryIDList, "3D2510", "");
-        addToList(gantryIDList, "3D4F04", "");
-        addToList(gantryIDList, "3D4F05", "");
-        addToList(gantryIDList, "3D4F06", "");
-        addToList(gantryIDList, "3D4E03", "");
-        addToList(gantryIDList, "3D4E04", "");
-        addToList(gantryIDList, "3C4E02", "");
-        addToList(gantryIDList, "3C4F01", "");
-        addToList(gantryIDList, "3C4F02", "");
-        addToList(gantryIDList, "3C4F03", "");
-        addToList(gantryIDList, "3C2501", "");
-        successJsonObject.put("gantryIdList", gantryIDList);
-
-//        System.out.println(successJsonObject.toString());
     }
 
     private void addToList(List<JSONObject> list, String gantryHex,
