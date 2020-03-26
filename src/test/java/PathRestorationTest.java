@@ -21,8 +21,6 @@ public class PathRestorationTest {
 
     @Test
     public void testPathRestorationWithNewCases() throws IOException {
-//        PathRestoration pathRestoration = new PathRestoration();
-
         // Open the file
         FileInputStream fileInputStream = new FileInputStream(test_data_file_path);
         BufferedReader br = new BufferedReader(new InputStreamReader(fileInputStream));
@@ -76,13 +74,8 @@ public class PathRestorationTest {
         //assert some properties
     }
 
-    @Test
-    public void getInput() {
-        // "deleteEndCost":10000,
-        // "modifyCost":0.01,
-        // "addCost":0.1,
-        // "deleteCost":0.6,
 
+    public void getInput() {
         //manually curate a successful JSON data
         successJsonObject.put("basicDataPath", basic_data_file_path);
 
@@ -97,18 +90,6 @@ public class PathRestorationTest {
         successJsonObject.put("exStationId", "");
         successJsonObject.put("enTime", "2020-01-23 16:30:31");
         successJsonObject.put("exTime", "2020-01-23 18:40:20");
-        //{"transTime":"","gantryHex":"3F5A0A"},
-        // {"transTime":"","gantryHex":"3D5A0C"},
-        // {"transTime":"","gantryHex":"3D5A0E"},
-        // {"transTime":"","gantryHex":"3D5A0F"},
-        // {"transTime":"","gantryHex":"3D5A10"},
-        // {"transTime":"","gantryHex":"3D5A11"},
-        // {"transTime":"","gantryHex":"3D5A12"},
-        // {"transTime":"","gantryHex":"3D5F06"},
-        // {"transTime":"","gantryHex":"3D5F07"},
-        // {"transTime":"","gantryHex":"3D5F08"},
-        // {"transTime":"","gantryHex":"3C4A04"},
-        // {"transTime":"","gantryHex":"3E4A05"}
         addToList(gantryIDList, "3F5A0A", "");
         addToList(gantryIDList, "3D5A0C", "");
         addToList(gantryIDList, "3D5A0E", "");
@@ -126,10 +107,6 @@ public class PathRestorationTest {
 
 
         //manually curate a failure JSON data
-        //"gantryIdList":[],"exStationId":"","enTime":"2020-01-24 00:33:23",
-                //"deleteEndCost":10000,"basicDataPath":"H:\\basic-data.xls",
-                //"modifyCost":0.01,"exTime":"2020-01-24 09:32:48","addCost":
-        // 0.1,"enStationId":"","deleteCost":0.6,"deleteCost2":2}
         failureJsonObject.put("enStationId", "");
         failureJsonObject.put("exStationId", "");
         failureJsonObject.put("enTime",      "2020-01-22 11:39:03");
