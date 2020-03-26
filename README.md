@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/dlee992/RoadRecovery.svg?branch=master)](https://travis-ci.org/dlee992/RoadRecovery)
+[![Build Status](https://travis-ci.com/dlee992/RoadRecovery.svg?branch=master)](https://travis-ci.com/dlee992/RoadRecovery)
 
 # RoadRecovery
 
