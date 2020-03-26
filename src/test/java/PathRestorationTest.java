@@ -16,8 +16,8 @@ public class PathRestorationTest {
     String basic_data_file_path = "src/test/resources/inputs/basic" +
             "-data-20200319.xls";
 
-    String test_data_file_path = "src/test/resources/inputs/test-data" +
-            "-20200317-02.txt";
+    String test_data_file_path = "src/test/resources/inputs/single-test-case" +
+            ".txt";
 
     @Test
     public void testPathRestorationWithNewCases() throws IOException {
@@ -29,32 +29,26 @@ public class PathRestorationTest {
 
         String strLine;
 
-
         //Read File Line By Line
         int count = 0;
         while ((strLine = br.readLine()) != null) {
             // Print the content on the console
             System.out.print( (++count) + ": ");
             JSONObject jsonObject = new JSONObject(strLine);
-            jsonObject.getString("id");
-            System.out.print("id = " + jsonObject.getString("id") + ": ");
-            jsonObject.getString("passid");
-//            jsonObject.getString("pathinfo");
-            jsonObject.getString("truePath");
 
             PathRestoration pathRestoration = new PathRestoration();
             jsonObject.put("basicDataPath", basic_data_file_path);
             String returnedJSONString = pathRestoration.pathRestorationMethod(jsonObject.toString());
             JSONObject returnedJSONObject = new JSONObject(returnedJSONString);
-
+            System.out.println(returnedJSONObject);
             //compare path info and returnedJSONString
-            boolean same = pathRestoration.compare(Integer.parseInt(jsonObject.getString("id")));
-            if (same) {
-                System.out.println("相同");
-            }
-            else {
-                System.out.println("不同");
-            }
+//            boolean same = pathRestoration.compare(Integer.parseInt(jsonObject.getString("id")));
+//            if (same) {
+//                System.out.println("相同");
+//            }
+//            else {
+//                System.out.println("不同");
+//            }
 
 //            if (count > 0) break;
         }
